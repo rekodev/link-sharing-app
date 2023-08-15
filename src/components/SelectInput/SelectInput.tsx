@@ -1,28 +1,30 @@
 import { InputLabel, SelectChangeEvent } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { platforms } from '../../utils/platformList';
 import { StyledFormControl, StyledMenuItem, StyledSelect } from './style';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
 
 interface ISelectInputProps {
-  setPlatformAndLink: React.Dispatch<
-    React.SetStateAction<IShareableLinkValues>
-  >;
+  setNewLinks: React.Dispatch<React.SetStateAction<IShareableLinkValues[]>>;
+  link: IShareableLinkValues;
+  index: number;
 }
 
-const SelectInput = ({ setPlatformAndLink }: ISelectInputProps) => {
-  const [selectedPlatform, setSelectedPlatform] = useState('');
-
+const SelectInput = ({ setNewLinks, link, index }: ISelectInputProps) => {
   const handleChange = (event: SelectChangeEvent<unknown>) => {
-    setSelectedPlatform(event.target.value as string);
-  };
+    const selectedPlatform = event.target.value as string;
 
-  useEffect(() => {
-    setPlatformAndLink((prev: IShareableLinkValues) => ({
-      ...prev,
-      platform: selectedPlatform,
-    }));
-  }, [selectedPlatform]);
+    setNewLinks((prev): IShareableLinkValues[] => {
+      const updatedLinks = Array.from(prev);
+
+      const linkToUpdate = { ...link };
+
+      linkToUpdate.platform = selectedPlatform;
+
+      updatedLinks[index] = linkToUpdate;
+
+      return updatedLinks;
+    });
+  };
 
   return (
     <StyledFormControl fullWidth>
@@ -30,7 +32,7 @@ const SelectInput = ({ setPlatformAndLink }: ISelectInputProps) => {
       <StyledSelect
         labelId='brand-select-label'
         id='brand-select'
-        value={selectedPlatform}
+        value={link.platform}
         label='Platform'
         onChange={handleChange}
       >

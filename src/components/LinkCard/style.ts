@@ -8,7 +8,7 @@ export const StyledLinkCard = styled.div`
   background-color: ${themeColors.lightGray};
   border-radius: 0.75rem;
   margin-top: 1.5rem;
-  gap: 0.75rem;
+  gap: 1.25rem;
 `;
 
 export const StyledLinkCardTextWrapper = styled.div`

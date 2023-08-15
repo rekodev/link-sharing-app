@@ -12,29 +12,77 @@ import iconFreeCodeCamp from '../assets/images/icon-freecodecamp.svg';
 import iconGitLab from '../assets/images/icon-gitlab.svg';
 import iconHashnode from '../assets/images/icon-hashnode.svg';
 import iconStackOverflow from '../assets/images/icon-stack-overflow.svg';
+import Svg from '../components/Svg';
 
 export const platforms = [
-  { name: 'GitHub', icon: <img src={iconGitHub} alt='GitHub' /> },
+  {
+    name: 'GitHub',
+    icon: <img src={iconGitHub} alt='GitHub' />,
+    svgIcon: <Svg url={iconGitHub} />,
+  },
   {
     name: 'Frontend Mentor',
     icon: <img src={iconFrontendMentor} alt='Frontend Mentor' />,
+    svgIcon: <Svg url={iconFrontendMentor} />,
   },
-  { name: 'Twitter', icon: <img src={iconTwitter} alt='Twitter' /> },
-  { name: 'LinkedIn', icon: <img src={iconLinkedIn} alt='LinkedIn' /> },
-  { name: 'YouTube', icon: <img src={iconYouTube} alt='YouTube' /> },
-  { name: 'Facebook', icon: <img src={iconFacebook} alt='Facebook' /> },
-  { name: 'Twitch', icon: <img src={iconTwitch} alt='Twitch' /> },
-  { name: 'Dev.to', icon: <img src={iconDevTo} alt='Dev.to' /> },
-  { name: 'Codewars', icon: <img src={iconCodewars} alt='Codewars' /> },
-  { name: 'Codepen', icon: <img src={iconCodepen} alt='Codepen' /> },
+  {
+    name: 'Twitter',
+    icon: <img src={iconTwitter} alt='Twitter' />,
+    svgIcon: <Svg url={iconTwitter} />,
+  },
+  {
+    name: 'LinkedIn',
+    icon: <img src={iconLinkedIn} alt='LinkedIn' />,
+    svgIcon: <Svg url={iconLinkedIn} />,
+  },
+  {
+    name: 'YouTube',
+    icon: <img src={iconYouTube} alt='YouTube' />,
+    svgIcon: <Svg url={iconYouTube} />,
+  },
+  {
+    name: 'Facebook',
+    icon: <img src={iconFacebook} alt='Facebook' />,
+    svgIcon: <Svg url={iconFacebook} />,
+  },
+  {
+    name: 'Twitch',
+    icon: <img src={iconTwitch} alt='Twitch' />,
+    svgIcon: <Svg url={iconTwitch} />,
+  },
+  {
+    name: 'Dev.to',
+    icon: <img src={iconDevTo} alt='Dev.to' />,
+    svgIcon: <Svg url={iconDevTo} />,
+  },
+  {
+    name: 'Codewars',
+    icon: <img src={iconCodewars} alt='Codewars' />,
+    svgIcon: <Svg url={iconCodewars} />,
+  },
+  {
+    name: 'Codepen',
+    icon: <img src={iconCodepen} alt='Codepen' />,
+    svgIcon: <Svg url={iconCodepen} />,
+  },
   {
     name: 'freeCodeCamp',
     icon: <img src={iconFreeCodeCamp} alt='freeCodeCamp' />,
+    svgIcon: <Svg url={iconFreeCodeCamp} />,
   },
-  { name: 'GitLab', icon: <img src={iconGitLab} alt='GitLab' /> },
-  { name: 'Hashnode', icon: <img src={iconHashnode} alt='Hashnode' /> },
+  {
+    name: 'GitLab',
+    icon: <img src={iconGitLab} alt='GitLab' />,
+    svgIcon: <Svg url={iconGitLab} />,
+  },
+  {
+    name: 'Hashnode',
+    icon: <img src={iconHashnode} alt='Hashnode' />,
+    svgIcon: <Svg url={iconHashnode} />,
+  },
   {
     name: 'Stack Overflow',
     icon: <img src={iconStackOverflow} alt='Stack Overflow' />,
+    svgIcon: <Svg url={iconStackOverflow} />,
   },
 ];

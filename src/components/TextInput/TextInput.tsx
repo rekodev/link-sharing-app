@@ -1,31 +1,40 @@
 import { InputAdornment } from '@mui/material';
-import { useEffect, useState } from 'react';
 import linkIcon from '../../assets/images/icon-link.svg';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { StyledTextField } from './style';
 
 interface ITextInputProps {
-  setPlatformAndLink: React.Dispatch<
-    React.SetStateAction<IShareableLinkValues>
+  setNewLinks: React.Dispatch<
+    React.SetStateAction<IShareableLinkValues[] | []>
   >;
+  link: IShareableLinkValues;
+  index: number;
 }
 
-const TextInput = ({ setPlatformAndLink }: ITextInputProps) => {
-  const [inputtedLink, setInputtedLink] = useState('');
+const TextInput = ({ setNewLinks, link, index }: ITextInputProps) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputtedLink = event.target.value as string;
 
-  useEffect(() => {
-    setPlatformAndLink((prev: IShareableLinkValues) => ({
-      ...prev,
-      link: inputtedLink,
-    }));
-  }, [inputtedLink]);
+    setNewLinks((prev) => {
+      const updatedLinks = Array.from(prev);
+
+      const linkToUpdate = { ...link };
+
+      linkToUpdate.link = inputtedLink;
+
+      updatedLinks[index] = linkToUpdate;
+
+      return updatedLinks;
+    });
+  };
 
   return (
     <StyledTextField
       id='outlined-basic'
       label='Link'
-      onChange={(e) => setInputtedLink(e.target.value)}
+      onChange={handleChange}
       variant='outlined'
+      value={link.link}
       placeholder='e.g. https://www.github.com/johnappleseed'
       InputProps={{
         startAdornment: (

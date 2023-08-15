@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import Button from '../Button';
 import SelectInput from '../SelectInput';
@@ -12,25 +11,15 @@ import {
 interface ILinkCardProps {
   index: number;
   link: IShareableLinkValues;
-  setLinks: React.Dispatch<React.SetStateAction<[] | IShareableLinkValues[]>>;
+  setNewLinks: React.Dispatch<
+    React.SetStateAction<[] | IShareableLinkValues[]>
+  >;
 }
 
-const LinkCard = ({ index, link, setLinks }: ILinkCardProps) => {
-  const [platformAndLink, setPlatformAndLink] = useState({
-    id: link.id,
-    platform: '',
-    link: '',
-  });
-
+const LinkCard = ({ index, link, setNewLinks }: ILinkCardProps) => {
   const handleRemove = () => {
-    setLinks((prev) => prev.filter((_, idx) => idx !== index));
+    setNewLinks((prev) => prev.filter((_, idx) => idx !== index));
   };
-
-  useEffect(() => {
-    setLinks((prev: IShareableLinkValues[]) =>
-      prev.map((el, idx) => (idx === index ? platformAndLink : el))
-    );
-  }, [platformAndLink]);
 
   return (
     <StyledLinkCard>
@@ -40,8 +29,8 @@ const LinkCard = ({ index, link, setLinks }: ILinkCardProps) => {
         </StyledIconAndHeading>
         <Button text='Remove' variant='text' onClick={handleRemove} />
       </StyledLinkCardTextWrapper>
-      <SelectInput setPlatformAndLink={setPlatformAndLink} />
-      <TextInput setPlatformAndLink={setPlatformAndLink} />
+      <SelectInput link={link} index={index} setNewLinks={setNewLinks} />
+      <TextInput link={link} index={index} setNewLinks={setNewLinks} />
     </StyledLinkCard>
   );
 };

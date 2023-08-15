@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../../components/Button';
 import LinkCard from '../../components/LinkCard';
@@ -12,9 +12,16 @@ import {
 
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
+  const [newLinks, setNewLinks] = useState(links);
 
   const handleClick = () => {
-    setLinks((prev) => [...prev, { id: uuidv4(), platform: '', link: '' }]);
+    setNewLinks((prev) => [...prev, { id: uuidv4(), platform: '', link: '' }]);
+    console.log(links);
+  };
+
+  const handleSave = () => {
+    // localStorage.setItem('links', JSON.stringify(links));
+    setLinks(newLinks);
   };
 
   return (
@@ -31,18 +38,18 @@ const Home = () => {
           variant='outlined'
           onClick={handleClick}
         />
-        {links.length === 0 && <StartCard />}
-        {links.map((link, index) => (
+        {(newLinks.length === 0 || newLinks.length === 0) && <StartCard />}
+        {newLinks.map((link, index) => (
           <LinkCard
             key={link.id}
             index={index}
             link={link}
-            setLinks={setLinks}
+            setNewLinks={setNewLinks}
           />
         ))}
       </StyledHomeContainer>
       <StyledSaveButtonWrapper>
-        <Button variant='contained' text='Save' />
+        <Button variant='contained' text='Save' onClick={handleSave} />
       </StyledSaveButtonWrapper>
     </StyledHome>
   );
