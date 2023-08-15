@@ -8,7 +8,6 @@ export const StyledLayout = styled.div`
 
   main {
     flex: 1;
-    padding: 1rem;
     background-color: ${themeColors.lightGray};
   }
 `;

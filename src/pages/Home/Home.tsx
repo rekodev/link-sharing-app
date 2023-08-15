@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../../components/Button';
 import LinkCard from '../../components/LinkCard';
 import StartCard from '../../components/StartCard/StartCard';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import { LinkContext } from '../../contexts/linkContext';
 import {
   StyledHome,
   StyledHomeContainer,
@@ -11,7 +11,7 @@ import {
 } from './style';
 
 const Home = () => {
-  const [links, setLinks] = useState<[] | IShareableLinkValues[]>([]);
+  const { links, setLinks } = useContext(LinkContext);
 
   const handleClick = () => {
     setLinks((prev) => [...prev, { id: uuidv4(), platform: '', link: '' }]);
