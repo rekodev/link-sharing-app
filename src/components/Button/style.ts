@@ -23,8 +23,12 @@ export const StyledButton = styled(Button)<IStyledButtonProps>`
         : themeColors.darkGray};
     border-color: ${(props) =>
       props.variant === 'outlined' ? `${themeColors.indigo}` : 'initial'};
-    padding: 11px 27px;
+    padding: ${(props) =>
+      props.variant === 'text' ? '4px 12px' : '11px 27px'};
     border-radius: 0.5rem;
+    font-weight: ${(props) => (props.variant === 'text' ? '400' : '600')};
+    font-family: InstrumentSans;
+    line-height: 150%;
 
     :hover {
       background: ${(props) =>
