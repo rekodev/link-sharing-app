@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
+import { FormControl, FormHelperText, MenuItem, Select } from '@mui/material';
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
 
@@ -49,5 +49,11 @@ export const StyledMenuItem = styled(MenuItem)`
     & img {
       width: 1rem;
     }
+  }
+`;
+
+export const StyledFormHelperText = styled(FormHelperText)`
+  && {
+    color: #d32f2f;
   }
 `;

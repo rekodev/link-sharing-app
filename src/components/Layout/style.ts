@@ -7,6 +7,8 @@ export const StyledLayout = styled.div`
   min-height: 100vh;
 
   main {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     background-color: ${themeColors.lightGray};
   }

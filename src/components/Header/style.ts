@@ -8,6 +8,7 @@ export const StyledHeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 45px;
 
   img {
     width: 32px;

@@ -2,6 +2,9 @@ import { InputAdornment } from '@mui/material';
 import linkIcon from '../../assets/images/icon-link.svg';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { StyledTextField } from './style';
+import { useState } from 'react';
+import isUrl from 'is-url';
+import { ILinkCardError } from '../../types/errors';
 
 interface ITextInputProps {
   setNewLinks: React.Dispatch<
@@ -9,9 +12,17 @@ interface ITextInputProps {
   >;
   link: IShareableLinkValues;
   index: number;
+  isError: ILinkCardError;
+  setIsError: React.Dispatch<React.SetStateAction<ILinkCardError>>;
 }
 
-const TextInput = ({ setNewLinks, link, index }: ITextInputProps) => {
+const TextInput = ({
+  setNewLinks,
+  link,
+  index,
+  isError,
+  setIsError,
+}: ITextInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputtedLink = event.target.value as string;
 
@@ -26,10 +37,16 @@ const TextInput = ({ setNewLinks, link, index }: ITextInputProps) => {
 
       return updatedLinks;
     });
+
+    setIsError((prev) => ({ ...prev, text: !isUrl(inputtedLink) }));
   };
 
   return (
     <StyledTextField
+      error={isError.text && isError.attemptedSave}
+      helperText={
+        isError.text && isError.attemptedSave ? 'Please check the URL' : ''
+      }
       id='outlined-basic'
       label='Link'
       onChange={handleChange}
