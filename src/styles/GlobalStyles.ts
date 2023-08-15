@@ -28,6 +28,10 @@ const GlobalStyles = createGlobalStyle`
         line-height: 150%;
     }
 
+    a {
+        text-decoration: none;
+    }
+
 `;
 
 export default GlobalStyles;

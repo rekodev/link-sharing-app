@@ -1,13 +1,7 @@
 import { StyledPreview } from './style';
 
 const Preview = () => {
-  return (
-    <StyledPreview>
-      Back to Editor
-      <br />
-      Share Link
-    </StyledPreview>
-  );
+  return <StyledPreview></StyledPreview>;
 };
 
 export default Preview;

@@ -1,22 +1,20 @@
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import Button from '../../components/Button';
+import LinkCard from '../../components/LinkCard';
 import StartCard from '../../components/StartCard/StartCard';
+import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import {
   StyledHome,
   StyledHomeContainer,
   StyledSaveButtonWrapper,
 } from './style';
-import LinkCard from '../../components/LinkCard';
 
 const Home = () => {
-  const [links, setLinks] = useState<[] | String[]>([]);
+  const [links, setLinks] = useState<[] | IShareableLinkValues[]>([]);
 
   const handleClick = () => {
-    const newLinkIndex = links.length;
-
-    setLinks((prev) => [...prev, `link${newLinkIndex}`]);
-
-    console.log(links);
+    setLinks((prev) => [...prev, { id: uuidv4(), platform: '', link: '' }]);
   };
 
   return (
@@ -34,8 +32,13 @@ const Home = () => {
           onClick={handleClick}
         />
         {links.length === 0 && <StartCard />}
-        {links.map((_link, index) => (
-          <LinkCard key={index} index={index} setLinks={setLinks} />
+        {links.map((link, index) => (
+          <LinkCard
+            key={link.id}
+            index={index}
+            link={link}
+            setLinks={setLinks}
+          />
         ))}
       </StyledHomeContainer>
       <StyledSaveButtonWrapper>

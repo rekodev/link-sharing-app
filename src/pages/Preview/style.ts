@@ -1,3 +1,3 @@
 import styled from 'styled-components';
 
-export const StyledPreview = styled.div``;
+export const StyledPreview = styled.section``;
