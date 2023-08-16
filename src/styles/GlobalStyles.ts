@@ -20,12 +20,20 @@ const GlobalStyles = createGlobalStyle`
         font-family: 'InstrumentSans';
     }
 
+    h1, h2, h3, h4, h5, h6, p, a, span, li {
+        margin: 0;
+    }
+
     img {
         width: 100%;
     }
 
     p {
         line-height: 150%;
+    }
+
+    a {
+        text-decoration: none;
     }
 
 `;

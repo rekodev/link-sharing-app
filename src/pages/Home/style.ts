@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
 
-export const StyledHome = styled.div`
+export const StyledHome = styled.section`
   background-color: ${themeColors.white};
   border-radius: 0.75rem;
+  margin: 1rem;
 `;
 
 export const StyledHomeContainer = styled.div`

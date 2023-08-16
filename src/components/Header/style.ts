@@ -8,9 +8,25 @@ export const StyledHeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 45px;
 
-  img {
+  .small-logo {
     width: 32px;
+  }
+
+  .large-logo {
+    display: none;
+    height: 32px;
+    width: auto;
+  }
+
+  @media screen and (min-width: 768px) {
+    .small-logo {
+      display: none;
+    }
+    .large-logo {
+      display: initial;
+    }
   }
 `;
 
