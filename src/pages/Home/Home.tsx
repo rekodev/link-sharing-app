@@ -1,5 +1,5 @@
 import isUrl from 'is-url';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../../components/Button';
 import LinkCard from '../../components/LinkCard';

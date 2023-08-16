@@ -7,6 +7,8 @@ interface IButtonProps {
   variant?: 'outlined' | 'contained' | 'text';
   hideOnMobile?: boolean;
   onClick?: () => void;
+  active?: boolean;
+  type?: 'button' | 'submit' | 'reset' | undefined;
 }
 
 const Button = ({
@@ -15,12 +17,16 @@ const Button = ({
   variant,
   hideOnMobile,
   onClick,
+  active,
+  type,
 }: IButtonProps) => {
   return (
     <StyledButton
       $hideOnMobile={hideOnMobile}
+      $active={active}
       variant={variant}
       onClick={onClick}
+      type={type}
     >
       {imgSrc && <Svg url={imgSrc} />}
       <span className='hideOnMobile'>{text}</span>
