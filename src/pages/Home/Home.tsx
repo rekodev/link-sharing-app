@@ -1,4 +1,5 @@
-import { useContext, useState } from 'react';
+import isUrl from 'is-url';
+import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../../components/Button';
 import LinkCard from '../../components/LinkCard';
@@ -9,29 +10,47 @@ import {
   StyledHomeContainer,
   StyledSaveButtonWrapper,
 } from './style';
-import { ILinkCardError } from '../../types/errors';
 
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
   const [newLinks, setNewLinks] = useState(links);
-  const [isError, setIsError] = useState<ILinkCardError>({
-    select: true,
-    text: true,
-    attemptedSave: false,
-  });
+  const [_attemptedSave, setAttemptedSave] = useState(false);
 
   const handleClick = () => {
-    setNewLinks((prev) => [...prev, { id: uuidv4(), platform: '', link: '' }]);
-    console.log(links);
+    setNewLinks((prev) => [
+      ...prev,
+      {
+        id: uuidv4(),
+        platform: '',
+        link: '',
+        errors: { platform: false, link: false },
+      },
+    ]);
+    setAttemptedSave(false);
   };
 
   const handleSave = () => {
+    let allValid = true;
     // localStorage.setItem('links', JSON.stringify(links));
-    if (isError.select === false && isError.text == false) {
-      setLinks(newLinks);
-      setIsError((prev) => ({ ...prev, attemptedSave: false }));
+    const updatedLinks = newLinks.map((link) => {
+      const isLinkValid = isUrl(link.link);
+      const isPlatformValid = Boolean(link.platform);
+
+      if (!isLinkValid || !isPlatformValid) {
+        allValid = false;
+      }
+
+      return {
+        ...link,
+        errors: { platform: !isPlatformValid, link: !isLinkValid },
+      };
+    });
+
+    if (allValid) {
+      setLinks(updatedLinks);
     } else {
-      setIsError((prev) => ({ ...prev, attemptedSave: true }));
+      setNewLinks(updatedLinks);
+      setAttemptedSave(true);
     }
   };
 
@@ -56,8 +75,6 @@ const Home = () => {
             index={index}
             link={link}
             setNewLinks={setNewLinks}
-            isError={isError}
-            setIsError={setIsError}
           />
         ))}
       </StyledHomeContainer>

@@ -1,4 +1,3 @@
-import { ILinkCardError } from '../../types/errors';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import Button from '../Button';
 import SelectInput from '../SelectInput';
@@ -15,17 +14,12 @@ interface ILinkCardProps {
   setNewLinks: React.Dispatch<
     React.SetStateAction<[] | IShareableLinkValues[]>
   >;
-  isError: ILinkCardError;
-  setIsError: React.Dispatch<React.SetStateAction<ILinkCardError>>;
 }
 
-const LinkCard = ({
-  index,
-  link,
-  setNewLinks,
-  isError,
-  setIsError,
-}: ILinkCardProps) => {
+const LinkCard = ({ index, link, setNewLinks }: ILinkCardProps) => {
+  // const hasTextError = () => attemptedSave && !isUrl(link.link);
+  // const hasSelectError = () => attemptedSave && !link.platform;
+
   const handleRemove = () => {
     setNewLinks((prev) => prev.filter((_, idx) => idx !== index));
   };
@@ -42,15 +36,13 @@ const LinkCard = ({
         link={link}
         index={index}
         setNewLinks={setNewLinks}
-        isError={isError}
-        setIsError={setIsError}
+        isError={link.errors.platform}
       />
       <TextInput
         link={link}
         index={index}
         setNewLinks={setNewLinks}
-        isError={isError}
-        setIsError={setIsError}
+        isError={link.errors.link}
       />
     </StyledLinkCard>
   );

@@ -2,9 +2,7 @@ import { InputAdornment } from '@mui/material';
 import linkIcon from '../../assets/images/icon-link.svg';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { StyledTextField } from './style';
-import { useState } from 'react';
 import isUrl from 'is-url';
-import { ILinkCardError } from '../../types/errors';
 
 interface ITextInputProps {
   setNewLinks: React.Dispatch<
@@ -12,17 +10,10 @@ interface ITextInputProps {
   >;
   link: IShareableLinkValues;
   index: number;
-  isError: ILinkCardError;
-  setIsError: React.Dispatch<React.SetStateAction<ILinkCardError>>;
+  isError: boolean;
 }
 
-const TextInput = ({
-  setNewLinks,
-  link,
-  index,
-  isError,
-  setIsError,
-}: ITextInputProps) => {
+const TextInput = ({ setNewLinks, link, index, isError }: ITextInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputtedLink = event.target.value as string;
 
@@ -33,19 +24,27 @@ const TextInput = ({
 
       linkToUpdate.link = inputtedLink;
 
+      if (inputtedLink && isUrl(inputtedLink)) {
+        linkToUpdate.errors.link = false;
+      } else {
+        linkToUpdate.errors.link = true;
+      }
+
       updatedLinks[index] = linkToUpdate;
 
       return updatedLinks;
     });
-
-    setIsError((prev) => ({ ...prev, text: !isUrl(inputtedLink) }));
   };
 
   return (
     <StyledTextField
-      error={isError.text && isError.attemptedSave}
+      error={isError}
       helperText={
-        isError.text && isError.attemptedSave ? 'Please check the URL' : ''
+        isError && link.link
+          ? 'Please check the URL'
+          : isError && !link.link
+          ? 'URL cannot be empty'
+          : ''
       }
       id='outlined-basic'
       label='Link'

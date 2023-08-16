@@ -1,4 +1,4 @@
-import { FormHelperText, InputLabel, SelectChangeEvent } from '@mui/material';
+import { InputLabel, SelectChangeEvent } from '@mui/material';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { platforms } from '../../utils/platformList';
 import {
@@ -7,14 +7,12 @@ import {
   StyledMenuItem,
   StyledSelect,
 } from './style';
-import { ILinkCardError } from '../../types/errors';
 
 interface ISelectInputProps {
   setNewLinks: React.Dispatch<React.SetStateAction<IShareableLinkValues[]>>;
   link: IShareableLinkValues;
   index: number;
-  isError: ILinkCardError;
-  setIsError: React.Dispatch<React.SetStateAction<ILinkCardError>>;
+  isError: boolean;
 }
 
 const SelectInput = ({
@@ -22,14 +20,9 @@ const SelectInput = ({
   link,
   index,
   isError,
-  setIsError,
 }: ISelectInputProps) => {
   const handleChange = (event: SelectChangeEvent<unknown>) => {
     const selectedPlatform = event.target.value as string;
-
-    if (selectedPlatform) {
-      setIsError((prev) => ({ ...prev, select: false }));
-    }
 
     setNewLinks((prev): IShareableLinkValues[] => {
       const updatedLinks = Array.from(prev);
@@ -37,6 +30,12 @@ const SelectInput = ({
       const linkToUpdate = { ...link };
 
       linkToUpdate.platform = selectedPlatform;
+
+      if (selectedPlatform) {
+        linkToUpdate.errors.platform = false;
+      } else {
+        linkToUpdate.errors.platform = true;
+      }
 
       updatedLinks[index] = linkToUpdate;
 
@@ -48,7 +47,7 @@ const SelectInput = ({
     <StyledFormControl fullWidth>
       <InputLabel id='brand-select-label'>Platform</InputLabel>
       <StyledSelect
-        error={isError.select && isError.attemptedSave}
+        error={isError}
         labelId='brand-select-label'
         id='brand-select'
         value={link.platform}
@@ -62,7 +61,7 @@ const SelectInput = ({
           </StyledMenuItem>
         ))}
       </StyledSelect>
-      {isError.select && isError.attemptedSave && (
+      {isError && (
         <StyledFormHelperText>You must select a platform</StyledFormHelperText>
       )}
     </StyledFormControl>
