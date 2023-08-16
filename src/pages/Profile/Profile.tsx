@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef } from 'react';
 import Button from '../../components/Button';
 import ProfileForm from '../../components/ProfileForm';
 import ProfilePictureCard from '../../components/ProfilePictureCard';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import {
   StyledProfile,
   StyledProfileContainer,
@@ -9,11 +10,9 @@ import {
 } from './style';
 
 const Profile = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-  });
+  const { profileDetails, setProfileDetails } = useContext(
+    ProfileDetailsContext
+  );
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -31,8 +30,8 @@ const Profile = () => {
         <ProfilePictureCard />
         <ProfileForm
           ref={formRef}
-          formData={formData}
-          setFormData={setFormData}
+          profileDetails={profileDetails}
+          setProfileDetails={setProfileDetails}
         />
       </StyledProfileContainer>
       <StyledSaveButtonWrapper>

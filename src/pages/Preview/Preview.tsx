@@ -1,10 +1,10 @@
+import { useContext } from 'react';
 import PlatformLink from '../../components/PlatformLink';
 import PreviewCard from '../../components/PreviewCard';
 import { LinkContext } from '../../contexts/linkContext';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { platforms } from '../../utils/platformList';
 import { StyledPreview, StyledPreviewLinkWrapper } from './style';
-import { useContext } from 'react';
 
 const Preview = () => {
   const { links } = useContext(LinkContext);

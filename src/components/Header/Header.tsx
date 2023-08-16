@@ -1,6 +1,7 @@
 import { StyledHeader, StyledHeaderContainer, StyledLinks } from './style';
 import Button from '../Button';
 import devLinksIconSm from '../../assets/images/logo-devlinks-small.svg';
+import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
 import iconLinksHeader from '../../assets/images/icon-links-header.svg';
 import iconPreviewHeader from '../../assets/images/icon-preview-header.svg';
 import iconProfileDetailsHeader from '../../assets/images/icon-profile-details-header.svg';
@@ -51,7 +52,16 @@ const Header = () => {
   return (
     <StyledHeader>
       <StyledHeaderContainer>
-        <img src={devLinksIconSm} alt='Small Dev Links Icon' />
+        <img
+          src={devLinksIconSm}
+          className='small-logo'
+          alt='Small Dev Links Icon'
+        />
+        <img
+          src={devLinksIconLg}
+          className='large-logo'
+          alt='Large Dev Links Icon'
+        />
         <StyledLinks>
           <Link to='/'>
             <Button

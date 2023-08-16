@@ -65,7 +65,7 @@ export const StyledButton = styled(Button)<IStyledButtonProps>`
       width: 1.25rem;
     }
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: 767px) {
       & .hideOnMobile {
         display: ${(props) => (props.$hideOnMobile ? 'none' : 'initial')};
       }

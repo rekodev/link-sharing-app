@@ -5,9 +5,16 @@ import { StyledLayout } from './style';
 import { LinkContext } from '../../contexts/linkContext';
 import { useState } from 'react';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import { IProfileDetails } from '../../types/profileDetails';
 
 const Layout = () => {
   const [links, setLinks] = useState<[] | IShareableLinkValues[]>([]);
+  const [profileDetails, setProfileDetails] = useState<IProfileDetails>({
+    firstName: 'Ben',
+    lastName: 'Wright',
+    email: 'ben@example.com',
+  });
 
   return (
     <StyledLayout>
@@ -19,7 +26,14 @@ const Layout = () => {
             setLinks: setLinks,
           }}
         >
-          <Outlet />
+          <ProfileDetailsContext.Provider
+            value={{
+              profileDetails: profileDetails,
+              setProfileDetails: setProfileDetails,
+            }}
+          >
+            <Outlet />
+          </ProfileDetailsContext.Provider>
         </LinkContext.Provider>
       </main>
       <Footer />
