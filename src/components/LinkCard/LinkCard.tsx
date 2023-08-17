@@ -7,6 +7,7 @@ import {
   StyledLinkCard,
   StyledLinkCardTextWrapper,
 } from './style';
+import dragAndDropIcon from '../../assets/images/icon-drag-and-drop.svg';
 
 interface ILinkCardProps {
   index: number;
@@ -28,6 +29,7 @@ const LinkCard = ({ index, link, setNewLinks }: ILinkCardProps) => {
     <StyledLinkCard>
       <StyledLinkCardTextWrapper>
         <StyledIconAndHeading>
+          <img src={dragAndDropIcon} alt='Drag and Drop Icon' />
           <h4>Link #{index + 1}</h4>
         </StyledIconAndHeading>
         <Button text='Remove' variant='text' onClick={handleRemove} />

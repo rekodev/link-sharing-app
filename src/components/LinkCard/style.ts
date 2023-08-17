@@ -15,6 +15,7 @@ export const StyledLinkCardTextWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  cursor: grab;
 
   & h4 {
     margin: 0;
@@ -23,4 +24,11 @@ export const StyledLinkCardTextWrapper = styled.div`
 
 export const StyledIconAndHeading = styled.div`
   color: ${themeColors.darkGray};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  img {
+    width: 0.75rem;
+  }
 `;
