@@ -36,13 +36,13 @@ const LinkCard = ({ index, link, setNewLinks }: ILinkCardProps) => {
         link={link}
         index={index}
         setNewLinks={setNewLinks}
-        isError={link.errors.platform}
+        isError={link.errors.platform && link.attemptedSave}
       />
       <TextInput
         link={link}
         index={index}
         setNewLinks={setNewLinks}
-        isError={link.errors.link}
+        isError={link.errors.link && link.attemptedSave}
       />
     </StyledLinkCard>
   );

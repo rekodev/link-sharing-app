@@ -14,19 +14,18 @@ import {
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
   const [newLinks, setNewLinks] = useState(links);
-  const [_attemptedSave, setAttemptedSave] = useState(false);
 
   const handleClick = () => {
     setNewLinks((prev) => [
       ...prev,
       {
         id: uuidv4(),
-        platform: '',
+        platform: 'GitHub',
         link: '',
+        attemptedSave: false,
         errors: { platform: false, link: false },
       },
     ]);
-    setAttemptedSave(false);
   };
 
   const handleSave = () => {
@@ -42,6 +41,7 @@ const Home = () => {
 
       return {
         ...link,
+        attemptedSave: true,
         errors: { platform: !isPlatformValid, link: !isLinkValid },
       };
     });
@@ -50,7 +50,6 @@ const Home = () => {
       setLinks(updatedLinks);
     } else {
       setNewLinks(updatedLinks);
-      setAttemptedSave(true);
     }
   };
 
