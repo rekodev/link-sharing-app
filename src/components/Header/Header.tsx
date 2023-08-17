@@ -21,7 +21,7 @@ const Header = () => {
       case '/profile':
         setActiveButtons({ links: false, profile: true });
         break;
-      case '/':
+      case '/links':
         setActiveButtons({ links: true, profile: false });
         break;
       default:
@@ -40,7 +40,7 @@ const Header = () => {
     return (
       <StyledHeader>
         <StyledHeaderContainer>
-          <Link to={activeButtons.links ? '/' : '/profile'}>
+          <Link to={activeButtons.links ? '/links' : '/profile'}>
             <Button text='Back to Editor' variant='outlined' />
           </Link>
           <Button text='Share Link' variant='contained' />
@@ -52,18 +52,20 @@ const Header = () => {
   return (
     <StyledHeader>
       <StyledHeaderContainer>
-        <img
-          src={devLinksIconSm}
-          className='small-logo'
-          alt='Small Dev Links Icon'
-        />
-        <img
-          src={devLinksIconLg}
-          className='large-logo'
-          alt='Large Dev Links Icon'
-        />
+        <Link to='/'>
+          <img
+            src={devLinksIconSm}
+            className='small-logo'
+            alt='Small Dev Links Icon'
+          />
+          <img
+            src={devLinksIconLg}
+            className='large-logo'
+            alt='Large Dev Links Icon'
+          />
+        </Link>
         <StyledLinks>
-          <Link to='/'>
+          <Link to='/links'>
             <Button
               imgSrc={iconLinksHeader}
               text='Links'

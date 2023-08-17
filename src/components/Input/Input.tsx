@@ -11,7 +11,7 @@ interface IInputProps {
   id: string;
   label?: string;
   name: string;
-  type: 'text' | 'email' | 'number';
+  type: 'text' | 'email' | 'number' | 'password';
   required?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
