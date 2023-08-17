@@ -1,8 +1,8 @@
-import { InputAdornment } from '@mui/material';
+import isUrl from 'is-url';
 import linkIcon from '../../assets/images/icon-link.svg';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
-import { StyledTextField } from './style';
-import isUrl from 'is-url';
+import Input from '../Input';
+import { StyledTextFieldWrapper } from './style';
 
 interface ITextInputProps {
   setNewLinks: React.Dispatch<
@@ -37,29 +37,44 @@ const TextInput = ({ setNewLinks, link, index, isError }: ITextInputProps) => {
   };
 
   return (
-    <StyledTextField
-      error={isError}
-      helperText={
-        isError && link.link
-          ? 'Please check the URL'
-          : isError && !link.link
-          ? 'URL cannot be empty'
-          : ''
-      }
-      id='outlined-basic'
-      label='Link'
-      onChange={handleChange}
-      variant='outlined'
-      value={link.link}
-      placeholder='e.g. https://www.github.com/johnappleseed'
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position='start'>
-            <img src={linkIcon} alt='Link' />
-          </InputAdornment>
-        ),
-      }}
-    />
+    <StyledTextFieldWrapper>
+      {/* <StyledTextField
+        error={isError}
+        helperText={
+          isError && link.link
+            ? 'Please check the URL'
+            : isError && !link.link
+            ? 'URL cannot be empty'
+            : ''
+        }
+        id='outlined-basic'
+        label='Link'
+        onChange={handleChange}
+        variant='outlined'
+        value={link.link}
+        placeholder='e.g. https://www.github.com/johnappleseed'
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <img src={linkIcon} alt='Link' />
+            </InputAdornment>
+          ),
+        }}
+      /> */}
+      <Input
+        type='text'
+        label='Link'
+        id='link'
+        name='link'
+        placeholder='e.g. https://www.github.com/johnappleseed'
+        onChange={handleChange}
+        value={link.link}
+        error={isError}
+        errorText='Please check the URL'
+        imgSrc={linkIcon}
+        imgName='Link Icon'
+      />
+    </StyledTextFieldWrapper>
   );
 };
 

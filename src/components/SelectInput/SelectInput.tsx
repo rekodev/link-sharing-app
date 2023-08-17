@@ -1,9 +1,10 @@
-import { InputLabel, SelectChangeEvent } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { platforms } from '../../utils/platformList';
 import {
   StyledFormControl,
   StyledFormHelperText,
+  StyledInputLabel,
   StyledMenuItem,
   StyledSelect,
 } from './style';
@@ -45,7 +46,7 @@ const SelectInput = ({
 
   return (
     <StyledFormControl fullWidth>
-      <InputLabel id='brand-select-label'>Platform</InputLabel>
+      <StyledInputLabel id='brand-select-label'>Platform</StyledInputLabel>
       <StyledSelect
         error={isError}
         labelId='brand-select-label'
@@ -53,6 +54,7 @@ const SelectInput = ({
         value={link.platform}
         label='Platform'
         onChange={handleChange}
+        $hasInput={link.platform ? true : false}
       >
         {platforms.map((platform, idx) => (
           <StyledMenuItem key={idx} value={platform.name}>
