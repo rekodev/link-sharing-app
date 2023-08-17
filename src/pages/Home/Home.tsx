@@ -9,7 +9,41 @@ import {
   StyledHome,
   StyledHomeContainer,
   StyledSaveButtonWrapper,
+  StyledSortableLink,
 } from './style';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import { CSS } from '@dnd-kit/utilities';
+
+interface ISortableLinkProps {
+  link: IShareableLinkValues;
+  index: number;
+  setNewLinks: React.Dispatch<React.SetStateAction<IShareableLinkValues[]>>;
+}
+
+const SortableLink = ({ link, index, setNewLinks }: ISortableLinkProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: link.id });
+
+  const style = { transition, transform: CSS.Transform.toString(transform) };
+
+  return (
+    <StyledSortableLink
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+    >
+      <LinkCard index={index} link={link} setNewLinks={setNewLinks} />
+    </StyledSortableLink>
+  );
+};
 
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
@@ -53,6 +87,20 @@ const Home = () => {
     }
   };
 
+  const onDragEnd = (event: any) => {
+    console.log('onDragEnd', event);
+    const { active, over } = event;
+    if (active.id === over.id) {
+      return;
+    }
+
+    setNewLinks((prev) => {
+      const oldIndex = links.findIndex((link) => link.id === active.id);
+      const newIndex = links.findIndex((link) => link.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
+
   return (
     <StyledHome>
       <StyledHomeContainer>
@@ -68,14 +116,21 @@ const Home = () => {
           onClick={handleClick}
         />
         {(newLinks.length === 0 || newLinks.length === 0) && <StartCard />}
-        {newLinks.map((link, index) => (
-          <LinkCard
-            key={link.id}
-            index={index}
-            link={link}
-            setNewLinks={setNewLinks}
-          />
-        ))}
+        <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+          <SortableContext
+            items={newLinks}
+            strategy={verticalListSortingStrategy}
+          >
+            {newLinks.map((link, index) => (
+              <SortableLink
+                key={link.id}
+                link={link}
+                index={index}
+                setNewLinks={setNewLinks}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
       </StyledHomeContainer>
       <StyledSaveButtonWrapper>
         <Button variant='contained' text='Save' onClick={handleSave} />

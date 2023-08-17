@@ -30,3 +30,7 @@ export const StyledSaveButtonWrapper = styled.div`
     width: 100%;
   }
 `;
+
+export const StyledSortableLink = styled.div`
+  /* z-index: 9999; */
+`;
