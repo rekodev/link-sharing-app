@@ -8,6 +8,7 @@ import {
   StyledLinkCardTextWrapper,
 } from './style';
 import dragAndDropIcon from '../../assets/images/icon-drag-and-drop.svg';
+import DragHandle, { IDragHandleProps } from '../DragHandle/DragHandle';
 
 interface ILinkCardProps {
   index: number;
@@ -15,9 +16,17 @@ interface ILinkCardProps {
   setNewLinks: React.Dispatch<
     React.SetStateAction<[] | IShareableLinkValues[]>
   >;
+  dragHandleProps: IDragHandleProps;
+  isBeingDragged: boolean | undefined;
 }
 
-const LinkCard = ({ index, link, setNewLinks }: ILinkCardProps) => {
+const LinkCard = ({
+  index,
+  link,
+  setNewLinks,
+  dragHandleProps,
+  isBeingDragged,
+}: ILinkCardProps) => {
   // const hasTextError = () => attemptedSave && !isUrl(link.link);
   // const hasSelectError = () => attemptedSave && !link.platform;
 
@@ -26,8 +35,9 @@ const LinkCard = ({ index, link, setNewLinks }: ILinkCardProps) => {
   };
 
   return (
-    <StyledLinkCard>
-      <StyledLinkCardTextWrapper>
+    <StyledLinkCard $isBeingDragged={isBeingDragged}>
+      <StyledLinkCardTextWrapper $isBeingDragged={isBeingDragged}>
+        <DragHandle {...dragHandleProps} />
         <StyledIconAndHeading>
           <img src={dragAndDropIcon} alt='Drag and Drop Icon' />
           <h4>Link #{index + 1}</h4>

@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
 
+interface ISortableLinkProps {
+  $isBeingDragged: boolean | undefined;
+}
+
 export const StyledHome = styled.section`
   background-color: ${themeColors.white};
   border-radius: 0.75rem;
@@ -31,6 +35,7 @@ export const StyledSaveButtonWrapper = styled.div`
   }
 `;
 
-export const StyledSortableLink = styled.div`
+export const StyledSortableLink = styled.div<ISortableLinkProps>`
   /* z-index: 9999; */
+  z-index: ${(props) => (props.$isBeingDragged ? '1' : 'initial')};
 `;
