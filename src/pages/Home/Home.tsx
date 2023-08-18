@@ -1,5 +1,5 @@
 import isUrl from 'is-url';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../../components/Button';
 import LinkCard from '../../components/LinkCard';
@@ -25,9 +25,15 @@ interface ISortableLinkProps {
   link: IShareableLinkValues;
   index: number;
   setNewLinks: React.Dispatch<React.SetStateAction<IShareableLinkValues[]>>;
+  isBeingDragged: boolean | undefined;
 }
 
-const SortableLink = ({ link, index, setNewLinks }: ISortableLinkProps) => {
+const SortableLink = ({
+  link,
+  index,
+  setNewLinks,
+  isBeingDragged,
+}: ISortableLinkProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: link.id });
 
@@ -35,12 +41,18 @@ const SortableLink = ({ link, index, setNewLinks }: ISortableLinkProps) => {
 
   return (
     <StyledSortableLink
+      $isBeingDragged={isBeingDragged}
       ref={setNodeRef}
-      {...attributes}
-      {...listeners}
       style={style}
+      className='link'
     >
-      <LinkCard index={index} link={link} setNewLinks={setNewLinks} />
+      <LinkCard
+        index={index}
+        link={link}
+        setNewLinks={setNewLinks}
+        dragHandleProps={{ attributes, listeners }}
+        isBeingDragged={isBeingDragged}
+      />
     </StyledSortableLink>
   );
 };
@@ -58,9 +70,14 @@ const Home = () => {
         link: '',
         attemptedSave: false,
         errors: { platform: false, link: false },
+        isBeingDragged: false,
       },
     ]);
   };
+
+  useEffect(() => {
+    console.log(newLinks);
+  }, [newLinks]);
 
   const handleSave = () => {
     let allValid = true;
@@ -87,18 +104,45 @@ const Home = () => {
     }
   };
 
+  const onDragStart = (event: any) => {
+    const { active } = event;
+
+    const index = newLinks.findIndex((link) => link.id === active.id);
+
+    // setting isBeingDragged to true
+    setNewLinks((prev) =>
+      prev.map((link, idx) =>
+        idx === index ? { ...link, isBeingDragged: true } : link
+      )
+    );
+  };
+
   const onDragEnd = (event: any) => {
-    console.log('onDragEnd', event);
+    // console.log('onDragEnd', event);
+
     const { active, over } = event;
+    const oldIndex = newLinks.findIndex((link) => link.id === active.id);
+    const newIndex = newLinks.findIndex((link) => link.id === over.id);
+
+    // if no switch made
     if (active.id === over.id) {
+      setNewLinks((prev) =>
+        prev.map((link, idx) =>
+          idx === oldIndex ? { ...link, isBeingDragged: false } : link
+        )
+      );
+
       return;
     }
 
-    setNewLinks((prev) => {
-      const oldIndex = links.findIndex((link) => link.id === active.id);
-      const newIndex = links.findIndex((link) => link.id === over.id);
-      return arrayMove(prev, oldIndex, newIndex);
-    });
+    setNewLinks((prev) => arrayMove(prev, oldIndex, newIndex));
+
+    // setting isBeingDragged to false
+    setNewLinks((prev) =>
+      prev.map((link, idx) =>
+        idx === newIndex ? { ...link, isBeingDragged: false } : link
+      )
+    );
   };
 
   return (
@@ -115,8 +159,12 @@ const Home = () => {
           variant='outlined'
           onClick={handleClick}
         />
-        {(newLinks.length === 0 || newLinks.length === 0) && <StartCard />}
-        <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        {newLinks.length === 0 && <StartCard />}
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
+        >
           <SortableContext
             items={newLinks}
             strategy={verticalListSortingStrategy}
@@ -127,6 +175,7 @@ const Home = () => {
                 link={link}
                 index={index}
                 setNewLinks={setNewLinks}
+                isBeingDragged={link.isBeingDragged}
               />
             ))}
           </SortableContext>

@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
 
-export const StyledLinkCard = styled.div`
+interface IStyledLinkCardProps {
+  $isBeingDragged: boolean | undefined;
+}
+
+export const StyledLinkCard = styled.div<IStyledLinkCardProps>`
   display: flex;
   flex-direction: column;
   padding: 1.25rem;
@@ -9,16 +13,26 @@ export const StyledLinkCard = styled.div`
   border-radius: 0.75rem;
   margin-top: 1.5rem;
   gap: 1.25rem;
+  box-shadow: ${(props) =>
+    props.$isBeingDragged ? `-8px 8px 16px ${themeColors.gray}` : 'none'};
+  position: relative;
 `;
 
-export const StyledLinkCardTextWrapper = styled.div`
+export const StyledLinkCardTextWrapper = styled.div<IStyledLinkCardProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: grab;
+  position: relative;
 
   & h4 {
     margin: 0;
+  }
+
+  .drag-handle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: ${(props) => (props.$isBeingDragged ? 'grabbing' : 'grab')};
   }
 `;
 

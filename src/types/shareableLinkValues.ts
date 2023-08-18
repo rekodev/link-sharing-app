@@ -7,4 +7,5 @@ export interface IShareableLinkValues {
     platform: boolean;
     link: boolean;
   };
+  isBeingDragged: boolean | undefined;
 }
