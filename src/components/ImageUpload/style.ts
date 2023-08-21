@@ -19,6 +19,15 @@ export const StyledImageUpload = styled.div`
   :hover {
     background-color: ${themeColors.lavender};
     cursor: pointer;
+
+    .image-wrapper {
+      z-index: 2;
+      background-color: rgba(0, 0, 0, 0.5);
+
+      p {
+        color: #fff;
+      }
+    }
   }
 
   && p {
@@ -39,12 +48,21 @@ export const StyledPreImageUploadWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+
+  svg path {
+    fill: #fff;
+  }
 `;
 
 export const StyledUploadedImage = styled.div`
   width: 100%;
   height: 100%;
   position: absolute;
+  z-index: 1;
 
   img {
     width: 100%;

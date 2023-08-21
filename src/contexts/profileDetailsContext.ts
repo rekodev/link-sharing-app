@@ -7,6 +7,11 @@ interface IProfileDetailsContext {
 }
 
 export const ProfileDetailsContext = createContext<IProfileDetailsContext>({
-  profileDetails: { firstName: '', lastName: '', email: '' },
+  profileDetails: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    profilePicture: '',
+  },
   setProfileDetails: () => {},
 });
