@@ -52,7 +52,7 @@ const Input = ({
         $hasError={error ? true : false}
         $hasImage={imgSrc ? true : false}
       />
-      {error && type === 'text' && !value ? (
+      {error && (type === 'text' || type === 'email') && !value ? (
         <StyledErrorText>Can't be empty</StyledErrorText>
       ) : (
         error && <StyledErrorText>{errorText}</StyledErrorText>

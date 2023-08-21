@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import { IProfileDetails } from '../../types/profileDetails';
+import { ProfilePictureContext } from '../../contexts/profilePictureContext';
 
 const Layout = () => {
   const [links, setLinks] = useState<[] | IShareableLinkValues[]>([]);
@@ -14,7 +15,9 @@ const Layout = () => {
     firstName: 'Ben',
     lastName: 'Wright',
     email: 'ben@example.com',
+    profilePicture: '',
   });
+  const [profilePictureData, setProfilePictureData] = useState('');
 
   return (
     <StyledLayout>
@@ -26,14 +29,21 @@ const Layout = () => {
             setLinks: setLinks,
           }}
         >
-          <ProfileDetailsContext.Provider
+          <ProfilePictureContext.Provider
             value={{
-              profileDetails: profileDetails,
-              setProfileDetails: setProfileDetails,
+              profilePictureData: profilePictureData,
+              setProfilePictureData: setProfilePictureData,
             }}
           >
-            <Outlet />
-          </ProfileDetailsContext.Provider>
+            <ProfileDetailsContext.Provider
+              value={{
+                profileDetails: profileDetails,
+                setProfileDetails: setProfileDetails,
+              }}
+            >
+              <Outlet />
+            </ProfileDetailsContext.Provider>
+          </ProfilePictureContext.Provider>
         </LinkContext.Provider>
       </main>
       <Footer />

@@ -38,29 +38,6 @@ const TextInput = ({ setNewLinks, link, index, isError }: ITextInputProps) => {
 
   return (
     <StyledTextFieldWrapper>
-      {/* <StyledTextField
-        error={isError}
-        helperText={
-          isError && link.link
-            ? 'Please check the URL'
-            : isError && !link.link
-            ? 'URL cannot be empty'
-            : ''
-        }
-        id='outlined-basic'
-        label='Link'
-        onChange={handleChange}
-        variant='outlined'
-        value={link.link}
-        placeholder='e.g. https://www.github.com/johnappleseed'
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <img src={linkIcon} alt='Link' />
-            </InputAdornment>
-          ),
-        }}
-      /> */}
       <Input
         type='text'
         label='Link'

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
+import { Avatar } from '@mui/material';
 
 export const StyledPreviewCard = styled.div`
   text-align: center;
@@ -23,4 +24,17 @@ export const StyledProfilePictureWrapper = styled.div`
   border-radius: 50%;
   overflow: hidden;
   border: 4px solid ${themeColors.indigo};
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+export const StyledAvatar = styled(Avatar)`
+  && {
+    width: 100%;
+    height: 100%;
+  }
 `;

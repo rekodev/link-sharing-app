@@ -35,7 +35,7 @@ export const StyledInput = styled.input<IStyledInputProps>`
   }
 
   :hover {
-    border-color: black;
+    border-color: ${(props) => (props.$hasError ? themeColors.red : 'black')};
 
     :focus {
       border: ${(props) =>

@@ -1,7 +1,10 @@
 import { useContext } from 'react';
-import profilePicture from '../../assets/images/illustration-phone-mockup.svg';
-import { StyledPreviewCard, StyledProfilePictureWrapper } from './style';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import {
+  StyledAvatar,
+  StyledPreviewCard,
+  StyledProfilePictureWrapper,
+} from './style';
 
 const PreviewCard = () => {
   const { profileDetails } = useContext(ProfileDetailsContext);
@@ -9,7 +12,11 @@ const PreviewCard = () => {
   return (
     <StyledPreviewCard>
       <StyledProfilePictureWrapper>
-        <img src={profilePicture} alt='Profile Picture' />
+        {profileDetails.profilePicture ? (
+          <img src={profileDetails.profilePicture} alt='Profile Picture' />
+        ) : (
+          <StyledAvatar src='/broken-image.jpg' />
+        )}
       </StyledProfilePictureWrapper>
       <h3>{`${profileDetails.firstName} ${profileDetails.lastName}`}</h3>
       <p>{profileDetails.email}</p>
