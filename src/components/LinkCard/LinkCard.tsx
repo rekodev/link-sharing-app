@@ -27,9 +27,6 @@ const LinkCard = ({
   dragHandleProps,
   isBeingDragged,
 }: ILinkCardProps) => {
-  // const hasTextError = () => attemptedSave && !isUrl(link.link);
-  // const hasSelectError = () => attemptedSave && !link.platform;
-
   const handleRemove = () => {
     setNewLinks((prev) => prev.filter((_, idx) => idx !== index));
   };

@@ -1,6 +1,6 @@
+import { Avatar } from '@mui/material';
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
-import { Avatar } from '@mui/material';
 
 export const StyledPreviewCard = styled.div`
   text-align: center;
