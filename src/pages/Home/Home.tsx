@@ -1,16 +1,3 @@
-import isUrl from 'is-url';
-import { useContext, useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import Button from '../../components/Button';
-import LinkCard from '../../components/LinkCard';
-import StartCard from '../../components/StartCard/StartCard';
-import { LinkContext } from '../../contexts/linkContext';
-import {
-  StyledHome,
-  StyledHomeContainer,
-  StyledSaveButtonWrapper,
-  StyledSortableLink,
-} from './style';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -18,8 +5,24 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { CSS } from '@dnd-kit/utilities';
+import { Snackbar } from '@mui/material';
+import isUrl from 'is-url';
+import { useContext, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import Button from '../../components/Button';
+import LinkCard from '../../components/LinkCard';
+import StartCard from '../../components/StartCard/StartCard';
+import { LinkContext } from '../../contexts/linkContext';
+import { StyledAlert } from '../../styles/UtilityStyles';
+import { SnackbarType } from '../../types/profileDetails';
+import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import {
+  StyledHome,
+  StyledHomeContainer,
+  StyledSaveButtonWrapper,
+  StyledSortableLink,
+} from './style';
 
 interface ISortableLinkProps {
   link: IShareableLinkValues;
@@ -60,6 +63,9 @@ const SortableLink = ({
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
   const [newLinks, setNewLinks] = useState(links);
+  const [open, setOpen] = useState(false);
+  const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
+  const [uniqueLinks, setUniqueLinks] = useState(true);
 
   const handleClick = () => {
     setNewLinks((prev) => [
@@ -69,38 +75,55 @@ const Home = () => {
         platform: 'GitHub',
         link: '',
         attemptedSave: false,
-        errors: { platform: false, link: false },
+        errors: { platform: false, link: false, unique: false },
         isBeingDragged: false,
       },
     ]);
   };
 
-  useEffect(() => {
-    console.log(newLinks);
-  }, [newLinks]);
-
   const handleSave = () => {
     let allValid = true;
     // localStorage.setItem('links', JSON.stringify(links));
+    // Check if platforms are unique
+    const uniquePlatforms =
+      new Set(newLinks.map((link) => link.platform)).size === newLinks.length;
+
     const updatedLinks = newLinks.map((link) => {
       const isLinkValid = isUrl(link.link);
       const isPlatformValid = Boolean(link.platform);
 
-      if (!isLinkValid || !isPlatformValid) {
+      if (!isLinkValid || !isPlatformValid || !uniquePlatforms) {
         allValid = false;
+
+        return {
+          ...link,
+          attemptedSave: true,
+          errors: {
+            platform: !isPlatformValid,
+            link: !isLinkValid,
+          },
+        };
       }
 
       return {
         ...link,
-        attemptedSave: true,
-        errors: { platform: !isPlatformValid, link: !isLinkValid },
+        attemptedSave: false,
+        errors: { platform: false, link: false },
       };
     });
 
     if (allValid) {
       setLinks(updatedLinks);
+      setSnackbarType('success');
+      setOpen(true);
+      setUniqueLinks(true);
     } else {
       setNewLinks(updatedLinks);
+      setSnackbarType('error');
+      setOpen(true);
+      if (!uniquePlatforms) {
+        setUniqueLinks(false);
+      }
     }
   };
 
@@ -118,8 +141,6 @@ const Home = () => {
   };
 
   const onDragEnd = (event: any) => {
-    // console.log('onDragEnd', event);
-
     const { active, over } = event;
     const oldIndex = newLinks.findIndex((link) => link.id === active.id);
     const newIndex = newLinks.findIndex((link) => link.id === over.id);
@@ -143,6 +164,17 @@ const Home = () => {
         idx === newIndex ? { ...link, isBeingDragged: false } : link
       )
     );
+  };
+
+  const handleClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
   };
 
   return (
@@ -184,6 +216,19 @@ const Home = () => {
       <StyledSaveButtonWrapper>
         <Button variant='contained' text='Save' onClick={handleSave} />
       </StyledSaveButtonWrapper>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <StyledAlert
+          onClose={handleClose}
+          severity={snackbarType}
+          sx={{ width: '100%' }}
+        >
+          {snackbarType === 'success'
+            ? 'Saved successfully'
+            : uniqueLinks
+            ? 'Oops! Some fields need attention'
+            : 'Platforms must be unique'}
+        </StyledAlert>
+      </Snackbar>
     </StyledHome>
   );
 };

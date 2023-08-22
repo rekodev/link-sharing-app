@@ -11,7 +11,10 @@ export const ProfileDetailsContext = createContext<IProfileDetailsContext>({
     firstName: '',
     lastName: '',
     email: '',
-    profilePicture: '',
+    profilePicture: {
+      src: '',
+      name: '',
+    },
   },
   setProfileDetails: () => {},
 });

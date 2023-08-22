@@ -8,6 +8,7 @@ import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import { IProfileDetails } from '../../types/profileDetails';
 import { ProfilePictureContext } from '../../contexts/profilePictureContext';
+import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
 
 const Layout = () => {
   const [links, setLinks] = useState<[] | IShareableLinkValues[]>([]);
@@ -15,38 +16,49 @@ const Layout = () => {
     firstName: 'Ben',
     lastName: 'Wright',
     email: 'ben@example.com',
-    profilePicture: '',
+    profilePicture: {
+      src: '',
+      name: '',
+    },
   });
-  const [profilePictureData, setProfilePictureData] = useState('');
+  const [profilePictureData, setProfilePictureData] = useState({
+    src: '',
+    name: '',
+  });
+  const [copiedLink, setCopiedLink] = useState(false);
 
   return (
     <StyledLayout>
-      <Header />
-      <main>
-        <LinkContext.Provider
-          value={{
-            links: links,
-            setLinks: setLinks,
-          }}
-        >
-          <ProfilePictureContext.Provider
+      <CopiedLinkContext.Provider
+        value={{ copiedLink: copiedLink, setCopiedLink: setCopiedLink }}
+      >
+        <Header />
+        <main>
+          <LinkContext.Provider
             value={{
-              profilePictureData: profilePictureData,
-              setProfilePictureData: setProfilePictureData,
+              links: links,
+              setLinks: setLinks,
             }}
           >
-            <ProfileDetailsContext.Provider
+            <ProfilePictureContext.Provider
               value={{
-                profileDetails: profileDetails,
-                setProfileDetails: setProfileDetails,
+                profilePictureData: profilePictureData,
+                setProfilePictureData: setProfilePictureData,
               }}
             >
-              <Outlet />
-            </ProfileDetailsContext.Provider>
-          </ProfilePictureContext.Provider>
-        </LinkContext.Provider>
-      </main>
-      <Footer />
+              <ProfileDetailsContext.Provider
+                value={{
+                  profileDetails: profileDetails,
+                  setProfileDetails: setProfileDetails,
+                }}
+              >
+                <Outlet />
+              </ProfileDetailsContext.Provider>
+            </ProfilePictureContext.Provider>
+          </LinkContext.Provider>
+        </main>
+        <Footer />
+      </CopiedLinkContext.Provider>
     </StyledLayout>
   );
 };

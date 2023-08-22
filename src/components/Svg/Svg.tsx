@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { StyledSvgWrapper } from './style';
 
 interface ISvgProps {
   url: string;
+  noHeight?: boolean;
 }
 
-const Svg = ({ url }: ISvgProps) => {
+const Svg = ({ url, noHeight }: ISvgProps) => {
   const [svgContent, setSvgContent] = useState<string | undefined>();
 
   useEffect(() => {
@@ -18,7 +20,12 @@ const Svg = ({ url }: ISvgProps) => {
     getSvgContent();
   }, [url]);
 
-  return <div dangerouslySetInnerHTML={{ __html: svgContent || '' }} />;
+  return (
+    <StyledSvgWrapper
+      $noHeight={noHeight}
+      dangerouslySetInnerHTML={{ __html: svgContent || '' }}
+    />
+  );
 };
 
 export default Svg;

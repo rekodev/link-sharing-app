@@ -7,6 +7,7 @@ export const StyledPreview = styled.section`
   display: flex;
   flex-direction: column;
   gap: 3.75rem;
+  flex: 1;
 `;
 
 export const StyledPreviewLinkWrapper = styled.div`
@@ -15,3 +16,5 @@ export const StyledPreviewLinkWrapper = styled.div`
   align-items: center;
   gap: 1.25rem;
 `;
+
+export const StyledSnackbarWrapper = styled.div``;

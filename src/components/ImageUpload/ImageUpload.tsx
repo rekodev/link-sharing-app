@@ -4,6 +4,7 @@ import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import { ProfilePictureContext } from '../../contexts/profilePictureContext';
 import {
   StyledImageUpload,
+  StyledImageUploadWrapper,
   StyledPreImageUploadWrapper,
   StyledUploadedImage,
 } from './style';
@@ -13,9 +14,9 @@ import Svg from '../Svg';
 const ImageUpload = () => {
   const { profileDetails } = useContext(ProfileDetailsContext);
 
-  const [imageData, setImageData] = useState<string | undefined>(
-    profileDetails.profilePicture
-  );
+  const [imageData, setImageData] = useState<
+    { src: string; name: string } | undefined
+  >(profileDetails.profilePicture);
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -26,6 +27,7 @@ const ImageUpload = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
+    console.log(file);
 
     if (!file) {
       return;
@@ -40,8 +42,11 @@ const ImageUpload = () => {
 
           reader.onload = (e: ProgressEvent<FileReader>) => {
             if (e.target && e.target.result) {
-              setImageData(e.target.result as string);
-              setProfilePictureData(e.target.result as string);
+              setImageData({ name: file.name, src: e.target.result as string });
+              setProfilePictureData({
+                name: file.name,
+                src: e.target.result as string,
+              });
             }
           };
 
@@ -75,38 +80,45 @@ const ImageUpload = () => {
   };
 
   return (
-    <StyledImageUpload onClick={triggerFileUpload}>
-      {!imageData ? (
-        <StyledPreImageUploadWrapper>
-          <img src={uploadImageIcon} alt='Upload Image Icon' />
-          <p>+ Upload Image</p>
-        </StyledPreImageUploadWrapper>
-      ) : (
-        <>
-          <StyledUploadedImage>
-            <img
-              src={imageData}
-              className='uploaded-image'
-              alt='Profile Picture'
-            />
-          </StyledUploadedImage>
-          <StyledPreImageUploadWrapper className='image-wrapper'>
-            <Svg url={uploadImageIcon} />
-            <p>Change Image</p>
+    <StyledImageUploadWrapper>
+      <StyledImageUpload onClick={triggerFileUpload}>
+        {!imageData?.src ? (
+          <StyledPreImageUploadWrapper>
+            <img src={uploadImageIcon} alt='Upload Image Icon' />
+            <p>+ Upload Image</p>
           </StyledPreImageUploadWrapper>
-        </>
-      )}
+        ) : (
+          <>
+            <StyledUploadedImage>
+              <img
+                src={imageData.src}
+                className='uploaded-image'
+                alt='Profile Picture'
+              />
+            </StyledUploadedImage>
+            <StyledPreImageUploadWrapper className='image-wrapper'>
+              <Svg url={uploadImageIcon} />
+              <p>Change Image</p>
+            </StyledPreImageUploadWrapper>
+          </>
+        )}
 
-      <input type='file' ref={inputRef} onChange={handleFileChange} />
+        <input type='file' ref={inputRef} onChange={handleFileChange} />
 
-      {error && (
-        <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity='error' sx={{ width: '100%' }}>
-            {errorMessage}
-          </Alert>
-        </Snackbar>
-      )}
-    </StyledImageUpload>
+        {error && (
+          <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+            <Alert
+              onClose={handleClose}
+              severity='error'
+              sx={{ width: '100%' }}
+            >
+              {errorMessage}
+            </Alert>
+          </Snackbar>
+        )}
+      </StyledImageUpload>
+      <p>{imageData?.name}</p>
+    </StyledImageUploadWrapper>
   );
 };
 

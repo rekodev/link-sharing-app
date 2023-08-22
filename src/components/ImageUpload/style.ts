@@ -1,6 +1,17 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
 
+export const StyledImageUploadWrapper = styled.div`
+  margin: 1rem 0 1.5rem 0;
+
+  > p {
+    color: ${themeColors.darkGray};
+    margin: 0;
+    line-height: 150%;
+    font-size: 12px;
+  }
+`;
+
 export const StyledImageUpload = styled.div`
   border-radius: 0.75rem;
   background-color: ${themeColors.lightLavender};
@@ -9,7 +20,7 @@ export const StyledImageUpload = styled.div`
   justify-content: center;
   align-items: center;
   padding: 3.75rem 2.5rem;
-  margin: 1rem 0 1.5rem 0;
+  margin-bottom: 0.5rem;
   position: relative;
   overflow: hidden;
 

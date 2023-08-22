@@ -1,18 +1,21 @@
-import { StyledHeader, StyledHeaderContainer, StyledLinks } from './style';
-import Button from '../Button';
-import devLinksIconSm from '../../assets/images/logo-devlinks-small.svg';
-import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import iconLinksHeader from '../../assets/images/icon-links-header.svg';
 import iconPreviewHeader from '../../assets/images/icon-preview-header.svg';
 import iconProfileDetailsHeader from '../../assets/images/icon-profile-details-header.svg';
-import { Link, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
+import devLinksIconSm from '../../assets/images/logo-devlinks-small.svg';
+import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
+import Button from '../Button';
+import { StyledHeader, StyledHeaderContainer, StyledLinks } from './style';
 
 const Header = () => {
   const [activeButtons, setActiveButtons] = useState({
     links: false,
     profile: false,
   });
+
+  const { setCopiedLink } = useContext(CopiedLinkContext);
 
   const location = useLocation();
 
@@ -36,6 +39,11 @@ const Header = () => {
     setActiveButtons({ links: true, profile: false });
   };
 
+  const handleClick = () => {
+    setCopiedLink(true);
+    navigator.clipboard.writeText(location.pathname);
+  };
+
   if (location.pathname === '/preview') {
     return (
       <StyledHeader>
@@ -43,7 +51,7 @@ const Header = () => {
           <Link to={activeButtons.links ? '/links' : '/profile'}>
             <Button text='Back to Editor' variant='outlined' />
           </Link>
-          <Button text='Share Link' variant='contained' />
+          <Button text='Share Link' variant='contained' onClick={handleClick} />
         </StyledHeaderContainer>
       </StyledHeader>
     );
