@@ -25,6 +25,8 @@ export const StyledButton = styled(Button)<IStyledButtonProps>`
         ? themeColors.indigo
         : props.variant === 'contained'
         ? themeColors.white
+        : props.$active
+        ? themeColors.indigo
         : themeColors.darkGray};
     border-color: ${(props) =>
       props.variant === 'outlined' ? `${themeColors.indigo}` : 'initial'};

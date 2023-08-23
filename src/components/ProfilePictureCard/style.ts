@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
+import { Breakpoints } from '../../styles/breakpoints';
 
 export const StyledProfilePictureCard = styled.div`
   background-color: ${themeColors.lightGray};
@@ -8,11 +9,10 @@ export const StyledProfilePictureCard = styled.div`
   margin-top: 2.5rem;
   margin-bottom: 1.5rem;
 
-  > p {
-    color: ${themeColors.darkGray};
-    margin: 0;
-    line-height: 150%;
-    font-size: 12px;
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 `;
 
@@ -22,4 +22,20 @@ export const StyledCardHeading = styled.h4`
   color: ${themeColors.darkGray};
   margin: 0;
   margin-bottom: 0.5rem;
+`;
+
+export const UploadedImageWrapper = styled.div`
+  > p {
+    color: ${themeColors.darkGray};
+    margin: 0;
+    line-height: 150%;
+    font-size: 12px;
+  }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 360px;
+  }
 `;

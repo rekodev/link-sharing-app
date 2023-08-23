@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
+import { Breakpoints } from '../../styles/breakpoints';
 
 interface IStyledInputProps {
   $hasValue: boolean;
@@ -44,12 +45,21 @@ export const StyledInput = styled.input<IStyledInputProps>`
           : `1px solid ${themeColors.indigo}`};
     }
   }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    max-width: 330px;
+    min-width: 330px;
+  }
 `;
 
 export const StyledLabel = styled.label`
   font-size: 0.75rem;
-  color: #333;
+  color: ${themeColors.darkGray};
   margin: 0;
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    font-size: 1rem;
+  }
 `;
 
 export const StyledInputWrapper = styled.div`
@@ -57,6 +67,13 @@ export const StyledInputWrapper = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   position: relative;
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+  }
 `;
 
 export const StyledImage = styled.img`
