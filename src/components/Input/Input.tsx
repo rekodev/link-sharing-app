@@ -2,6 +2,7 @@ import {
   StyledErrorText,
   StyledImage,
   StyledInput,
+  StyledInputFieldWrapper,
   StyledInputWrapper,
   StyledLabel,
 } from './style';
@@ -19,6 +20,7 @@ interface IInputProps {
   errorText?: string;
   imgSrc?: string;
   imgName?: string;
+  initialStyle?: boolean;
 }
 
 const Input = ({
@@ -34,24 +36,34 @@ const Input = ({
   type,
   imgSrc,
   imgName,
+  initialStyle,
 }: IInputProps) => {
   return (
-    <StyledInputWrapper>
-      {label && <StyledLabel id={`label-${id}`}>{label}</StyledLabel>}
-      {imgSrc && <StyledImage src={imgSrc} alt={imgName} />}
-      <StyledInput
-        aria-labelledby={`label-${id}`}
-        type={type}
-        placeholder={placeholder}
-        id={id}
-        name={name}
-        required={required}
-        onChange={onChange}
-        value={value}
-        $hasValue={value ? true : false}
-        $hasError={error ? true : false}
-        $hasImage={imgSrc ? true : false}
-      />
+    <StyledInputWrapper $initialStyle={initialStyle ? true : false}>
+      {label && (
+        <StyledLabel
+          $initialStyle={initialStyle ? true : false}
+          id={`label-${id}`}
+        >
+          {label}
+        </StyledLabel>
+      )}
+      <StyledInputFieldWrapper $initialStyle={initialStyle ? true : false}>
+        {imgSrc && <StyledImage src={imgSrc} alt={imgName} />}
+        <StyledInput
+          aria-labelledby={`label-${id}`}
+          type={type}
+          placeholder={placeholder}
+          id={id}
+          name={name}
+          required={required}
+          onChange={onChange}
+          value={value}
+          $hasValue={value ? true : false}
+          $hasError={error ? true : false}
+          $hasImage={imgSrc ? true : false}
+        />
+      </StyledInputFieldWrapper>
       {error && (type === 'text' || type === 'email') && !value ? (
         <StyledErrorText>Can't be empty</StyledErrorText>
       ) : (

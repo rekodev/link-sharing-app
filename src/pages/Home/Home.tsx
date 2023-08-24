@@ -22,6 +22,7 @@ import {
   StyledHomeContainer,
   StyledSaveButtonWrapper,
   StyledSortableLink,
+  StyledSortableLinkWrapper,
 } from './style';
 
 interface ISortableLinkProps {
@@ -192,26 +193,28 @@ const Home = () => {
           onClick={handleClick}
         />
         {newLinks.length === 0 && <StartCard />}
-        <DndContext
-          collisionDetection={closestCenter}
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-        >
-          <SortableContext
-            items={newLinks}
-            strategy={verticalListSortingStrategy}
+        <StyledSortableLinkWrapper>
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
           >
-            {newLinks.map((link, index) => (
-              <SortableLink
-                key={link.id}
-                link={link}
-                index={index}
-                setNewLinks={setNewLinks}
-                isBeingDragged={link.isBeingDragged}
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
+            <SortableContext
+              items={newLinks}
+              strategy={verticalListSortingStrategy}
+            >
+              {newLinks.map((link, index) => (
+                <SortableLink
+                  key={link.id}
+                  link={link}
+                  index={index}
+                  setNewLinks={setNewLinks}
+                  isBeingDragged={link.isBeingDragged}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
+        </StyledSortableLinkWrapper>
       </StyledHomeContainer>
       <StyledSaveButtonWrapper>
         <Button variant='contained' text='Save' onClick={handleSave} />

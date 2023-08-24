@@ -7,7 +7,12 @@ import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
 import devLinksIconSm from '../../assets/images/logo-devlinks-small.svg';
 import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
 import Button from '../Button';
-import { StyledHeader, StyledHeaderContainer, StyledLinks } from './style';
+import {
+  StyledHeader,
+  StyledHeaderContainer,
+  StyledLinks,
+  StyledPurpleRectangle,
+} from './style';
 
 const Header = () => {
   const [activeButtons, setActiveButtons] = useState({
@@ -46,14 +51,21 @@ const Header = () => {
 
   if (location.pathname === '/preview') {
     return (
-      <StyledHeader>
-        <StyledHeaderContainer>
-          <Link to={activeButtons.links ? '/links' : '/profile'}>
-            <Button text='Back to Editor' variant='outlined' />
-          </Link>
-          <Button text='Share Link' variant='contained' onClick={handleClick} />
-        </StyledHeaderContainer>
-      </StyledHeader>
+      <>
+        <StyledPurpleRectangle />
+        <StyledHeader>
+          <StyledHeaderContainer>
+            <Link to={activeButtons.links ? '/links' : '/profile'}>
+              <Button text='Back to Editor' variant='outlined' />
+            </Link>
+            <Button
+              text='Share Link'
+              variant='contained'
+              onClick={handleClick}
+            />
+          </StyledHeaderContainer>
+        </StyledHeader>
+      </>
     );
   }
 

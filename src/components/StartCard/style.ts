@@ -1,7 +1,7 @@
 import { Card, CardActionArea, CardContent, Typography } from '@mui/material';
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
-import { Breakpoints } from '../../styles/breakpoints';
+import { Breakpoints } from '../../styles/Breakpoints';
 
 export const StyledCard = styled(Card)`
   && {

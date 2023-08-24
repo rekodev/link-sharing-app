@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
-import { Breakpoints } from '../../styles/breakpoints';
+import { Breakpoints } from '../../styles/Breakpoints';
 
 export const StyledProfilePictureCard = styled.div`
   background-color: ${themeColors.lightGray};

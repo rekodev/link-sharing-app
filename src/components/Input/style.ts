@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
-import { Breakpoints } from '../../styles/breakpoints';
+import { Breakpoints } from '../../styles/Breakpoints';
 
 interface IStyledInputProps {
   $hasValue: boolean;
@@ -8,8 +8,14 @@ interface IStyledInputProps {
   $hasImage: boolean;
 }
 
+interface IStyledInputWrapperProps {
+  $initialStyle: boolean;
+}
+
 export const StyledInput = styled.input<IStyledInputProps>`
-  height: 22px;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
   border-radius: 0.75rem;
   padding: 0.75rem 1rem;
   padding-left: ${(props) => (props.$hasImage ? '2.5rem' : '0.75rem')};
@@ -45,33 +51,26 @@ export const StyledInput = styled.input<IStyledInputProps>`
           : `1px solid ${themeColors.indigo}`};
     }
   }
-
-  @media screen and (min-width: ${Breakpoints.Tablet}) {
-    max-width: 330px;
-    min-width: 330px;
-  }
 `;
 
-export const StyledLabel = styled.label`
+export const StyledLabel = styled.label<IStyledInputWrapperProps>`
   font-size: 0.75rem;
-  color: ${themeColors.darkGray};
+  color: ${themeColors.nearBlack};
   margin: 0;
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {
-    font-size: 1rem;
+    font-size: ${(props) => !props.$initialStyle && '1rem'};
   }
 `;
 
-export const StyledInputWrapper = styled.div`
+export const StyledInputWrapper = styled.div<IStyledInputWrapperProps>`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  position: relative;
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
+    flex-direction: ${(props) => !props.$initialStyle && 'row'};
+    align-items: ${(props) => !props.$initialStyle && 'center'};
     justify-content: space-between;
   }
 `;
@@ -81,6 +80,7 @@ export const StyledImage = styled.img`
   width: 16px;
   bottom: 1rem;
   left: 1rem;
+  z-index: 6;
 `;
 
 export const StyledErrorText = styled.p`
@@ -88,4 +88,15 @@ export const StyledErrorText = styled.p`
   right: 0.75rem;
   font-size: 0.75rem;
   color: ${themeColors.red};
+`;
+
+export const StyledInputFieldWrapper = styled.div<IStyledInputWrapperProps>`
+  position: relative;
+  width: 100%;
+  height: 48px;
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    max-width: ${(props) => !props.$initialStyle && '360px'};
+    min-width: ${(props) => !props.$initialStyle && '360px'};
+  }
 `;

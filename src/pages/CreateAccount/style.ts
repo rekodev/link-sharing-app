@@ -1,8 +1,24 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
+import { Breakpoints } from '../../styles/Breakpoints';
+
+export const StyledCreateAccountWrapper = styled.main`
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
 
 export const StyledCreateAccount = styled.section`
   padding: 2rem;
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    padding: 0;
+    min-width: 480px;
+    min-height: 480px;
+  }
 `;
 
 export const StyledCreateAccountContainer = styled.div`
@@ -13,6 +29,17 @@ export const StyledCreateAccountContainer = styled.div`
     margin-top: 0.5rem;
     color: ${themeColors.darkGray};
   }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    background-color: #fff;
+    padding: 40px;
+    margin: auto auto;
+    border-radius: 0.75rem;
+
+    h2 {
+      font-size: 2rem;
+    }
+  }
 `;
 
 export const StyledLogoWrapper = styled.div`
@@ -22,6 +49,10 @@ export const StyledLogoWrapper = styled.div`
 
   img {
     height: 100%;
+  }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    margin: 0 auto 52px auto;
   }
 `;
 
@@ -53,6 +84,12 @@ export const StyledAccountCreationTextWrapper = styled.div`
     &:hover {
       color: ${themeColors.lavender};
     }
+  }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
 `;
 

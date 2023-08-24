@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
-import { Breakpoints } from '../../styles/breakpoints';
+import { Breakpoints } from '../../styles/Breakpoints';
 
 export const StyledHeader = styled.header`
   background-color: ${themeColors.lightGray};
@@ -11,6 +11,7 @@ export const StyledHeader = styled.header`
 `;
 
 export const StyledHeaderContainer = styled.div`
+  position: relative;
   padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -44,4 +45,18 @@ export const StyledLinks = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+export const StyledPurpleRectangle = styled.div`
+  display: none;
+  width: 100%;
+  background-color: ${themeColors.indigo};
+  height: 360px;
+  position: absolute;
+  z-index: 0;
+  border-radius: 0 0 2rem 2rem;
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    display: initial;
+  }
 `;

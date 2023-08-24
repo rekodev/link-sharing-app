@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
-import { Breakpoints } from '../../styles/breakpoints';
+import { Breakpoints } from '../../styles/Breakpoints';
 
 export const StyledImageUploadWrapper = styled.div`
   margin: 1rem 0 1.5rem 0;
@@ -10,6 +10,9 @@ export const StyledImageUploadWrapper = styled.div`
     margin: 0;
     line-height: 150%;
     font-size: 12px;
+    max-width: 200px;
+    white-space: normal;
+    overflow-wrap: break-word;
   }
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {

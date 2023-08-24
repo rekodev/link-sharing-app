@@ -9,6 +9,7 @@ interface IStyledButtonProps {
 
 export const StyledButton = styled(Button)<IStyledButtonProps>`
   && {
+    font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
-import { Breakpoints } from '../../styles/breakpoints';
+import { Breakpoints } from '../../styles/Breakpoints';
 
 export const StyledProfile = styled.section`
   margin: 1rem;
@@ -14,7 +14,7 @@ export const StyledProfile = styled.section`
   }
 
   p {
-    color: ${themeColors.darkGray};
+    color: ${themeColors.nearBlack};
   }
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {

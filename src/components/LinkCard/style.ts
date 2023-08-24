@@ -11,7 +11,7 @@ export const StyledLinkCard = styled.div<IStyledLinkCardProps>`
   padding: 1.25rem;
   background-color: ${themeColors.lightGray};
   border-radius: 0.75rem;
-  margin-top: 1.5rem;
+  /* margin-top: 1.5rem; */
   gap: 1.25rem;
   box-shadow: ${(props) =>
     props.$isBeingDragged ? `-8px 8px 16px ${themeColors.gray}` : 'none'};

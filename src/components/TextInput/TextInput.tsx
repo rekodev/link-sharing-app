@@ -50,6 +50,7 @@ const TextInput = ({ setNewLinks, link, index, isError }: ITextInputProps) => {
         errorText='Please check the URL'
         imgSrc={linkIcon}
         imgName='Link Icon'
+        initialStyle
       />
     </StyledTextFieldWrapper>
   );
