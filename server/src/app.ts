@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import cors from 'cors';
-import dbConnection from '../config/db';
+import dbConnection from './config/db';
 
 const app: Express = express();
 
