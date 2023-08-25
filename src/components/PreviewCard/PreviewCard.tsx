@@ -44,7 +44,7 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
         {profileDetails.profilePicture.src ? (
           <img src={profileDetails.profilePicture.src} alt='Profile Picture' />
         ) : (
-          <StyledAvatar src='/broken-image.jpg' />
+          <StyledAvatar />
         )}
       </StyledProfilePictureWrapper>
       <h3>{`${profileDetails.firstName} ${profileDetails.lastName}`}</h3>

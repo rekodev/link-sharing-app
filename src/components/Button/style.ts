@@ -1,10 +1,12 @@
 import { Button } from '@mui/material';
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
+import { Breakpoints } from '../../styles/Breakpoints';
 
 interface IStyledButtonProps {
   $hideOnMobile: boolean | undefined;
   $active?: boolean;
+  $hideOnTablet?: boolean;
 }
 
 export const StyledButton = styled(Button)<IStyledButtonProps>`
@@ -71,6 +73,12 @@ export const StyledButton = styled(Button)<IStyledButtonProps>`
     @media screen and (max-width: 767px) {
       & .hideOnMobile {
         display: ${(props) => (props.$hideOnMobile ? 'none' : 'initial')};
+      }
+    }
+
+    @media screen and (min-width: ${Breakpoints.Tablet}) {
+      & .hideOnTablet {
+        display: ${(props) => (props.$hideOnTablet ? 'none' : 'initial')};
       }
     }
   }

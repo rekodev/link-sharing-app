@@ -16,7 +16,7 @@ export const StyledHeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 45px;
+  min-height: 46px;
   background-color: ${themeColors.white};
 
   .small-logo {

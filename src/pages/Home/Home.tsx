@@ -24,6 +24,8 @@ import {
   StyledSortableLink,
   StyledSortableLinkWrapper,
 } from './style';
+import LinksPreview from '../../components/LinksPreview';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 
 interface ISortableLinkProps {
   link: IShareableLinkValues;
@@ -63,7 +65,8 @@ const SortableLink = ({
 
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
-  const [newLinks, setNewLinks] = useState(links);
+  const {profileDetails} = useContext(ProfileDetailsContext);
+  const [newLinks, setNewLinks] = useState<IShareableLinkValues[]>(links);
   const [open, setOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
   const [uniqueLinks, setUniqueLinks] = useState(true);
@@ -179,60 +182,63 @@ const Home = () => {
   };
 
   return (
-    <StyledHome>
-      <StyledHomeContainer>
-        <h2>Customize your links</h2>
-        <p>
-          {' '}
-          Add/edit/remove links below and then share all your profiles with the
-          world!
-        </p>
-        <Button
-          text='+ Add new link'
-          variant='outlined'
-          onClick={handleClick}
-        />
-        {newLinks.length === 0 && <StartCard />}
-        <StyledSortableLinkWrapper>
-          <DndContext
-            collisionDetection={closestCenter}
-            onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
-          >
-            <SortableContext
-              items={newLinks}
-              strategy={verticalListSortingStrategy}
+    <>
+      <LinksPreview links={newLinks} profileDetails={profileDetails} />
+      <StyledHome>
+        <StyledHomeContainer>
+          <h2>Customize your links</h2>
+          <p>
+            {' '}
+            Add/edit/remove links below and then share all your profiles with
+            the world!
+          </p>
+          <Button
+            text='+ Add new link'
+            variant='outlined'
+            onClick={handleClick}
+          />
+          {newLinks.length === 0 && <StartCard />}
+          <StyledSortableLinkWrapper>
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragStart={onDragStart}
+              onDragEnd={onDragEnd}
             >
-              {newLinks.map((link, index) => (
-                <SortableLink
-                  key={link.id}
-                  link={link}
-                  index={index}
-                  setNewLinks={setNewLinks}
-                  isBeingDragged={link.isBeingDragged}
-                />
-              ))}
-            </SortableContext>
-          </DndContext>
-        </StyledSortableLinkWrapper>
-      </StyledHomeContainer>
-      <StyledSaveButtonWrapper>
-        <Button variant='contained' text='Save' onClick={handleSave} />
-      </StyledSaveButtonWrapper>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <StyledAlert
-          onClose={handleClose}
-          severity={snackbarType}
-          sx={{ width: '100%' }}
-        >
-          {snackbarType === 'success'
-            ? 'Saved successfully'
-            : uniqueLinks
-            ? 'Oops! Some fields need attention'
-            : 'Platforms must be unique'}
-        </StyledAlert>
-      </Snackbar>
-    </StyledHome>
+              <SortableContext
+                items={newLinks}
+                strategy={verticalListSortingStrategy}
+              >
+                {newLinks.map((link, index) => (
+                  <SortableLink
+                    key={link.id}
+                    link={link}
+                    index={index}
+                    setNewLinks={setNewLinks}
+                    isBeingDragged={link.isBeingDragged}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          </StyledSortableLinkWrapper>
+        </StyledHomeContainer>
+        <StyledSaveButtonWrapper>
+          <Button variant='contained' text='Save' onClick={handleSave} />
+        </StyledSaveButtonWrapper>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <StyledAlert
+            onClose={handleClose}
+            severity={snackbarType}
+            sx={{ width: '100%' }}
+          >
+            {snackbarType === 'success'
+              ? 'Saved successfully'
+              : uniqueLinks
+              ? 'Oops! Some fields need attention'
+              : 'Platforms must be unique'}
+          </StyledAlert>
+        </Snackbar>
+      </StyledHome>
+    </>
   );
 };
 

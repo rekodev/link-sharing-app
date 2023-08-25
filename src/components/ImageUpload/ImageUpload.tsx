@@ -1,23 +1,23 @@
+import { Alert, Snackbar } from '@mui/material';
 import { useContext, useRef, useState } from 'react';
 import uploadImageIcon from '../../assets/images/icon-upload-image.svg';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import { ProfilePictureContext } from '../../contexts/profilePictureContext';
+import Svg from '../Svg';
 import {
   StyledImageUpload,
   StyledImageUploadWrapper,
   StyledPreImageUploadWrapper,
   StyledUploadedImage,
 } from './style';
-import { Snackbar, Alert } from '@mui/material';
-import Svg from '../Svg';
 
-const ImageUpload = () => {
-  const { profileDetails } = useContext(ProfileDetailsContext);
+interface IImageUploadProps {
+  imageData: { src: string; name: string } | undefined;
+  setImageData: React.Dispatch<
+    React.SetStateAction<{ src: string; name: string } | undefined>
+  >;
+}
 
-  const [imageData, setImageData] = useState<
-    { src: string; name: string } | undefined
-  >(profileDetails.profilePicture);
-
+const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 

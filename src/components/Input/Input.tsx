@@ -65,9 +65,15 @@ const Input = ({
         />
       </StyledInputFieldWrapper>
       {error && (type === 'text' || type === 'email') && !value ? (
-        <StyledErrorText>Can't be empty</StyledErrorText>
+        <StyledErrorText $initialStyle={initialStyle ? true : false}>
+          Can't be empty
+        </StyledErrorText>
       ) : (
-        error && <StyledErrorText>{errorText}</StyledErrorText>
+        error && (
+          <StyledErrorText $initialStyle={initialStyle ? true : false}>
+            {errorText}
+          </StyledErrorText>
+        )
       )}
     </StyledInputWrapper>
   );

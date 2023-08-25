@@ -16,6 +16,7 @@ export const StyledHome = styled.section`
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {
     margin: 0 1.5rem 1.5rem 1.5rem;
+    position: relative;
   }
 `;
 
@@ -58,11 +59,20 @@ export const StyledSaveButtonWrapper = styled.div`
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {
     padding: 24px 40px;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background-color: #fff;
+    border-radius: 0 0 12px 12px;
+    z-index: 10;
 
     button {
       width: initial;
       align-self: flex-end;
     }
+  }
+
+  @media screen and (min-width: ${Breakpoints.TV}) {
   }
 `;
 
@@ -77,10 +87,10 @@ export const StyledSortableLinkWrapper = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   flex: 1;
-  padding-bottom: 1rem;
+  padding-bottom: 1.5rem;
   overflow-y: auto;
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {
-    /* max-height: 440px; */
+    max-height: 485px;
   }
 `;

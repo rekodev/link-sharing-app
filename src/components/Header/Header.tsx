@@ -110,6 +110,7 @@ const Header = () => {
             text='Preview'
             variant='outlined'
             hideOnMobile
+            hideOnTablet
           />
         </Link>
       </StyledHeaderContainer>

@@ -10,6 +10,7 @@ interface IStyledInputProps {
 
 interface IStyledInputWrapperProps {
   $initialStyle: boolean;
+  $hasValue?: boolean;
 }
 
 export const StyledInput = styled.input<IStyledInputProps>`
@@ -51,6 +52,10 @@ export const StyledInput = styled.input<IStyledInputProps>`
           : `1px solid ${themeColors.indigo}`};
     }
   }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    padding-right: ${(props) => props.$hasError && '40%'};
+  }
 `;
 
 export const StyledLabel = styled.label<IStyledInputWrapperProps>`
@@ -67,6 +72,7 @@ export const StyledInputWrapper = styled.div<IStyledInputWrapperProps>`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  position: relative;
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {
     flex-direction: ${(props) => !props.$initialStyle && 'row'};
@@ -83,11 +89,21 @@ export const StyledImage = styled.img`
   z-index: 6;
 `;
 
-export const StyledErrorText = styled.p`
+export const StyledErrorText = styled.p<IStyledInputWrapperProps>`
   position: absolute;
   right: 0.75rem;
   font-size: 0.75rem;
-  color: ${themeColors.red};
+
+  && {
+    color: ${themeColors.red};
+  }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+    pointer-events: none;
+  }
 `;
 
 export const StyledInputFieldWrapper = styled.div<IStyledInputWrapperProps>`
