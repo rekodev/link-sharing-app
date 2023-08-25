@@ -1,5 +1,5 @@
 import { Snackbar } from '@mui/material';
-import { forwardRef, useContext, useEffect, useState } from 'react';
+import React, { forwardRef, useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ProfilePictureContext } from '../../contexts/profilePictureContext';
 import { StyledAlert } from '../../styles/UtilityStyles';
@@ -8,8 +8,9 @@ import Input from '../Input';
 import { StyledProfileForm } from './style';
 
 interface IProfileDetailsProps {
-  profileDetails: IProfileDetails;
   setProfileDetails: React.Dispatch<React.SetStateAction<IProfileDetails>>;
+  newProfileDetails: IProfileDetails;
+  setNewProfileDetails: React.Dispatch<React.SetStateAction<IProfileDetails>>
 }
 
 interface IProfileFormErrors {
@@ -19,8 +20,8 @@ interface IProfileFormErrors {
 }
 
 const ProfileForm = forwardRef<HTMLFormElement, IProfileDetailsProps>(
-  ({ profileDetails, setProfileDetails }, ref) => {
-    const [newProfileDetails, setNewProfileDetails] = useState(profileDetails);
+  ({ setProfileDetails, newProfileDetails, setNewProfileDetails }, ref) => {
+
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<IProfileFormErrors>({
       firstName: false,

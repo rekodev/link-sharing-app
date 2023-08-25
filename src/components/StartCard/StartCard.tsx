@@ -22,7 +22,7 @@ const StartCard = () => {
           <StyledHeadingTypography gutterBottom variant='h5'>
             Let's get you started
           </StyledHeadingTypography>
-          <StyledTypography variant='body2' color='text.secondary'>
+          <StyledTypography>
             Use the “Add new link” button to get started. Once you have more
             than one link, you can reorder and edit them. We're here to help you
             share your profiles with everyone!

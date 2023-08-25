@@ -90,12 +90,10 @@ export const StyledTextFieldWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  position: relative;
 
   .MuiInputBase-root {
     min-height: 48px;
-    /* background-color: ${themeColors.white}; */
-    /* overflow: hidden; */
-
     border-radius: 0.75rem;
   }
 
@@ -106,7 +104,6 @@ export const StyledTextFieldWrapper = styled.div`
   }
 
   &&&& .MuiInputBase-input {
-    /* display: none; */
     height: 13px;
     background: transparent;
   }

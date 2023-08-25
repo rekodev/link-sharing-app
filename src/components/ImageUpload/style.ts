@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { themeColors } from '../../styles/Theme';
+import { Breakpoints } from '../../styles/Breakpoints';
 
 export const StyledImageUploadWrapper = styled.div`
   margin: 1rem 0 1.5rem 0;
@@ -9,6 +10,13 @@ export const StyledImageUploadWrapper = styled.div`
     margin: 0;
     line-height: 150%;
     font-size: 12px;
+    max-width: 200px;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    margin: 0;
   }
 `;
 
@@ -19,13 +27,12 @@ export const StyledImageUpload = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 3.75rem 2.5rem;
   margin-bottom: 0.5rem;
   position: relative;
   overflow: hidden;
 
-  width: 200px;
   height: 200px;
+  width: 200px;
 
   :hover {
     background-color: ${themeColors.lavender};
@@ -52,6 +59,10 @@ export const StyledImageUpload = styled.div`
 
   input {
     display: none;
+  }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    margin: 0;
   }
 `;
 

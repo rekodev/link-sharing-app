@@ -1,14 +1,14 @@
-import { Outlet } from 'react-router-dom';
-import Header from '../Header';
-import Footer from '../Footer';
-import { StyledLayout } from './style';
-import { LinkContext } from '../../contexts/linkContext';
 import { useState } from 'react';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
-import { IProfileDetails } from '../../types/profileDetails';
-import { ProfilePictureContext } from '../../contexts/profilePictureContext';
+import { Outlet } from 'react-router-dom';
 import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
+import { LinkContext } from '../../contexts/linkContext';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import { ProfilePictureContext } from '../../contexts/profilePictureContext';
+import { IProfileDetails } from '../../types/profileDetails';
+import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import Footer from '../Footer';
+import Header from '../Header';
+import { StyledLayout } from './style';
 
 const Layout = () => {
   const [links, setLinks] = useState<[] | IShareableLinkValues[]>([]);

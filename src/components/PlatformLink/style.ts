@@ -14,7 +14,7 @@ export const StyledPlatformLink = styled.a<IStyledPlatformLinkProps>`
     props.$platform === 'Frontend Mentor'
       ? `1px solid ${themeColors.gray}`
       : 'none'};
-  max-width: 12.5rem;
+  max-width: 15rem;
   padding: 1rem;
   border-radius: 0.5rem;
   color: ${(props) =>
@@ -57,6 +57,7 @@ export const StyledPlatformLink = styled.a<IStyledPlatformLinkProps>`
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 16px;
 
     svg path {
       fill: ${(props) =>

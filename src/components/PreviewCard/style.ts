@@ -20,7 +20,6 @@ export const StyledProfilePictureWrapper = styled.div`
   width: 104px;
   height: 104px;
   margin: 0 auto;
-  border: ${themeColors.indigo};
   border-radius: 50%;
   overflow: hidden;
   border: 4px solid ${themeColors.indigo};
