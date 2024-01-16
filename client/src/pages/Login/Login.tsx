@@ -49,7 +49,6 @@ const Login = () => {
               <Button text='Login' variant='contained' type='submit' />
             </Link>
           </StyledForm>
-
           <StyledAccountCreationTextWrapper>
             <p>Don't have an account?</p>
             <Link to='create-account'>Create account</Link>

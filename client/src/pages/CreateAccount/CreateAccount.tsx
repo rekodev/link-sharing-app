@@ -1,3 +1,4 @@
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import emailIcon from '../../assets/images/icon-email.svg';
 import passwordIcon from '../../assets/images/icon-password.svg';
@@ -13,8 +14,53 @@ import {
   StyledLogoWrapper,
   StyledPasswordDisclaimer,
 } from './style';
+import axios from 'axios';
 
 const CreateAccount = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmedPassword, setConfirmedPassword] = useState('');
+  const [error, setError] = useState({
+    email: false,
+    password: false,
+    confirmedPassword: false,
+  });
+
+  const handleEmailInput = (event: ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value === confirmedPassword) {
+      setError((prev) => ({ ...prev, confirmedPassword: false }));
+    }
+
+    setPassword(event.target.value);
+  };
+
+  const handleConfirmPasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value === password) {
+      setError((prev) => ({ ...prev, confirmedPassword: false }));
+    }
+
+    setConfirmedPassword(event.target.value);
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (password === confirmedPassword) {
+      axios.post('http://localhost:5000/api/register', {
+        email,
+        password,
+      });
+
+      return;
+    }
+
+    setError((prev) => ({ ...prev, confirmedPassword: true }));
+  };
+
   return (
     <StyledCreateAccountWrapper>
       <StyledCreateAccount>
@@ -24,7 +70,7 @@ const CreateAccount = () => {
         <StyledCreateAccountContainer>
           <h2>Create account</h2>
           <p>Let's get you started sharing your links!</p>
-          <StyledForm>
+          <StyledForm onSubmit={handleSubmit}>
             <Input
               type='email'
               label='Email address'
@@ -33,6 +79,7 @@ const CreateAccount = () => {
               imgSrc={emailIcon}
               imgName='Email Icon'
               placeholder='e.g. alex@email.com'
+              onChange={handleEmailInput}
               initialStyle
             />
             <Input
@@ -43,6 +90,7 @@ const CreateAccount = () => {
               imgSrc={passwordIcon}
               imgName='Password Icon'
               placeholder='At least 8 characters'
+              onChange={handlePasswordInput}
               initialStyle
             />
             <Input
@@ -53,18 +101,21 @@ const CreateAccount = () => {
               imgSrc={passwordIcon}
               imgName='Password Icon'
               placeholder='At least 8 characters'
+              onChange={handleConfirmPasswordInput}
+              error={error.confirmedPassword}
+              errorText='Passwords do not match'
               initialStyle
             />
             <StyledPasswordDisclaimer>
               Password must contain at least 8 characters
             </StyledPasswordDisclaimer>
-            <Link to='/links'>
-              <Button
-                text='Create new account'
-                variant='contained'
-                type='submit'
-              />
-            </Link>
+            {/* <Link to='/links'> */}
+            <Button
+              text='Create new account'
+              variant='contained'
+              type='submit'
+            />
+            {/* </Link> */}
           </StyledForm>
 
           <StyledAccountCreationTextWrapper>

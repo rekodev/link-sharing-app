@@ -1,19 +1,17 @@
-import express, { Express } from 'express';
-import cors from 'cors';
-import dbConnection from './config/db';
+import express from 'express';
+import { connectToDb, getPostgresVersion } from './database/db';
 
-const app: Express = express();
+require('dotenv').config();
 
-const PORT = process.env.PORT || 5000;
+export const app = express();
+const PORT = process.env.PORT;
 
-// Middlewares
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173' }));
 
 // Starting server
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+const startServer = () => {
+  console.log(`Server is running on port ${PORT}`);
+  connectToDb();
+};
 
-// Database
-dbConnection();
-
-// Routes
+app.listen(PORT, startServer());
