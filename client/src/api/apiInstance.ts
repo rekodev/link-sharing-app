@@ -46,7 +46,9 @@ class ApiInstance {
 
       return {
         ...error,
-        data: { message: 'Internal server error' },
+        data: {
+          message: 'Unable to access the network',
+        },
       };
     }
   }

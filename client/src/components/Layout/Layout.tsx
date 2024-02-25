@@ -9,8 +9,20 @@ import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import Footer from '../Footer';
 import Header from '../Header';
 import { StyledLayout } from './style';
+import { UserModel } from '../../types/user';
+import { UserContext } from '../../contexts/userContext';
+import AuthGuard from '../AuthGuard';
 
 const Layout = () => {
+  const [user, setUser] = useState<UserModel>({
+    id: null,
+    email: '',
+    firstName: '',
+    lastName: '',
+    profilePictureUrl: '',
+    createdAt: '',
+    updatedAt: '',
+  });
   const [links, setLinks] = useState<[] | IShareableLinkValues[]>([]);
   const [profileDetails, setProfileDetails] = useState<IProfileDetails>({
     firstName: 'Ben',
@@ -28,38 +40,29 @@ const Layout = () => {
   const [copiedLink, setCopiedLink] = useState(false);
 
   return (
-    <StyledLayout>
-      <CopiedLinkContext.Provider
-        value={{ copiedLink: copiedLink, setCopiedLink: setCopiedLink }}
-      >
-        <Header />
-        <main>
-          <LinkContext.Provider
-            value={{
-              links: links,
-              setLinks: setLinks,
-            }}
-          >
-            <ProfilePictureContext.Provider
-              value={{
-                profilePictureData: profilePictureData,
-                setProfilePictureData: setProfilePictureData,
-              }}
-            >
-              <ProfileDetailsContext.Provider
-                value={{
-                  profileDetails: profileDetails,
-                  setProfileDetails: setProfileDetails,
-                }}
-              >
-                <Outlet />
-              </ProfileDetailsContext.Provider>
-            </ProfilePictureContext.Provider>
-          </LinkContext.Provider>
-        </main>
-        <Footer />
-      </CopiedLinkContext.Provider>
-    </StyledLayout>
+    <AuthGuard>
+      <StyledLayout>
+        <CopiedLinkContext.Provider value={{ copiedLink, setCopiedLink }}>
+          <Header />
+          <main>
+            <UserContext.Provider value={{ user, setUser }}>
+              <LinkContext.Provider value={{ links, setLinks }}>
+                <ProfilePictureContext.Provider
+                  value={{ profilePictureData, setProfilePictureData }}
+                >
+                  <ProfileDetailsContext.Provider
+                    value={{ profileDetails, setProfileDetails }}
+                  >
+                    <Outlet />
+                  </ProfileDetailsContext.Provider>
+                </ProfilePictureContext.Provider>
+              </LinkContext.Provider>
+            </UserContext.Provider>
+          </main>
+          <Footer />
+        </CopiedLinkContext.Provider>
+      </StyledLayout>
+    </AuthGuard>
   );
 };
 

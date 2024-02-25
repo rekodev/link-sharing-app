@@ -1,5 +1,10 @@
 import { Request, Response } from 'express';
-import { createUser, doesUserExist, isPasswordCorrect } from '../database/user';
+import {
+  createUser,
+  doesUserExist,
+  findUserByEmail,
+  isPasswordCorrect,
+} from '../database/user';
 import jwt from 'jsonwebtoken';
 import { UserData, UserDto } from '../types/user';
 
@@ -41,7 +46,9 @@ export const login = async (req: Request, res: Response) => {
         .json({ message: 'Email and password are required' });
     }
 
-    if (!(await doesUserExist(email))) {
+    const user = findUserByEmail(email);
+
+    if (!user) {
       return res.status(401).json({ message: 'User does not exist' });
     }
 
@@ -51,7 +58,29 @@ export const login = async (req: Request, res: Response) => {
 
     const accessToken = generateAccessToken(email);
 
-    return res.status(200).json({ message: 'Login successful', accessToken });
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      // secure: true,
+      sameSite: 'strict',
+      maxAge: 3600000,
+    });
+
+    return res.status(200).json({ message: 'Login successful', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+    console.error('Internal Server Error:', error);
+  }
+};
+
+export const getUserByEmail = async (req: Request, res: Response) => {
+  const { email } = req.params;
+
+  try {
+    const user = await findUserByEmail(email);
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    return res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
     console.error('Internal Server Error:', error);

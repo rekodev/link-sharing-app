@@ -6,7 +6,6 @@ export type UserData = {
 export type UserDto = {
   id: number;
   email: string;
-  password: string;
   firstName: string;
   lastName: string;
   profilePictureUrl: string;

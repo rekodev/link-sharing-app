@@ -1,6 +1,6 @@
 import express from 'express';
 import { connectToDb } from './database/db';
-import { login, register } from './controllers/userController';
+import { getUserByEmail, login, register } from './controllers/userController';
 import cors from 'cors';
 
 require('dotenv').config();
@@ -20,5 +20,7 @@ const startServer = () => {
 app.post('/api/register', register);
 
 app.post('/api/login', login);
+
+app.get('/api/user/:email', getUserByEmail);
 
 app.listen(PORT, startServer);

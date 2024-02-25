@@ -40,7 +40,7 @@ const Login = () => {
     setSubmissionMessage('');
 
     const response = await login(email, password);
-    console.log(response);
+
     setIsLoading(false);
     setSubmissionMessage(response.data.message);
 
@@ -50,6 +50,7 @@ const Login = () => {
       return;
     }
 
+    // mutate(SWRKeys.user(email), email, false);
     setSubmissionSuccess(true);
   };
 

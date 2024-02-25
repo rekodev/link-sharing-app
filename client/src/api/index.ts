@@ -1,3 +1,5 @@
+import { AxiosResponse } from 'axios';
+import { LoginResp } from '../types/response';
 import api from './apiInstance';
 
 export const createUser = async (email: string, password: string) =>
@@ -6,7 +8,10 @@ export const createUser = async (email: string, password: string) =>
     password,
   });
 
-export const login = async (email: string, password: string) =>
+export const login = async (
+  email: string,
+  password: string
+): Promise<AxiosResponse<LoginResp>> =>
   await api.post('/api/login', {
     email,
     password,

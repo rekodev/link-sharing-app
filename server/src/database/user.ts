@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 
 import { pool } from '../database/db';
-import { UserData } from '../types/user';
+import { UserData, UserDto } from '../types/user';
 
 export const doesUserExist = async (email: string) => {
   const client = await pool.connect();
@@ -14,6 +14,26 @@ export const doesUserExist = async (email: string) => {
     return result.rows.length > 0;
   } catch (error) {
     console.error('Error checking if user exists', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+export const findUserByEmail = async (
+  email: string
+): Promise<UserDto | null> => {
+  const client = await pool.connect();
+
+  try {
+    const result = await client.query('SELECT * FROM users WHERE email = $1', [
+      email,
+    ]);
+
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error checking if user exists', error);
+    throw error;
   } finally {
     client.release();
   }
@@ -35,6 +55,7 @@ export const createUser = async (userData: UserData) => {
     return result.rows[0].id;
   } catch (error) {
     console.error('Error creating user', error);
+    throw error;
   } finally {
     client.release();
   }
@@ -58,6 +79,7 @@ export const isPasswordCorrect = async (userData: UserData) => {
     return false;
   } catch (error) {
     console.error('Error checking password', error);
+    throw error;
   } finally {
     client.release();
   }
