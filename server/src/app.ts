@@ -1,5 +1,7 @@
 import express from 'express';
-import { connectToDb, getPostgresVersion } from './database/db';
+import { connectToDb } from './database/db';
+import { register } from './controllers/userController';
+import cors from 'cors';
 
 require('dotenv').config();
 
@@ -7,6 +9,7 @@ export const app = express();
 const PORT = process.env.PORT;
 
 app.use(express.json());
+app.use(cors());
 
 // Starting server
 const startServer = () => {
@@ -14,4 +17,6 @@ const startServer = () => {
   connectToDb();
 };
 
-app.listen(PORT, startServer());
+app.post('/api/register', register);
+
+app.listen(PORT, startServer);
