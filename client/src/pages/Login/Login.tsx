@@ -13,9 +13,8 @@ import {
 import passwordIcon from '../../assets/images/icon-password.svg';
 import emailIcon from '../../assets/images/icon-email.svg';
 import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
-// import { api } from '../../api/httpClient';
 import { Typography } from '@mui/material';
-import { createUser } from '../../api';
+import { login } from '../../api';
 import { HttpStatusCode } from 'axios';
 import { themeColors } from '../../styles/Theme';
 
@@ -36,17 +35,21 @@ const Login = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    setIsLoading(true);
     setSubmissionMessage('');
 
-    const response = await createUser(email, password);
+    const response = await login(email, password);
+    setIsLoading(false);
+    setSubmissionMessage(response.data.message);
 
-    if (response.status !== HttpStatusCode.Created) {
-      setSubmissionMessage(response.data.message);
+    if (response.status !== HttpStatusCode.Ok) {
+      setSubmissionSuccess(false);
 
       return;
     }
 
-    alert('User created successfully!');
+    setSubmissionSuccess(true);
   };
 
   return (
@@ -92,7 +95,7 @@ const Login = () => {
               </Typography>
             }
             <Button
-              text='Create account'
+              text='Login'
               variant='contained'
               type='submit'
               isLoading={isLoading}

@@ -39,3 +39,26 @@ export const createUser = async (userData: UserData) => {
     client.release();
   }
 };
+
+export const isPasswordCorrect = async (userData: UserData) => {
+  const { email, password: submittedPassword } = userData;
+
+  const client = await pool.connect();
+
+  try {
+    const result = await client.query(
+      'SELECT password FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (result.rows.length > 0) {
+      return await bcrypt.compare(submittedPassword, result.rows[0].password);
+    }
+
+    return false;
+  } catch (error) {
+    console.error('Error checking password', error);
+  } finally {
+    client.release();
+  }
+};
