@@ -1,19 +1,24 @@
-import express, { Express } from 'express';
+import express from 'express';
+import { connectToDb } from './database/db';
+import { login, register } from './controllers/userController';
 import cors from 'cors';
-import dbConnection from './config/db';
 
-const app: Express = express();
+require('dotenv').config();
 
-const PORT = process.env.PORT || 5000;
+export const app = express();
+const PORT = process.env.PORT;
 
-// Middlewares
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors());
 
 // Starting server
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+const startServer = () => {
+  console.log(`Server is running on port ${PORT}`);
+  connectToDb();
+};
 
-// Database
-dbConnection();
+app.post('/api/register', register);
 
-// Routes
+app.post('/api/login', login);
+
+app.listen(PORT, startServer);

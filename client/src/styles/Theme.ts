@@ -8,6 +8,7 @@ export const themeColors = {
   lightGray: '#FAFAFA',
   white: '#FFF',
   red: '#FF3939',
+  success: '#4CAF50',
 };
 
 export const platformColors = {
