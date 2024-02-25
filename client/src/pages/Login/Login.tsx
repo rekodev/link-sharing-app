@@ -40,6 +40,7 @@ const Login = () => {
     setSubmissionMessage('');
 
     const response = await login(email, password);
+    console.log(response);
     setIsLoading(false);
     setSubmissionMessage(response.data.message);
 
@@ -87,9 +88,12 @@ const Login = () => {
             />
             {
               <Typography
+                fontSize={14}
                 role='alert'
                 display={submissionMessage ? 'initial' : 'none'}
-                color={submissionSuccess ? themeColors.success : 'error'}
+                color={
+                  submissionSuccess ? themeColors.success : themeColors.red
+                }
               >
                 {submissionMessage}
               </Typography>
