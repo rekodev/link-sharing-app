@@ -1,3 +1,4 @@
+import { CircularProgress } from '@mui/material';
 import Svg from '../Svg';
 import { StyledButton } from './style';
 
@@ -10,6 +11,7 @@ interface IButtonProps {
   onClick?: () => void;
   active?: boolean;
   type?: 'button' | 'submit' | 'reset' | undefined;
+  isLoading?: boolean;
 }
 
 const Button = ({
@@ -21,6 +23,7 @@ const Button = ({
   onClick,
   active,
   type,
+  isLoading,
 }: IButtonProps) => {
   return (
     <StyledButton
@@ -30,9 +33,16 @@ const Button = ({
       variant={variant}
       onClick={onClick}
       type={type}
+      disabled={isLoading}
     >
-      <span className='hideOnTablet'>{imgSrc && <Svg url={imgSrc} />}</span>
-      <span className='hideOnMobile'>{text}</span>
+      {isLoading ? (
+        <CircularProgress size={24} color='inherit' />
+      ) : (
+        <>
+          <span className='hideOnTablet'>{imgSrc && <Svg url={imgSrc} />}</span>
+          <span className='hideOnMobile'>{text}</span>
+        </>
+      )}
     </StyledButton>
   );
 };

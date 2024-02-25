@@ -14,7 +14,10 @@ import {
   StyledLogoWrapper,
   StyledPasswordDisclaimer,
 } from './style';
-import axios from 'axios';
+import { HttpStatusCode } from 'axios';
+import { Typography } from '@mui/material';
+import { createUser } from '../../api';
+import { themeColors } from '../../styles/Theme';
 
 const CreateAccount = () => {
   const [email, setEmail] = useState('');
@@ -25,6 +28,9 @@ const CreateAccount = () => {
     password: false,
     confirmedPassword: false,
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [submissionMessage, setSubmissionMessage] = useState('');
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
   const handleEmailInput = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -46,19 +52,31 @@ const CreateAccount = () => {
     setConfirmedPassword(event.target.value);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (password === confirmedPassword) {
-      axios.post('http://localhost:5000/api/register', {
-        email,
-        password,
-      });
+    setIsLoading(true);
+    setError({ email: false, password: false, confirmedPassword: false });
+    setSubmissionMessage('');
+
+    if (password !== confirmedPassword) {
+      setError((prev) => ({ ...prev, confirmedPassword: true }));
 
       return;
     }
 
-    setError((prev) => ({ ...prev, confirmedPassword: true }));
+    const response = await createUser(email, password);
+
+    setIsLoading(false);
+    setSubmissionMessage(response.data.message);
+
+    if (response.status !== HttpStatusCode.Created) {
+      setSubmissionSuccess(false);
+
+      return;
+    }
+
+    setSubmissionSuccess(true);
   };
 
   return (
@@ -109,13 +127,19 @@ const CreateAccount = () => {
             <StyledPasswordDisclaimer>
               Password must contain at least 8 characters
             </StyledPasswordDisclaimer>
-            {/* <Link to='/links'> */}
+            <Typography
+              color={submissionSuccess ? themeColors.success : 'error'}
+              role='alert'
+              display={submissionMessage ? 'initial' : 'none'}
+            >
+              {submissionMessage}
+            </Typography>
             <Button
               text='Create new account'
               variant='contained'
               type='submit'
-            />
-            {/* </Link> */}
+              isLoading={isLoading}
+            ></Button>
           </StyledForm>
 
           <StyledAccountCreationTextWrapper>

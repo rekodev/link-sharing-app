@@ -13,12 +13,18 @@ import {
 import passwordIcon from '../../assets/images/icon-password.svg';
 import emailIcon from '../../assets/images/icon-email.svg';
 import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
+// import { api } from '../../api/httpClient';
+import { Typography } from '@mui/material';
+import { createUser } from '../../api';
 import { HttpStatusCode } from 'axios';
-import httpClient from '../../api/httpClient';
+import { themeColors } from '../../styles/Theme';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [submissionMessage, setSubmissionMessage] = useState('');
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -30,15 +36,17 @@ const Login = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setSubmissionMessage('');
 
-    const response = await httpClient.createUser(email, password);
+    const response = await createUser(email, password);
 
-    if (response.status === HttpStatusCode.Created) {
-      return 'hi';
+    if (response.status !== HttpStatusCode.Created) {
+      setSubmissionMessage(response.data.message);
+
+      return;
     }
 
-    alert('error');
-    throw new Error('Error creating user');
+    alert('User created successfully!');
   };
 
   return (
@@ -74,9 +82,21 @@ const Login = () => {
               initialStyle
               onChange={handlePasswordChange}
             />
-
-            {/* <Button text='Login' variant='contained' type='submit' /> */}
-            <Button text='Create account' variant='contained' type='submit' />
+            {
+              <Typography
+                role='alert'
+                display={submissionMessage ? 'initial' : 'none'}
+                color={submissionSuccess ? themeColors.success : 'error'}
+              >
+                {submissionMessage}
+              </Typography>
+            }
+            <Button
+              text='Create account'
+              variant='contained'
+              type='submit'
+              isLoading={isLoading}
+            />
           </StyledForm>
           <StyledAccountCreationTextWrapper>
             <p>Don't have an account?</p>
