@@ -1,6 +1,7 @@
 import express from 'express';
 import { connectToDb } from './database/db';
-import { getUserByEmail, login, register } from './controllers/userController';
+import { getUserByEmail } from './controllers/userController';
+import { login, register } from './controllers/authController';
 import cors from 'cors';
 
 require('dotenv').config();
