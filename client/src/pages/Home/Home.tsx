@@ -1,32 +1,38 @@
-import { DndContext, closestCenter } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  closestCenter,
+} from "@dnd-kit/core";
 import {
   SortableContext,
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Snackbar } from '@mui/material';
-import isUrl from 'is-url';
-import { useContext, useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import Button from '../../components/Button';
-import LinkCard from '../../components/LinkCard';
-import StartCard from '../../components/StartCard/StartCard';
-import { LinkContext } from '../../contexts/linkContext';
-import { StyledAlert } from '../../styles/UtilityStyles';
-import { SnackbarType } from '../../types/profileDetails';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { CircularProgress, Snackbar } from "@mui/material";
+import isUrl from "is-url";
+import { useContext, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import Button from "../../components/Button";
+import LinkCard from "../../components/LinkCard";
+import StartCard from "../../components/StartCard/StartCard";
+import { LinkContext } from "../../contexts/linkContext";
+import { StyledAlert } from "../../styles/UtilityStyles";
+import { SnackbarType } from "../../types/profileDetails";
+import { IShareableLinkValues } from "../../types/shareableLinkValues";
 import {
   StyledHome,
   StyledHomeContainer,
   StyledSaveButtonWrapper,
   StyledSortableLink,
   StyledSortableLinkWrapper,
-} from './style';
-import LinksPreview from '../../components/LinksPreview';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
-import useGetUserById from '../../hooks/useGetUserById';
+} from "./style";
+import LinksPreview from "../../components/LinksPreview";
+import { ProfileDetailsContext } from "../../contexts/profileDetailsContext";
+import useGetUserById from "../../hooks/useGetUserById";
+import { platforms } from "../../utils/platformList";
 
 interface ISortableLinkProps {
   link: IShareableLinkValues;
@@ -51,7 +57,7 @@ const SortableLink = ({
       $isBeingDragged={isBeingDragged}
       ref={setNodeRef}
       style={style}
-      className='link'
+      className="link"
     >
       <LinkCard
         index={index}
@@ -69,19 +75,17 @@ const Home = () => {
   const { profileDetails } = useContext(ProfileDetailsContext);
   const [newLinks, setNewLinks] = useState<IShareableLinkValues[]>(links);
   const [open, setOpen] = useState(false);
-  const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
+  const [snackbarType, setSnackbarType] = useState<SnackbarType>("success");
   const [uniqueLinks, setUniqueLinks] = useState(true);
-  const { data, error, isLoading, isValidating, mutate } = useGetUserById(
-    JSON.parse(localStorage.getItem('user')).id
-  );
+  const { data, isLoading } = useGetUserById();
 
   const handleClick = () => {
     setNewLinks((prev) => [
       ...prev,
       {
         id: uuidv4(),
-        platform: 'GitHub',
-        link: '',
+        platform: platforms[0].name,
+        link: "",
         attemptedSave: false,
         errors: { platform: false, link: false, unique: false },
         isBeingDragged: false,
@@ -122,12 +126,12 @@ const Home = () => {
 
     if (allValid) {
       setLinks(updatedLinks);
-      setSnackbarType('success');
+      setSnackbarType("success");
       setOpen(true);
       setUniqueLinks(true);
     } else {
       setNewLinks(updatedLinks);
-      setSnackbarType('error');
+      setSnackbarType("error");
       setOpen(true);
       if (!uniquePlatforms) {
         setUniqueLinks(false);
@@ -135,7 +139,7 @@ const Home = () => {
     }
   };
 
-  const onDragStart = (event: any) => {
+  const onDragStart = (event: DragStartEvent) => {
     const { active } = event;
 
     const index = newLinks.findIndex((link) => link.id === active.id);
@@ -148,13 +152,13 @@ const Home = () => {
     );
   };
 
-  const onDragEnd = (event: any) => {
+  const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     const oldIndex = newLinks.findIndex((link) => link.id === active.id);
-    const newIndex = newLinks.findIndex((link) => link.id === over.id);
+    const newIndex = newLinks.findIndex((link) => link.id === over?.id);
 
     // if no switch made
-    if (active.id === over.id) {
+    if (active.id === over?.id) {
       setNewLinks((prev) =>
         prev.map((link, idx) =>
           idx === oldIndex ? { ...link, isBeingDragged: false } : link
@@ -178,29 +182,34 @@ const Home = () => {
     _event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
     setOpen(false);
   };
 
-  if (isLoading) return <p>LOADING</p>;
+  if (isLoading || !data)
+    return <CircularProgress color="primary" sx={{ margin: "auto" }} />;
 
   return (
     <>
-      <LinksPreview links={newLinks} profileDetails={profileDetails} />
+      <LinksPreview
+        user={data}
+        links={newLinks}
+        profileDetails={profileDetails}
+      />
       <StyledHome>
         <StyledHomeContainer>
           <h2>Customize your links</h2>
           <p>
-            {' '}
+            {" "}
             Add/edit/remove links below and then share all your profiles with
             the world!
           </p>
           <Button
-            text='+ Add new link'
-            variant='outlined'
+            text="+ Add new link"
+            variant="outlined"
             onClick={handleClick}
           />
           {newLinks.length === 0 && <StartCard />}
@@ -228,19 +237,19 @@ const Home = () => {
           </StyledSortableLinkWrapper>
         </StyledHomeContainer>
         <StyledSaveButtonWrapper>
-          <Button variant='contained' text='Save' onClick={handleSave} />
+          <Button variant="contained" text="Save" onClick={handleSave} />
         </StyledSaveButtonWrapper>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
           <StyledAlert
             onClose={handleClose}
             severity={snackbarType}
-            sx={{ width: '100%' }}
+            sx={{ width: "100%" }}
           >
-            {snackbarType === 'success'
-              ? 'Saved successfully'
+            {snackbarType === "success"
+              ? "Saved successfully"
               : uniqueLinks
-              ? 'Oops! Some fields need attention'
-              : 'Platforms must be unique'}
+              ? "Oops! Some fields need attention"
+              : "Platforms must be unique"}
           </StyledAlert>
         </Snackbar>
       </StyledHome>

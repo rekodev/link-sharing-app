@@ -1,16 +1,20 @@
-import useSWR from 'swr';
-import fetcher, { SWRKeys } from '../api/swr';
-import { useMemo } from 'react';
+import useSWR from "swr";
+import fetcher, { SWRKeys } from "../api/swr";
+import { useMemo } from "react";
+import { UserModel } from "../types/user";
 
-const useGetUserById = (id: number) => {
+const useGetUserById = () => {
+  const user = localStorage.getItem("user");
+  const userId = user ? JSON.parse(user).id : "";
+
   const { data, isLoading, mutate, error, isValidating } = useSWR(
-    SWRKeys.user(id),
+    SWRKeys.user(userId),
     fetcher
   );
 
   return useMemo(
     () => ({
-      data,
+      data: data as UserModel,
       isLoading,
       mutate,
       error,

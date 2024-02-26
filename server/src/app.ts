@@ -1,10 +1,10 @@
-import express from 'express';
-import { connectToDb } from './database/db';
-import { getUserByEmail } from './controllers/userController';
-import { login, register } from './controllers/authController';
-import cors from 'cors';
+import express from "express";
+import { connectToDb } from "./database/db";
+import { editUserById, getUserById } from "./controllers/userController";
+import { authCheck, login, register } from "./controllers/authController";
+import cors from "cors";
 
-require('dotenv').config();
+require("dotenv").config();
 
 export const app = express();
 const PORT = process.env.PORT;
@@ -18,10 +18,14 @@ const startServer = () => {
   connectToDb();
 };
 
-app.post('/api/register', register);
+app.get("api/auth/check", authCheck);
 
-app.post('/api/login', login);
+app.post("/api/register", register);
 
-app.get('/api/user/:email', getUserByEmail);
+app.post("/api/login", login);
+
+app.get("/api/user/:id", getUserById);
+
+app.put("/api/user/:id", editUserById);
 
 app.listen(PORT, startServer);

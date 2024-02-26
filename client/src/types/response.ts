@@ -1,4 +1,4 @@
-import { UserModel } from './user';
+import { UserModel } from "./user";
 
 export type CreateUserResp = {
   userId: number;
@@ -8,4 +8,13 @@ export type CreateUserResp = {
 export type LoginResp = {
   message: string;
   user: UserModel;
+};
+
+export type UpdateProfileResp = {
+  message: string;
+  profileDetails: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
 };
