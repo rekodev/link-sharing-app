@@ -2,9 +2,9 @@ import useSWR from 'swr';
 import fetcher, { SWRKeys } from '../api/swr';
 import { useMemo } from 'react';
 
-const useGetUserByEmail = (email: string) => {
+const useGetUserById = (id: number) => {
   const { data, isLoading, mutate, error, isValidating } = useSWR(
-    SWRKeys.user(email),
+    SWRKeys.user(id),
     fetcher
   );
 
@@ -20,4 +20,4 @@ const useGetUserByEmail = (email: string) => {
   );
 };
 
-export default useGetUserByEmail;
+export default useGetUserById;

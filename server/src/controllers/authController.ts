@@ -47,7 +47,7 @@ export const login = async (req: Request, res: Response) => {
         .json({ message: 'Email and password are required' });
     }
 
-    const user = findUserByEmail(email);
+    const user = await findUserByEmail(email);
 
     if (!user) {
       return res.status(401).json({ message: 'User does not exist' });
@@ -65,8 +65,9 @@ export const login = async (req: Request, res: Response) => {
       sameSite: 'strict',
       maxAge: 3600000,
     });
+    console.log(user);
 
-    return res.status(200).json({ message: 'Login successful', user });
+    return res.status(200).json({ message: 'Login successful' });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
     console.error('Internal Server Error:', error);

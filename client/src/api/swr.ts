@@ -8,5 +8,5 @@ const fetcher = (url: string) =>
 export default fetcher;
 
 export const SWRKeys = {
-  user: (email: string) => `/api/user/${email}`,
+  user: (userId: number) => `/api/user/${userId}`,
 };

@@ -1,3 +1,5 @@
+import { UserModel } from './user';
+
 export type CreateUserResp = {
   userId: number;
   message: string;
@@ -5,5 +7,5 @@ export type CreateUserResp = {
 
 export type LoginResp = {
   message: string;
-  user: string;
+  user: UserModel;
 };

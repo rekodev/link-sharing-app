@@ -17,6 +17,8 @@ import { Typography } from '@mui/material';
 import { login } from '../../api';
 import { HttpStatusCode } from 'axios';
 import { themeColors } from '../../styles/Theme';
+import { mutate } from 'swr';
+import { SWRKeys } from '../../api/swr';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -50,7 +52,11 @@ const Login = () => {
       return;
     }
 
-    // mutate(SWRKeys.user(email), email, false);
+    console.log(response.data);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+    if (response.data.user.id) {
+      mutate(SWRKeys.user(response.data.user.id), email, false);
+    }
     setSubmissionSuccess(true);
   };
 

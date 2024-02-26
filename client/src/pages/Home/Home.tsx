@@ -8,7 +8,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Snackbar } from '@mui/material';
 import isUrl from 'is-url';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../../components/Button';
 import LinkCard from '../../components/LinkCard';
@@ -26,6 +26,7 @@ import {
 } from './style';
 import LinksPreview from '../../components/LinksPreview';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import useGetUserById from '../../hooks/useGetUserById';
 
 interface ISortableLinkProps {
   link: IShareableLinkValues;
@@ -65,11 +66,14 @@ const SortableLink = ({
 
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
-  const {profileDetails} = useContext(ProfileDetailsContext);
+  const { profileDetails } = useContext(ProfileDetailsContext);
   const [newLinks, setNewLinks] = useState<IShareableLinkValues[]>(links);
   const [open, setOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
   const [uniqueLinks, setUniqueLinks] = useState(true);
+  const { data, error, isLoading, isValidating, mutate } = useGetUserById(
+    JSON.parse(localStorage.getItem('user')).id
+  );
 
   const handleClick = () => {
     setNewLinks((prev) => [
@@ -180,6 +184,8 @@ const Home = () => {
 
     setOpen(false);
   };
+
+  if (isLoading) return <p>LOADING</p>;
 
   return (
     <>
