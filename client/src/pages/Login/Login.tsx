@@ -21,6 +21,7 @@ import { mutate } from "swr";
 import { SWRKeys } from "../../api/swr";
 import { AuthContext } from "../../contexts/authContext";
 import { LINKS_PAGE } from "../../constants/routes";
+import decodeAccessToken from "../../utils/decodeAccessToken";
 
 const Login = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
@@ -64,10 +65,17 @@ const Login = () => {
       return;
     }
 
-    localStorage.setItem("user", JSON.stringify(response.data.user));
-    if (response.data.user.id) {
-      mutate(SWRKeys.user(response.data.user.id), email, false);
+    const accessToken = response.data.accessToken;
+
+    localStorage.setItem("accessToken", accessToken);
+    const userId = decodeAccessToken(accessToken).userId;
+
+    console.log(userId);
+
+    if (userId) {
+      mutate(SWRKeys.user(userId));
     }
+
     setSubmissionSuccess(true);
     setIsAuthenticated(true);
     navigate(LINKS_PAGE);

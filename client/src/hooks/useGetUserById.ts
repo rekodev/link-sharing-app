@@ -2,14 +2,15 @@ import useSWR from "swr";
 import fetcher, { SWRKeys } from "../api/swr";
 import { useMemo } from "react";
 import { UserModel } from "../types/user";
+import decodeAccessToken from "../utils/decodeAccessToken";
 
 const useGetUserById = () => {
-  const user = localStorage.getItem("user");
-  const userId = user ? JSON.parse(user).id : "";
+  const accessToken = localStorage.getItem("accessToken");
+  const userId = decodeAccessToken(accessToken)?.userId;
 
   const { data, isLoading, mutate, error, isValidating } = useSWR(
     SWRKeys.user(userId),
-    fetcher
+    fetcher,
   );
 
   return useMemo(
@@ -20,7 +21,7 @@ const useGetUserById = () => {
       error,
       isValidating,
     }),
-    [data, isLoading, mutate, error, isValidating]
+    [data, isLoading, mutate, error, isValidating],
   );
 };
 
