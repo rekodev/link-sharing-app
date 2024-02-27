@@ -1,7 +1,7 @@
 import express from "express";
 import { connectToDb } from "./database/db";
 import { editUserById, getUserById } from "./controllers/userController";
-import { authCheck, login, register } from "./controllers/authController";
+import { login, register } from "./controllers/authController";
 import cors from "cors";
 
 require("dotenv").config();
@@ -17,8 +17,6 @@ const startServer = () => {
   console.log(`Server is running on port ${PORT}`);
   connectToDb();
 };
-
-app.get("api/auth/check", authCheck);
 
 app.post("/api/register", register);
 

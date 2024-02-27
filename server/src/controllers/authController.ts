@@ -8,17 +8,11 @@ import {
   isPasswordCorrect,
 } from "../database/user";
 import { UserCredentials } from "../types/user";
-import { transformUser } from "../utils/transformers";
 
-const generateAccessToken = (email: string) => {
-  return jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, {
+const generateAccessToken = (userId: number) => {
+  return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "1h",
   });
-};
-
-export const authCheck = (req: Request, res: Response) => {
-  try {
-  } catch (error) {}
 };
 
 export const register = async (req: Request, res: Response) => {
@@ -63,18 +57,9 @@ export const login = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Incorrect password" });
     }
 
-    const accessToken = generateAccessToken(email);
+    const accessToken = generateAccessToken(user.id);
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      // secure: true,
-      sameSite: "strict",
-      maxAge: 3600000,
-    });
-
-    return res
-      .status(200)
-      .json({ message: "Login successful", user: transformUser(user) });
+    return res.status(200).json({ message: "Login successful", accessToken });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
     console.error("Internal Server Error:", error);
