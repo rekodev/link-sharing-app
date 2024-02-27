@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { themeColors } from '../../styles/Theme';
+
 import { Breakpoints } from '../../styles/Breakpoints';
+import { themeColors } from '../../styles/Theme';
 
 export const StyledHeader = styled.header`
   background-color: ${themeColors.lightGray};
@@ -43,6 +44,7 @@ export const StyledHeaderContainer = styled.div`
 
 export const StyledLinks = styled.div`
   display: flex;
+  gap: 4px;
   align-items: center;
   justify-content: center;
 `;

@@ -1,16 +1,18 @@
-import useSWR from "swr";
-import fetcher, { SWRKeys } from "../api/swr";
-import { useMemo } from "react";
-import { UserModel } from "../types/user";
-import { getAuthToken, decodeAuthToken } from "../utils/authToken";
+import { useContext, useMemo } from 'react';
+import useSWR from 'swr';
+
+import fetcher, { SWRKeys } from '../api/swr';
+import { AuthContext } from '../contexts/authContext';
+import { UserModel } from '../types/user';
+import { decodeAuthToken } from '../utils/authToken';
 
 const useGetUserById = () => {
-  const authToken = getAuthToken();
+  const { authToken } = useContext(AuthContext);
   const userId = decodeAuthToken(authToken)?.userId;
 
   const { data, isLoading, mutate, error, isValidating } = useSWR(
     SWRKeys.user(userId),
-    fetcher,
+    fetcher
   );
 
   return useMemo(
@@ -21,7 +23,7 @@ const useGetUserById = () => {
       error,
       isValidating,
     }),
-    [data, isLoading, mutate, error, isValidating],
+    [data, isLoading, mutate, error, isValidating]
   );
 };
 

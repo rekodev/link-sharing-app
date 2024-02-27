@@ -1,9 +1,3 @@
-import phoneMockup from "../../assets/images/illustration-phone-mockup.svg";
-import { IProfileDetails } from "../../types/profileDetails";
-import { IShareableLinkValues } from "../../types/shareableLinkValues";
-import { UserModel } from "../../types/user";
-import { platforms } from "../../utils/platformList";
-import PlatformLink from "../PlatformLink";
 import {
   StyledLinksPreview,
   StyledLinksPreviewContainer,
@@ -12,7 +6,13 @@ import {
   StyledProfileDetailsTextWrapper,
   StyledProfileDetailsWrapper,
   StyledProfilePictureWrapper,
-} from "./style";
+} from './style';
+import phoneMockup from '../../assets/images/illustration-phone-mockup.svg';
+import { IProfileDetails } from '../../types/profileDetails';
+import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import { UserModel } from '../../types/user';
+import { platforms } from '../../utils/platformList';
+import PlatformLink from '../PlatformLink';
 
 interface ILinksPreviewProps {
   links: IShareableLinkValues[];
@@ -42,18 +42,18 @@ const LinksPreview = ({
               }
             >
               {imageData?.src ? (
-                <img src={imageData.src} alt="Profile Picture" />
+                <img src={imageData.src} alt='Profile Picture' />
               ) : (
                 profileDetails.profilePicture.src && (
                   <img
                     src={profileDetails.profilePicture.src}
-                    alt="Profile Picture"
+                    alt='Profile Picture'
                   />
                 )
               )}
             </StyledProfilePictureWrapper>
             <StyledProfileDetailsTextWrapper>
-              <h3>{`${profileDetails.firstName} ${profileDetails.lastName}`}</h3>
+              <h3>{`${user.firstName} ${user.lastName}`}</h3>
               <p>{user.email}</p>
             </StyledProfileDetailsTextWrapper>
           </StyledProfileDetailsWrapper>
@@ -81,7 +81,7 @@ const LinksPreview = ({
               return null;
             })}
           </StyledPlatformWrapper>
-          <img src={phoneMockup} alt="" />
+          <img src={phoneMockup} alt='' />
         </StyledPhoneImageWrapper>
       </StyledLinksPreviewContainer>
     </StyledLinksPreview>

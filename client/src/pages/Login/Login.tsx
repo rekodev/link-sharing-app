@@ -1,7 +1,9 @@
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
+import { Typography } from '@mui/material';
+import { HttpStatusCode } from 'axios';
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { mutate } from 'swr';
+
 import {
   StyledAccountCreationTextWrapper,
   StyledForm,
@@ -9,28 +11,30 @@ import {
   StyledLoginContainer,
   StyledLoginWrapper,
   StyledLogoWrapper,
-} from "./style";
-import passwordIcon from "../../assets/images/icon-password.svg";
-import emailIcon from "../../assets/images/icon-email.svg";
-import devLinksIconLg from "../../assets/images/logo-devlinks-large.svg";
-import { Typography } from "@mui/material";
-import { login } from "../../api";
-import { HttpStatusCode } from "axios";
-import { themeColors } from "../../styles/Theme";
-import { mutate } from "swr";
-import { SWRKeys } from "../../api/swr";
-
-import { LINKS_PAGE } from "../../constants/routes";
-import { setAuthToken, decodeAuthToken } from "../../utils/authToken";
+} from './style';
+import { login } from '../../api';
+import { SWRKeys } from '../../api/swr';
+import emailIcon from '../../assets/images/icon-email.svg';
+import passwordIcon from '../../assets/images/icon-password.svg';
+import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+import { LINKS_PAGE } from '../../constants/routes';
+import { AuthContext } from '../../contexts/authContext';
+import { themeColors } from '../../styles/Theme';
+import { decodeAuthToken, setAuthToken } from '../../utils/authToken';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setAuthToken: setAuthTokenState } = useContext(AuthContext);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [submissionMessage, setSubmissionMessage] = useState("");
+  const [submissionMessage, setSubmissionMessage] = useState('');
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
+
+  useEffect(() => {}, []);
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -44,7 +48,7 @@ const Login = () => {
     event.preventDefault();
 
     setIsLoading(true);
-    setSubmissionMessage("");
+    setSubmissionMessage('');
 
     const response = await login(email, password);
 
@@ -60,9 +64,8 @@ const Login = () => {
     const authToken = response.data.accessToken;
 
     setAuthToken(authToken);
+    setAuthTokenState(authToken);
     const userId = decodeAuthToken(authToken).userId;
-
-    console.log(userId);
 
     if (userId) {
       mutate(SWRKeys.user(userId));
@@ -70,13 +73,14 @@ const Login = () => {
 
     setSubmissionSuccess(true);
     navigate(LINKS_PAGE);
+    alert(authToken);
   };
 
   return (
     <StyledLoginWrapper>
       <StyledLogin>
         <StyledLogoWrapper>
-          <img src={devLinksIconLg} alt="DevLinks Large Icon" />
+          <img src={devLinksIconLg} alt='DevLinks Large Icon' />
         </StyledLogoWrapper>
         <StyledLoginContainer>
           <div></div>
@@ -84,32 +88,32 @@ const Login = () => {
           <p>Add your details below to get back into the app</p>
           <StyledForm onSubmit={handleSubmit}>
             <Input
-              type="email"
-              label="Email address"
-              id="email"
-              name="email"
+              type='email'
+              label='Email address'
+              id='email'
+              name='email'
               imgSrc={emailIcon}
-              imgName="Email Icon"
-              placeholder="e.g. alex@email.com"
+              imgName='Email Icon'
+              placeholder='e.g. alex@email.com'
               initialStyle
               onChange={handleEmailChange}
             />
             <Input
-              type="password"
-              label="Password"
-              id="password"
-              name="password"
+              type='password'
+              label='Password'
+              id='password'
+              name='password'
               imgSrc={passwordIcon}
-              imgName="Password Icon"
-              placeholder="Enter your password"
+              imgName='Password Icon'
+              placeholder='Enter your password'
               initialStyle
               onChange={handlePasswordChange}
             />
             {
               <Typography
                 fontSize={14}
-                role="alert"
-                display={submissionMessage ? "initial" : "none"}
+                role='alert'
+                display={submissionMessage ? 'initial' : 'none'}
                 color={
                   submissionSuccess ? themeColors.success : themeColors.red
                 }
@@ -118,15 +122,15 @@ const Login = () => {
               </Typography>
             }
             <Button
-              text="Login"
-              variant="contained"
-              type="submit"
+              text='Login'
+              variant='contained'
+              type='submit'
               isLoading={isLoading}
             />
           </StyledForm>
           <StyledAccountCreationTextWrapper>
             <p>Don't have an account?</p>
-            <Link to="create-account">Create account</Link>
+            <Link to='create-account'>Create account</Link>
           </StyledAccountCreationTextWrapper>
         </StyledLoginContainer>
       </StyledLogin>

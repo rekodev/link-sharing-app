@@ -1,31 +1,19 @@
-import axios, { HttpStatusCode } from "axios";
-import { eventEmitter } from "../utils/eventEmitter";
-import { AUTH_FAILURE } from "../constants/auth";
-import { getAuthToken } from "../utils/authToken";
+import axios from 'axios';
+
+import { getAuthToken } from '../utils/authToken';
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const fetcher = async (url: string) => {
-  const response = await axios
-    .get(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getAuthToken()}`,
-      },
-    })
-    .then((res) => res.data);
+  const response = await axios.get(url, {
+    baseURL,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthToken()}`,
+    },
+  });
 
-  if (
-    response.status === HttpStatusCode.Unauthorized ||
-    response.status === HttpStatusCode.Forbidden
-  ) {
-    eventEmitter.emit(AUTH_FAILURE);
-    throw new Error("Authentication failure");
-  }
-
-  if (!response.ok) {
-    throw new Error("Network response was not okay");
-  }
-
-  return response.json();
+  return response.data;
 };
 
 export default fetcher;
