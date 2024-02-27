@@ -10,7 +10,7 @@ const useLogout = () => {
 
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
     navigate(LOGIN_PAGE);
   };
 

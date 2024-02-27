@@ -1,11 +1,11 @@
-import { createContext } from "react";
+import { Dispatch, SetStateAction, createContext } from "react";
 
 interface IAuthContext {
-  isAuthenticated: boolean;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  authToken: string;
+  setAuthToken: Dispatch<SetStateAction<string>>;
 }
 
 export const AuthContext = createContext<IAuthContext>({
-  isAuthenticated: false,
-  setIsAuthenticated: () => {},
+  authToken: "",
+  setAuthToken: () => {},
 });

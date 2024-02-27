@@ -2,11 +2,11 @@ import useSWR from "swr";
 import fetcher, { SWRKeys } from "../api/swr";
 import { useMemo } from "react";
 import { UserModel } from "../types/user";
-import decodeAccessToken from "../utils/decodeAccessToken";
+import { getAuthToken, decodeAuthToken } from "../utils/authToken";
 
 const useGetUserById = () => {
-  const accessToken = localStorage.getItem("accessToken");
-  const userId = decodeAccessToken(accessToken)?.userId;
+  const authToken = getAuthToken();
+  const userId = decodeAuthToken(authToken)?.userId;
 
   const { data, isLoading, mutate, error, isValidating } = useSWR(
     SWRKeys.user(userId),

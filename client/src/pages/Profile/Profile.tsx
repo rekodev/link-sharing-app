@@ -17,7 +17,7 @@ const Profile = () => {
   const { data, isLoading } = useGetUserById();
 
   const { profileDetails, setProfileDetails } = useContext(
-    ProfileDetailsContext
+    ProfileDetailsContext,
   );
   const { links } = useContext(LinkContext);
   const [newProfileDetails, setNewProfileDetails] = useState(profileDetails);
@@ -37,8 +37,6 @@ const Profile = () => {
 
   useEffect(() => {
     if (!data) return;
-
-    console.log("DATA", data);
 
     setNewProfileDetails({
       firstName: data.firstName,

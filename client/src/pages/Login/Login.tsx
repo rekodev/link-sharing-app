@@ -19,12 +19,11 @@ import { HttpStatusCode } from "axios";
 import { themeColors } from "../../styles/Theme";
 import { mutate } from "swr";
 import { SWRKeys } from "../../api/swr";
-import { AuthContext } from "../../contexts/authContext";
+
 import { LINKS_PAGE } from "../../constants/routes";
-import decodeAccessToken from "../../utils/decodeAccessToken";
+import { setAuthToken, decodeAuthToken } from "../../utils/authToken";
 
 const Login = () => {
-  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -41,12 +40,6 @@ const Login = () => {
     setPassword(event.target.value);
   };
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    navigate(LINKS_PAGE);
-  }, [navigate, isAuthenticated]);
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -60,15 +53,14 @@ const Login = () => {
 
     if (response.status !== HttpStatusCode.Ok) {
       setSubmissionSuccess(false);
-      setIsAuthenticated(false);
 
       return;
     }
 
-    const accessToken = response.data.accessToken;
+    const authToken = response.data.accessToken;
 
-    localStorage.setItem("accessToken", accessToken);
-    const userId = decodeAccessToken(accessToken).userId;
+    setAuthToken(authToken);
+    const userId = decodeAuthToken(authToken).userId;
 
     console.log(userId);
 
@@ -77,7 +69,6 @@ const Login = () => {
     }
 
     setSubmissionSuccess(true);
-    setIsAuthenticated(true);
     navigate(LINKS_PAGE);
   };
 
