@@ -29,7 +29,7 @@ import LinksPreview from '../../components/LinksPreview';
 import StartCard from '../../components/StartCard/StartCard';
 import { LinkContext } from '../../contexts/linkContext';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
-import useGetUserById from '../../hooks/useGetUserById';
+import useUser from '../../hooks/useUser';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import { SnackbarType } from '../../types/profileDetails';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
@@ -78,7 +78,7 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
   const [uniqueLinks, setUniqueLinks] = useState(true);
-  const { data, isLoading } = useGetUserById();
+  const { user, isUserLoading } = useUser();
 
   const handleClick = () => {
     setNewLinks((prev) => [
@@ -190,13 +190,13 @@ const Home = () => {
     setOpen(false);
   };
 
-  if (isLoading || !data)
+  if (isUserLoading || !user)
     return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
 
   return (
     <>
       <LinksPreview
-        user={data}
+        user={user}
         links={newLinks}
         profileDetails={profileDetails}
       />

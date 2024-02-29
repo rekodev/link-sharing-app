@@ -6,7 +6,7 @@ import { AuthContext } from '../contexts/authContext';
 import { UserModel } from '../types/user';
 import { decodeAuthToken } from '../utils/authToken';
 
-const useGetUserById = () => {
+const useUser = () => {
   const { authToken } = useContext(AuthContext);
   const userId = decodeAuthToken(authToken)?.userId;
 
@@ -17,14 +17,14 @@ const useGetUserById = () => {
 
   return useMemo(
     () => ({
-      data: data as UserModel,
-      isLoading,
-      mutate,
-      error,
-      isValidating,
+      user: data as UserModel,
+      isUserLoading: isLoading,
+      mutateUser: mutate,
+      userError: error,
+      userIsValidating: isValidating,
     }),
     [data, isLoading, mutate, error, isValidating]
   );
 };
 
-export default useGetUserById;
+export default useUser;

@@ -1,7 +1,8 @@
 import { Button } from '@mui/material';
 import styled from 'styled-components';
-import { themeColors } from '../../styles/Theme';
+
 import { Breakpoints } from '../../styles/Breakpoints';
+import { themeColors } from '../../styles/Theme';
 
 interface IStyledButtonProps {
   $hideOnMobile: boolean | undefined;

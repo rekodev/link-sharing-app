@@ -1,17 +1,18 @@
-import { useContext, useEffect } from "react";
-import { ProfileDetailsContext } from "../../contexts/profileDetailsContext";
+import { Snackbar } from '@mui/material';
+import { useContext, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
 import {
   StyledAvatar,
   StyledPreviewCard,
   StyledProfilePictureWrapper,
-} from "./style";
-import { CopiedLinkContext } from "../../contexts/copiedLinkContext";
-import { useLocation } from "react-router-dom";
-import Svg from "../Svg";
-import linkIcon from "../../assets/images/icon-link-copied-to-clipboard.svg";
-import { Snackbar } from "@mui/material";
-import { StyledAlert } from "../../styles/UtilityStyles";
-import useGetUserById from "../../hooks/useGetUserById";
+} from './style';
+import linkIcon from '../../assets/images/icon-link-copied-to-clipboard.svg';
+import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import useUser from '../../hooks/useUser';
+import { StyledAlert } from '../../styles/UtilityStyles';
+import Svg from '../Svg';
 
 interface IPreviewCardProps {
   atLeastOnePlatform: boolean;
@@ -21,7 +22,7 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
   const { profileDetails } = useContext(ProfileDetailsContext);
   const { copiedLink, setCopiedLink } = useContext(CopiedLinkContext);
 
-  const { data, isLoading } = useGetUserById();
+  const { user, isUserLoading } = useUser();
   const location = useLocation();
 
   useEffect(() => {
@@ -32,7 +33,7 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
     _event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       setCopiedLink(false);
       return;
     }
@@ -40,19 +41,19 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
     setCopiedLink(false);
   };
 
-  if (isLoading) return null;
+  if (isUserLoading) return null;
 
   return (
     <StyledPreviewCard>
       <StyledProfilePictureWrapper>
         {profileDetails.profilePicture.src ? (
-          <img src={profileDetails.profilePicture.src} alt="Profile Picture" />
+          <img src={profileDetails.profilePicture.src} alt='Profile Picture' />
         ) : (
           <StyledAvatar />
         )}
       </StyledProfilePictureWrapper>
-      <h3>{`${data.firstName} ${data.lastName}`}</h3>
-      <p>{data.email}</p>
+      <h3>{`${user.firstName} ${user.lastName}`}</h3>
+      <p>{user.email}</p>
 
       {atLeastOnePlatform ? (
         <Snackbar
@@ -63,8 +64,8 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
           <StyledAlert
             icon={<Svg noHeight url={linkIcon} />}
             onClose={handleClose}
-            severity="info"
-            sx={{ width: "100%" }}
+            severity='info'
+            sx={{ width: '100%' }}
           >
             The link has been copied to your clipboard!
           </StyledAlert>
@@ -77,8 +78,8 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
         >
           <StyledAlert
             onClose={handleClose}
-            severity="error"
-            sx={{ width: "100%" }}
+            severity='error'
+            sx={{ width: '100%' }}
           >
             Add at least one platform
           </StyledAlert>

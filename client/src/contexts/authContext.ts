@@ -1,11 +1,15 @@
-import { Dispatch, SetStateAction, createContext } from "react";
+import { Dispatch, SetStateAction, createContext } from 'react';
 
 interface IAuthContext {
-  authToken: string;
-  setAuthToken: Dispatch<SetStateAction<string>>;
+  authToken: string | null;
+  setAuthToken: Dispatch<SetStateAction<string | null>>;
+  authFailureModalOpen: boolean;
+  setAuthFailureModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const AuthContext = createContext<IAuthContext>({
-  authToken: "",
+  authToken: '',
   setAuthToken: () => {},
+  authFailureModalOpen: false,
+  setAuthFailureModalOpen: () => {},
 });

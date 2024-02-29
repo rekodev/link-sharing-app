@@ -1,6 +1,7 @@
-import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
-import { StyledDragHandle } from './style';
 import { DraggableAttributes } from '@dnd-kit/core';
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+
+import { StyledDragHandle } from './style';
 
 export interface IDragHandleProps {
   attributes: DraggableAttributes;

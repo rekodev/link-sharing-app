@@ -1,23 +1,24 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import Button from "../../components/Button";
-import ProfileForm from "../../components/ProfileForm";
-import ProfilePictureCard from "../../components/ProfilePictureCard";
-import { ProfileDetailsContext } from "../../contexts/profileDetailsContext";
+import { CircularProgress } from '@mui/material';
+import { useContext, useEffect, useRef, useState } from 'react';
+
 import {
   StyledProfile,
   StyledProfileContainer,
   StyledSaveButtonWrapper,
-} from "./style";
-import LinksPreview from "../../components/LinksPreview";
-import { LinkContext } from "../../contexts/linkContext";
-import useGetUserById from "../../hooks/useGetUserById";
-import { CircularProgress } from "@mui/material";
+} from './style';
+import Button from '../../components/Button';
+import LinksPreview from '../../components/LinksPreview';
+import ProfileForm from '../../components/ProfileForm';
+import ProfilePictureCard from '../../components/ProfilePictureCard';
+import { LinkContext } from '../../contexts/linkContext';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import useUser from '../../hooks/useUser';
 
 const Profile = () => {
-  const { data, isLoading } = useGetUserById();
+  const { user, isUserLoading } = useUser();
 
   const { profileDetails, setProfileDetails } = useContext(
-    ProfileDetailsContext,
+    ProfileDetailsContext
   );
   const { links } = useContext(LinkContext);
   const [newProfileDetails, setNewProfileDetails] = useState(profileDetails);
@@ -36,21 +37,21 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (!data) return;
+    if (!user) return;
 
     setNewProfileDetails({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
       profilePicture: {
-        src: "",
-        name: "",
+        src: '',
+        name: '',
       },
     });
-  }, [data]);
+  }, [user]);
 
-  if (isLoading)
-    return <CircularProgress color="primary" sx={{ margin: "auto" }} />;
+  if (isUserLoading)
+    return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
 
   return (
     <>
@@ -58,7 +59,7 @@ const Profile = () => {
         links={links}
         profileDetails={newProfileDetails}
         imageData={imageData}
-        user={data}
+        user={user}
       />
       <StyledProfile>
         <StyledProfileContainer>
@@ -78,9 +79,9 @@ const Profile = () => {
         </StyledProfileContainer>
         <StyledSaveButtonWrapper>
           <Button
-            variant="contained"
-            text="Save"
-            type="submit"
+            variant='contained'
+            text='Save'
+            type='submit'
             onClick={handleSaveClick}
             isLoading={isSubmitting}
           />

@@ -5,6 +5,7 @@ import {
   StyledHeader,
   StyledHeaderContainer,
   StyledLinks,
+  StyledPreviewAndLogout,
   StyledPurpleRectangle,
 } from './style';
 import iconLinksHeader from '../../assets/images/icon-links-header.svg';
@@ -15,6 +16,7 @@ import devLinksIconSm from '../../assets/images/logo-devlinks-small.svg';
 import { LINKS_PAGE, PREVIEW_PAGE, PROFILE_PAGE } from '../../constants/routes';
 import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
 import Button from '../Button';
+import LogoutButton from '../LogoutButton';
 
 const Header = () => {
   const [activeButtons, setActiveButtons] = useState({
@@ -106,15 +108,18 @@ const Header = () => {
             />
           </Link>
         </StyledLinks>
-        <Link to={PREVIEW_PAGE}>
-          <Button
-            imgSrc={iconPreviewHeader}
-            text='Preview'
-            variant='outlined'
-            hideOnMobile
-            hideOnTablet
-          />
-        </Link>
+        <StyledPreviewAndLogout>
+          <Link to={PREVIEW_PAGE}>
+            <Button
+              imgSrc={iconPreviewHeader}
+              text='Preview'
+              variant='outlined'
+              hideOnMobile
+              hideOnTablet
+            />
+          </Link>
+          <LogoutButton />
+        </StyledPreviewAndLogout>
       </StyledHeaderContainer>
     </StyledHeader>
   );

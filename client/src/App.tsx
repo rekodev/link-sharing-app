@@ -1,31 +1,21 @@
-import { AxiosError, HttpStatusCode } from 'axios';
 import { SWRConfig } from 'swr';
 
 import fetcher from './api/swr';
 import AuthProvider from './components/AuthProvider';
-import useLogout from './hooks/useLogout';
+import useAuth from './hooks/useAuth';
 import RoutesComponent from './Routes';
 import GlobalStyles from './styles/GlobalStyles';
 
 function App() {
-  const logout = useLogout();
-
-  const handleError = (error: AxiosError) => {
-    if (
-      error.status === HttpStatusCode.Unauthorized ||
-      error.status === HttpStatusCode.Forbidden
-    ) {
-      logout();
-    }
-  };
+  const { handleAuthError } = useAuth();
 
   return (
-    <SWRConfig value={{ fetcher, onError: handleError }}>
+    <AuthProvider>
       <GlobalStyles />
-      <AuthProvider>
+      <SWRConfig value={{ fetcher, onError: handleAuthError }}>
         <RoutesComponent />
-      </AuthProvider>
-    </SWRConfig>
+      </SWRConfig>
+    </AuthProvider>
   );
 }
 

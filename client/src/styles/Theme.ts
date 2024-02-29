@@ -8,6 +8,7 @@ export const themeColors = {
   lightGray: '#FAFAFA',
   white: '#FFF',
   red: '#FF3939',
+  darkRed: '#d32f2f',
   success: '#4CAF50',
 };
 

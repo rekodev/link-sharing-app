@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import { HttpStatusCode } from 'axios';
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { mutate } from 'swr';
 
@@ -33,8 +33,6 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState('');
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
-
-  useEffect(() => {}, []);
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -73,7 +71,6 @@ const Login = () => {
 
     setSubmissionSuccess(true);
     navigate(LINKS_PAGE);
-    alert(authToken);
   };
 
   return (
