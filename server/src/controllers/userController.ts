@@ -1,59 +1,50 @@
-import { Request, Response } from 'express';
-import { createUser, doesUserExist, isPasswordCorrect } from '../database/user';
-import jwt from 'jsonwebtoken';
-import { UserData, UserDto } from '../types/user';
+import { Request, Response } from "express";
+import { editUserInformation, findUserById } from "../database/user";
+import { transformUser } from "../utils/transformers";
 
-export const register = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
   try {
-    const { email, password }: UserData = req.body;
+    const user = await findUserById(id);
 
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: 'Email and password are required' });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (await doesUserExist(email)) {
-      return res.status(409).json({ message: 'User already exists' });
-    }
-
-    const userId = await createUser({ email, password });
-    res.status(201).json({ message: 'User created successfully!', userId });
+    return res.status(200).json(transformUser(user));
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
+    console.error("Internal Server Error:", error);
   }
 };
 
-const generateAccessToken = (email: string) => {
-  return jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: '1h',
-  });
-};
+export const editUserById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { firstName, lastName, email } = req.body;
 
-export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password }: UserData = req.body;
+    const user = await findUserById(id);
 
-    if (!email || !password) {
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const updateSuccessful = await editUserInformation(id, {
+      firstName,
+      lastName,
+      email,
+      profilePictureUrl: "",
+    });
+
+    if (!updateSuccessful) {
       return res
         .status(400)
-        .json({ message: 'Email and password are required' });
+        .json({ message: "Unable to update profile details" });
     }
 
-    if (!(await doesUserExist(email))) {
-      return res.status(401).json({ message: 'User does not exist' });
-    }
-
-    if (!(await isPasswordCorrect({ email, password }))) {
-      return res.status(403).json({ message: 'Incorrect password' });
-    }
-
-    const accessToken = generateAccessToken(email);
-
-    return res.status(200).json({ message: 'Login successful', accessToken });
+    return res.status(200).json({
+      message: "User updated successfully",
+      profileDetails: { firstName, lastName, email },
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
-    console.error('Internal Server Error:', error);
+    res.status(500).json({ message: "Internal server error" });
+    console.error("Internal Server Error:", error);
   }
 };

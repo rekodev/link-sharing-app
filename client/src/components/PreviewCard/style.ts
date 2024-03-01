@@ -1,5 +1,6 @@
 import { Avatar } from '@mui/material';
 import styled from 'styled-components';
+
 import { themeColors } from '../../styles/Theme';
 
 export const StyledPreviewCard = styled.div`

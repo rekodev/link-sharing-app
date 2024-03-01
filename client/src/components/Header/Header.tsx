@@ -1,18 +1,22 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
+import {
+  StyledHeader,
+  StyledHeaderContainer,
+  StyledLinks,
+  StyledPreviewAndLogout,
+  StyledPurpleRectangle,
+} from './style';
 import iconLinksHeader from '../../assets/images/icon-links-header.svg';
 import iconPreviewHeader from '../../assets/images/icon-preview-header.svg';
 import iconProfileDetailsHeader from '../../assets/images/icon-profile-details-header.svg';
 import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
 import devLinksIconSm from '../../assets/images/logo-devlinks-small.svg';
+import { LINKS_PAGE, PREVIEW_PAGE, PROFILE_PAGE } from '../../constants/routes';
 import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
 import Button from '../Button';
-import {
-  StyledHeader,
-  StyledHeaderContainer,
-  StyledLinks,
-  StyledPurpleRectangle,
-} from './style';
+import LogoutButton from '../LogoutButton';
 
 const Header = () => {
   const [activeButtons, setActiveButtons] = useState({
@@ -26,10 +30,10 @@ const Header = () => {
 
   useEffect(() => {
     switch (location.pathname) {
-      case '/profile':
+      case PROFILE_PAGE:
         setActiveButtons({ links: false, profile: true });
         break;
-      case '/links':
+      case LINKS_PAGE:
         setActiveButtons({ links: true, profile: false });
         break;
       default:
@@ -49,13 +53,13 @@ const Header = () => {
     navigator.clipboard.writeText(location.pathname);
   };
 
-  if (location.pathname === '/preview') {
+  if (location.pathname === PREVIEW_PAGE) {
     return (
       <>
         <StyledPurpleRectangle />
         <StyledHeader>
           <StyledHeaderContainer>
-            <Link to={activeButtons.links ? '/links' : '/profile'}>
+            <Link to={activeButtons.links ? LINKS_PAGE : PROFILE_PAGE}>
               <Button text='Back to Editor' variant='outlined' />
             </Link>
             <Button
@@ -85,7 +89,7 @@ const Header = () => {
           />
         </Link>
         <StyledLinks>
-          <Link to='/links'>
+          <Link to={LINKS_PAGE}>
             <Button
               imgSrc={iconLinksHeader}
               text='Links'
@@ -94,7 +98,7 @@ const Header = () => {
               active={activeButtons.links}
             />
           </Link>
-          <Link to='/profile'>
+          <Link to={PROFILE_PAGE}>
             <Button
               imgSrc={iconProfileDetailsHeader}
               text='Profile Details'
@@ -104,15 +108,18 @@ const Header = () => {
             />
           </Link>
         </StyledLinks>
-        <Link to='/preview'>
-          <Button
-            imgSrc={iconPreviewHeader}
-            text='Preview'
-            variant='outlined'
-            hideOnMobile
-            hideOnTablet
-          />
-        </Link>
+        <StyledPreviewAndLogout>
+          <Link to={PREVIEW_PAGE}>
+            <Button
+              imgSrc={iconPreviewHeader}
+              text='Preview'
+              variant='outlined'
+              hideOnMobile
+              hideOnTablet
+            />
+          </Link>
+          <LogoutButton />
+        </StyledPreviewAndLogout>
       </StyledHeaderContainer>
     </StyledHeader>
   );

@@ -1,6 +1,7 @@
 import { CircularProgress } from '@mui/material';
-import Svg from '../Svg';
+
 import { StyledButton } from './style';
+import Svg from '../Svg';
 
 interface IButtonProps {
   imgSrc?: string;

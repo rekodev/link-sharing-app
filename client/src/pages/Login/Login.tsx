@@ -1,7 +1,9 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
+import { Typography } from '@mui/material';
+import { HttpStatusCode } from 'axios';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { mutate } from 'swr';
+
 import {
   StyledAccountCreationTextWrapper,
   StyledForm,
@@ -10,15 +12,22 @@ import {
   StyledLoginWrapper,
   StyledLogoWrapper,
 } from './style';
-import passwordIcon from '../../assets/images/icon-password.svg';
-import emailIcon from '../../assets/images/icon-email.svg';
-import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
-import { Typography } from '@mui/material';
 import { login } from '../../api';
-import { HttpStatusCode } from 'axios';
+import { SWRKeys } from '../../api/swr';
+import emailIcon from '../../assets/images/icon-email.svg';
+import passwordIcon from '../../assets/images/icon-password.svg';
+import devLinksIconLg from '../../assets/images/logo-devlinks-large.svg';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+import { LINKS_PAGE } from '../../constants/routes';
+import { AuthContext } from '../../contexts/authContext';
 import { themeColors } from '../../styles/Theme';
+import { decodeAuthToken, setAuthToken } from '../../utils/authToken';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { setAuthToken: setAuthTokenState } = useContext(AuthContext);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +49,7 @@ const Login = () => {
     setSubmissionMessage('');
 
     const response = await login(email, password);
+
     setIsLoading(false);
     setSubmissionMessage(response.data.message);
 
@@ -49,7 +59,18 @@ const Login = () => {
       return;
     }
 
+    const authToken = response.data.accessToken;
+
+    setAuthToken(authToken);
+    setAuthTokenState(authToken);
+    const userId = decodeAuthToken(authToken).userId;
+
+    if (userId) {
+      mutate(SWRKeys.user(userId));
+    }
+
     setSubmissionSuccess(true);
+    navigate(LINKS_PAGE);
   };
 
   return (
@@ -87,9 +108,12 @@ const Login = () => {
             />
             {
               <Typography
+                fontSize={14}
                 role='alert'
                 display={submissionMessage ? 'initial' : 'none'}
-                color={submissionSuccess ? themeColors.success : 'error'}
+                color={
+                  submissionSuccess ? themeColors.success : themeColors.red
+                }
               >
                 {submissionMessage}
               </Typography>

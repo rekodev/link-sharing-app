@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { themeColors } from '../../styles/Theme';
+
 import { Breakpoints } from '../../styles/Breakpoints';
+import { themeColors } from '../../styles/Theme';
 
 export const StyledHeader = styled.header`
   background-color: ${themeColors.lightGray};
@@ -43,8 +44,32 @@ export const StyledHeaderContainer = styled.div`
 
 export const StyledLinks = styled.div`
   display: flex;
+  gap: 4px;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 767px) {
+    && .MuiButton-root {
+      width: 48px;
+      min-width: 48px;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+`;
+
+export const StyledPreviewAndLogout = styled.div`
+  display: flex;
+  gap: 4px;
+
+  @media screen and (max-width: 767px) {
+    a > .MuiButton-root {
+      width: 48px;
+      min-width: 48px;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
 `;
 
 export const StyledPurpleRectangle = styled.div`

@@ -1,8 +1,3 @@
-import phoneMockup from '../../assets/images/illustration-phone-mockup.svg';
-import { IProfileDetails } from '../../types/profileDetails';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
-import { platforms } from '../../utils/platformList';
-import PlatformLink from '../PlatformLink';
 import {
   StyledLinksPreview,
   StyledLinksPreviewContainer,
@@ -12,18 +7,28 @@ import {
   StyledProfileDetailsWrapper,
   StyledProfilePictureWrapper,
 } from './style';
+import phoneMockup from '../../assets/images/illustration-phone-mockup.svg';
+import { IProfileDetails } from '../../types/profileDetails';
+import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import { UserModel } from '../../types/user';
+import { platforms } from '../../utils/platformList';
+import PlatformLink from '../PlatformLink';
 
 interface ILinksPreviewProps {
   links: IShareableLinkValues[];
   profileDetails: IProfileDetails;
   imageData?: { src: string; name: string } | undefined;
+  user: UserModel;
 }
 
 const LinksPreview = ({
   links,
   profileDetails,
   imageData,
+  user,
 }: ILinksPreviewProps) => {
+  if (!user) return null;
+
   return (
     <StyledLinksPreview>
       <StyledLinksPreviewContainer>
@@ -48,8 +53,8 @@ const LinksPreview = ({
               )}
             </StyledProfilePictureWrapper>
             <StyledProfileDetailsTextWrapper>
-              <h3>{`${profileDetails.firstName} ${profileDetails.lastName}`}</h3>
-              <p>{profileDetails.email}</p>
+              <h3>{`${user.firstName} ${user.lastName}`}</h3>
+              <p>{user.email}</p>
             </StyledProfileDetailsTextWrapper>
           </StyledProfileDetailsWrapper>
           <StyledPlatformWrapper>

@@ -128,7 +128,8 @@ const CreateAccount = () => {
               Password must contain at least 8 characters
             </StyledPasswordDisclaimer>
             <Typography
-              color={submissionSuccess ? themeColors.success : 'error'}
+              fontSize={14}
+              color={submissionSuccess ? themeColors.success : themeColors.red}
               role='alert'
               display={submissionMessage ? 'initial' : 'none'}
             >

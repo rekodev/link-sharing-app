@@ -40,7 +40,16 @@ class ApiInstance {
 
       return response;
     } catch (error: any) {
-      return error.response;
+      if (error.response) {
+        return error.response;
+      }
+
+      return {
+        ...error,
+        data: {
+          message: 'Unable to access the network',
+        },
+      };
     }
   }
 

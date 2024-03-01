@@ -1,4 +1,9 @@
-import { DndContext, closestCenter } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  closestCenter,
+} from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
@@ -6,17 +11,11 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Snackbar } from '@mui/material';
+import { CircularProgress, Snackbar } from '@mui/material';
 import isUrl from 'is-url';
 import { useContext, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import Button from '../../components/Button';
-import LinkCard from '../../components/LinkCard';
-import StartCard from '../../components/StartCard/StartCard';
-import { LinkContext } from '../../contexts/linkContext';
-import { StyledAlert } from '../../styles/UtilityStyles';
-import { SnackbarType } from '../../types/profileDetails';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
+
 import {
   StyledHome,
   StyledHomeContainer,
@@ -24,8 +23,17 @@ import {
   StyledSortableLink,
   StyledSortableLinkWrapper,
 } from './style';
+import Button from '../../components/Button';
+import LinkCard from '../../components/LinkCard';
 import LinksPreview from '../../components/LinksPreview';
+import StartCard from '../../components/StartCard/StartCard';
+import { LinkContext } from '../../contexts/linkContext';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import useUser from '../../hooks/useUser';
+import { StyledAlert } from '../../styles/UtilityStyles';
+import { SnackbarType } from '../../types/profileDetails';
+import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import { platforms } from '../../utils/platformList';
 
 interface ISortableLinkProps {
   link: IShareableLinkValues;
@@ -65,18 +73,19 @@ const SortableLink = ({
 
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
-  const {profileDetails} = useContext(ProfileDetailsContext);
+  const { profileDetails } = useContext(ProfileDetailsContext);
   const [newLinks, setNewLinks] = useState<IShareableLinkValues[]>(links);
   const [open, setOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
   const [uniqueLinks, setUniqueLinks] = useState(true);
+  const { user, isUserLoading } = useUser();
 
   const handleClick = () => {
     setNewLinks((prev) => [
       ...prev,
       {
         id: uuidv4(),
-        platform: 'GitHub',
+        platform: platforms[0].name,
         link: '',
         attemptedSave: false,
         errors: { platform: false, link: false, unique: false },
@@ -131,7 +140,7 @@ const Home = () => {
     }
   };
 
-  const onDragStart = (event: any) => {
+  const onDragStart = (event: DragStartEvent) => {
     const { active } = event;
 
     const index = newLinks.findIndex((link) => link.id === active.id);
@@ -144,13 +153,13 @@ const Home = () => {
     );
   };
 
-  const onDragEnd = (event: any) => {
+  const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     const oldIndex = newLinks.findIndex((link) => link.id === active.id);
-    const newIndex = newLinks.findIndex((link) => link.id === over.id);
+    const newIndex = newLinks.findIndex((link) => link.id === over?.id);
 
     // if no switch made
-    if (active.id === over.id) {
+    if (active.id === over?.id) {
       setNewLinks((prev) =>
         prev.map((link, idx) =>
           idx === oldIndex ? { ...link, isBeingDragged: false } : link
@@ -181,14 +190,20 @@ const Home = () => {
     setOpen(false);
   };
 
+  if (isUserLoading || !user)
+    return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
+
   return (
     <>
-      <LinksPreview links={newLinks} profileDetails={profileDetails} />
+      <LinksPreview
+        user={user}
+        links={newLinks}
+        profileDetails={profileDetails}
+      />
       <StyledHome>
         <StyledHomeContainer>
           <h2>Customize your links</h2>
           <p>
-            {' '}
             Add/edit/remove links below and then share all your profiles with
             the world!
           </p>

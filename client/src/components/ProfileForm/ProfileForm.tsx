@@ -1,16 +1,33 @@
-import { Snackbar } from '@mui/material';
-import React, { forwardRef, useContext, useEffect, useState } from 'react';
+import { CircularProgress, Snackbar } from '@mui/material';
+import { HttpStatusCode } from 'axios';
+import {
+  ChangeEvent,
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  SyntheticEvent,
+  forwardRef,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
+import { mutate } from 'swr';
+
+import { StyledProfileForm } from './style';
+import { updateProfile } from '../../api';
+import { SWRKeys } from '../../api/swr';
 import { ProfilePictureContext } from '../../contexts/profilePictureContext';
+import useUser from '../../hooks/useUser';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import { IProfileDetails, SnackbarType } from '../../types/profileDetails';
 import Input from '../Input';
-import { StyledProfileForm } from './style';
 
 interface IProfileDetailsProps {
-  setProfileDetails: React.Dispatch<React.SetStateAction<IProfileDetails>>;
+  setProfileDetails: Dispatch<SetStateAction<IProfileDetails>>;
   newProfileDetails: IProfileDetails;
-  setNewProfileDetails: React.Dispatch<React.SetStateAction<IProfileDetails>>
+  setNewProfileDetails: Dispatch<SetStateAction<IProfileDetails>>;
+  setIsSubmitting: Dispatch<SetStateAction<boolean>>;
 }
 
 interface IProfileFormErrors {
@@ -20,7 +37,16 @@ interface IProfileFormErrors {
 }
 
 const ProfileForm = forwardRef<HTMLFormElement, IProfileDetailsProps>(
-  ({ setProfileDetails, newProfileDetails, setNewProfileDetails }, ref) => {
+  (
+    {
+      setProfileDetails,
+      newProfileDetails,
+      setNewProfileDetails,
+      setIsSubmitting,
+    },
+    ref
+  ) => {
+    const { user, isUserLoading } = useUser();
 
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<IProfileFormErrors>({
@@ -30,6 +56,7 @@ const ProfileForm = forwardRef<HTMLFormElement, IProfileDetailsProps>(
     });
     const [attemptedSave, setAttemptedSave] = useState(false);
     const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
+    const [submissionMessage, setSubmissionMessage] = useState('');
 
     const noErrors = Object.values(error).every((value) => value === false);
 
@@ -44,13 +71,13 @@ const ProfileForm = forwardRef<HTMLFormElement, IProfileDetailsProps>(
       setOpen(false);
     }, [location]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       // After attempting a save, we want to reset the attemptedSave, but only after all of the highlighted errors have been fixed
       if (noErrors) {
         setAttemptedSave(false);
       }
 
-      const { name, value } = e.target;
+      const { name, value } = event.target;
       setNewProfileDetails((prevData: IProfileDetails) => ({
         ...prevData,
         [name]: value.trim(),
@@ -77,36 +104,46 @@ const ProfileForm = forwardRef<HTMLFormElement, IProfileDetailsProps>(
       }
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      console.log(error);
 
+      if (!user.id) return;
+
+      const { email, firstName, lastName } = newProfileDetails;
+
+      setIsSubmitting(true);
+      setSubmissionMessage('');
       setAttemptedSave(true);
 
-      if (noErrors) {
-        setSnackbarType('success');
-        setOpen(true);
+      const response = await updateProfile(user.id, firstName, lastName, email);
+      setIsSubmitting(false);
+      setOpen(true);
+      setSubmissionMessage(response.data.message);
 
-        setProfileDetails({
-          ...newProfileDetails,
-          profilePicture: profilePictureData,
-        });
-      } else {
+      if (response.status !== HttpStatusCode.Ok) {
         setSnackbarType('error');
-        setOpen(true);
+
+        return;
       }
+
+      setSnackbarType('success');
+      setProfileDetails({
+        ...newProfileDetails,
+        profilePicture: profilePictureData,
+      });
+      mutate(SWRKeys.user(user.id));
     };
 
-    const handleClose = (
-      _event?: React.SyntheticEvent | Event,
-      reason?: string
-    ) => {
+    const handleClose = (_event?: SyntheticEvent | Event, reason?: string) => {
       if (reason === 'clickaway') {
         return;
       }
 
       setOpen(false);
     };
+
+    if (isUserLoading)
+      return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
 
     return (
       <StyledProfileForm ref={ref} onSubmit={handleSubmit}>
@@ -150,9 +187,7 @@ const ProfileForm = forwardRef<HTMLFormElement, IProfileDetailsProps>(
             severity={snackbarType}
             sx={{ width: '100%' }}
           >
-            {snackbarType === 'success'
-              ? 'Saved successfully'
-              : 'Oops! Some fields need attention'}
+            {submissionMessage}
           </StyledAlert>
         </Snackbar>
       </StyledProfileForm>

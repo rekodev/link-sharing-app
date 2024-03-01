@@ -1,16 +1,18 @@
+import { Snackbar } from '@mui/material';
 import { useContext, useEffect } from 'react';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import { useLocation } from 'react-router-dom';
+
 import {
   StyledAvatar,
   StyledPreviewCard,
   StyledProfilePictureWrapper,
 } from './style';
-import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
-import { useLocation } from 'react-router-dom';
-import Svg from '../Svg';
 import linkIcon from '../../assets/images/icon-link-copied-to-clipboard.svg';
-import { Snackbar } from '@mui/material';
+import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import useUser from '../../hooks/useUser';
 import { StyledAlert } from '../../styles/UtilityStyles';
+import Svg from '../Svg';
 
 interface IPreviewCardProps {
   atLeastOnePlatform: boolean;
@@ -20,11 +22,12 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
   const { profileDetails } = useContext(ProfileDetailsContext);
   const { copiedLink, setCopiedLink } = useContext(CopiedLinkContext);
 
+  const { user, isUserLoading } = useUser();
   const location = useLocation();
 
   useEffect(() => {
     setCopiedLink(false);
-  }, [location]);
+  }, [location, setCopiedLink]);
 
   const handleClose = (
     _event?: React.SyntheticEvent | Event,
@@ -38,6 +41,8 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
     setCopiedLink(false);
   };
 
+  if (isUserLoading) return null;
+
   return (
     <StyledPreviewCard>
       <StyledProfilePictureWrapper>
@@ -47,8 +52,8 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
           <StyledAvatar />
         )}
       </StyledProfilePictureWrapper>
-      <h3>{`${profileDetails.firstName} ${profileDetails.lastName}`}</h3>
-      <p>{profileDetails.email}</p>
+      <h3>{`${user.firstName} ${user.lastName}`}</h3>
+      <p>{user.email}</p>
 
       {atLeastOnePlatform ? (
         <Snackbar

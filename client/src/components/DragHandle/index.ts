@@ -1,3 +1,1 @@
-import DragHandle from "./DragHandle";
-
-export default DragHandle
+export { default } from './DragHandle';
