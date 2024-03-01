@@ -1,19 +1,19 @@
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 
-import { pool } from "../database/db";
-import { UserCredentials, UserDto, UserProfileInfo } from "../types/user";
+import { pool } from '../database/db';
+import { UserCredentials, UserDto, UserProfileInfo } from '../types/types';
 
 export const doesUserExist = async (email: string) => {
   const client = await pool.connect();
 
   try {
-    const result = await client.query("SELECT * FROM users WHERE email = $1", [
+    const result = await client.query('SELECT * FROM users WHERE email = $1', [
       email,
     ]);
 
     return result.rows.length > 0;
   } catch (error) {
-    console.error("Error checking if user exists", error);
+    console.error('Error checking if user exists', error);
     throw error;
   } finally {
     client.release();
@@ -25,13 +25,13 @@ export const findUserById = async (id: string): Promise<UserDto | null> => {
 
   try {
     const result = await client.query(
-      "SELECT id, email, first_name, last_name, created_at, updated_at, profile_picture_url FROM users WHERE id = $1",
+      'SELECT id, email, first_name, last_name, created_at, updated_at, profile_picture_url FROM users WHERE id = $1',
       [id]
     );
 
     return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
-    console.error("Error checking if user exists", error);
+    console.error('Error checking if user exists', error);
     throw error;
   } finally {
     client.release();
@@ -44,13 +44,13 @@ export const findUserByEmail = async (
   const client = await pool.connect();
 
   try {
-    const result = await client.query("SELECT * FROM users WHERE email = $1", [
+    const result = await client.query('SELECT * FROM users WHERE email = $1', [
       email,
     ]);
 
     return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
-    console.error("Error checking if user exists", error);
+    console.error('Error checking if user exists', error);
     throw error;
   } finally {
     client.release();
@@ -66,13 +66,13 @@ export const createUser = async (userCredentials: UserCredentials) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await client.query(
-      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id",
+      'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id',
       [email, hashedPassword]
     );
 
     return result.rows[0].id;
   } catch (error) {
-    console.error("Error creating user", error);
+    console.error('Error creating user', error);
     throw error;
   } finally {
     client.release();
@@ -86,7 +86,7 @@ export const isPasswordCorrect = async (userCredentials: UserCredentials) => {
 
   try {
     const result = await client.query(
-      "SELECT password FROM users WHERE email = $1",
+      'SELECT password FROM users WHERE email = $1',
       [email]
     );
 
@@ -96,7 +96,7 @@ export const isPasswordCorrect = async (userCredentials: UserCredentials) => {
 
     return false;
   } catch (error) {
-    console.error("Error checking password", error);
+    console.error('Error checking password', error);
     throw error;
   } finally {
     client.release();
@@ -112,7 +112,7 @@ export const editUserInformation = async (
 
   try {
     const result = await client.query(
-      "UPDATE users SET first_name = $1, last_name = $2, email = $3 WHERE id = $4",
+      'UPDATE users SET first_name = $1, last_name = $2, email = $3 WHERE id = $4',
       [firstName, lastName, email, id]
     );
 
@@ -122,7 +122,7 @@ export const editUserInformation = async (
 
     return false;
   } catch (error) {
-    console.error("Error updating user information", error);
+    console.error('Error updating user information', error);
     throw error;
   }
 };
