@@ -1,4 +1,4 @@
-import { UserDto, UserModel } from "../types/user";
+import { UserDto, UserModel } from '../types/types';
 
 export const transformUser = (user: UserDto): UserModel => {
   return {
