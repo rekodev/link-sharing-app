@@ -28,7 +28,6 @@ import LinkCard from '../../components/LinkCard';
 import LinksPreview from '../../components/LinksPreview';
 import StartCard from '../../components/StartCard/StartCard';
 import { LinkContext } from '../../contexts/linkContext';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import useUser from '../../hooks/useUser';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import { SnackbarType } from '../../types/profileDetails';
@@ -73,7 +72,6 @@ const SortableLink = ({
 
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
-  const { profileDetails } = useContext(ProfileDetailsContext);
   const [newLinks, setNewLinks] = useState<IShareableLinkValues[]>(links);
   const [open, setOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
@@ -195,11 +193,7 @@ const Home = () => {
 
   return (
     <>
-      <LinksPreview
-        user={user}
-        links={newLinks}
-        profileDetails={profileDetails}
-      />
+      <LinksPreview user={user} />
       <StyledHome>
         <StyledHomeContainer>
           <h2>Customize your links</h2>

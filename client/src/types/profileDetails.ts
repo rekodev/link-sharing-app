@@ -3,11 +3,11 @@ export type ProfilePicture = {
   name: string;
 };
 
-export interface IProfileDetails {
+export type ProfileDetails = {
   firstName: string;
   lastName: string;
   email: string;
   profilePicture: ProfilePicture;
-}
+};
 
 export type SnackbarType = 'success' | 'error' | 'info' | 'warning';
