@@ -20,7 +20,7 @@ import {
 } from '../../pages/Profile/style';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import { ProfileDetailsFieldsError } from '../../types/errors';
-import { ProfilePicture, SnackbarType } from '../../types/profileDetails';
+import { SnackbarType } from '../../types/profileDetails';
 import Button from '../Button';
 import ImageUploadField from '../ImageUploadField';
 import ProfileDetailsFields from '../ProfileDetailsFields';
@@ -31,9 +31,6 @@ const ProfileDetailsForm = () => {
     ProfileDetailsContext
   );
 
-  const [imageData, setImageData] = useState<ProfilePicture>(
-    profileDetails.profilePicture
-  );
   const [newProfileDetails, setNewProfileDetails] = useState(profileDetails);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState('');
@@ -78,10 +75,8 @@ const ProfileDetailsForm = () => {
     }
 
     setSnackbarType('success');
-    setProfileDetails({
-      ...newProfileDetails,
-      profilePicture: imageData,
-    });
+    setProfileDetails(newProfileDetails);
+
     mutate(SWRKeys.user(user.id));
   };
 
@@ -106,7 +101,7 @@ const ProfileDetailsForm = () => {
     <>
       <StyledProfileDetailsForm onSubmit={handleSubmit}>
         <StyledProfileContainer>
-          <ImageUploadField imageData={imageData} setImageData={setImageData} />
+          <ImageUploadField />
           <ProfileDetailsFields
             attemptedSave={attemptedSave}
             setAttemptedSave={setAttemptedSave}
