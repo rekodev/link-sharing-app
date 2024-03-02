@@ -1,8 +1,9 @@
-import styled from 'styled-components';
-import { themeColors } from '../../styles/Theme';
 import { Box } from '@mui/material';
+import styled from 'styled-components';
 
-export const StyledProfileForm = styled.form`
+import { themeColors } from '../../styles/Theme';
+
+export const StyledProfileDetailsFieldsContainer = styled.div`
   padding: 1.25rem;
   background-color: ${themeColors.lightGray};
   border-radius: 1.25rem;

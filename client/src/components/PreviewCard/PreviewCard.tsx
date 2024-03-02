@@ -14,13 +14,14 @@ import useUser from '../../hooks/useUser';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import Svg from '../Svg';
 
-interface IPreviewCardProps {
+type Props = {
   atLeastOnePlatform: boolean;
-}
+};
 
-const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
-  const { profileDetails } = useContext(ProfileDetailsContext);
+const PreviewCard = ({ atLeastOnePlatform }: Props) => {
   const { copiedLink, setCopiedLink } = useContext(CopiedLinkContext);
+  const { profileDetails } = useContext(ProfileDetailsContext);
+  const { id } = profileDetails.profilePicture;
 
   const { user, isUserLoading } = useUser();
   const location = useLocation();
@@ -46,8 +47,8 @@ const PreviewCard = ({ atLeastOnePlatform }: IPreviewCardProps) => {
   return (
     <StyledPreviewCard>
       <StyledProfilePictureWrapper>
-        {profileDetails.profilePicture.src ? (
-          <img src={profileDetails.profilePicture.src} alt='Profile Picture' />
+        {profileDetails.profilePicture.id ? (
+          <img src={id} alt='Profile Picture' />
         ) : (
           <StyledAvatar />
         )}

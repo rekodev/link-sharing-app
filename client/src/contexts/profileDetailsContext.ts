@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+
 import { IProfileDetails } from '../types/profileDetails';
 
 interface IProfileDetailsContext {
@@ -12,7 +13,7 @@ export const ProfileDetailsContext = createContext<IProfileDetailsContext>({
     lastName: '',
     email: '',
     profilePicture: {
-      src: '',
+      id: '',
       name: '',
     },
   },

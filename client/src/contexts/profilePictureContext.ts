@@ -2,7 +2,7 @@ import { createContext } from 'react';
 
 interface IProfilePictureContext {
   profilePictureData: {
-    src: string;
+    id: string;
     name: string;
   };
   setProfilePictureData: React.Dispatch<
@@ -12,7 +12,7 @@ interface IProfilePictureContext {
 
 export const ProfilePictureContext = createContext<IProfilePictureContext>({
   profilePictureData: {
-    src: '',
+    id: '',
     name: '',
   },
   setProfilePictureData: () => {},

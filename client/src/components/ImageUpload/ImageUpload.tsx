@@ -1,27 +1,27 @@
 import { Alert, Snackbar } from '@mui/material';
-import { useContext, useRef, useState } from 'react';
-import uploadImageIcon from '../../assets/images/icon-upload-image.svg';
-import { ProfilePictureContext } from '../../contexts/profilePictureContext';
-import Svg from '../Svg';
+import { Dispatch, SetStateAction, useContext, useRef, useState } from 'react';
+
 import {
   StyledImageUpload,
   StyledImageUploadWrapper,
   StyledPreImageUploadWrapper,
   StyledUploadedImage,
 } from './style';
+import uploadImageIcon from '../../assets/images/icon-upload-image.svg';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import { ProfilePicture } from '../../types/profileDetails';
+import Svg from '../Svg';
 
-interface IImageUploadProps {
-  imageData: { src: string; name: string } | undefined;
-  setImageData: React.Dispatch<
-    React.SetStateAction<{ src: string; name: string } | undefined>
-  >;
-}
+type Props = {
+  imageData: ProfilePicture;
+  setImageData: Dispatch<SetStateAction<ProfilePicture>>;
+};
 
-const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
+const ImageUpload = ({ imageData, setImageData }: Props) => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const { setProfilePictureData } = useContext(ProfilePictureContext);
+  const { setProfileDetails } = useContext(ProfileDetailsContext);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -29,9 +29,7 @@ const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
     const file = e.target.files && e.target.files[0];
     console.log(file);
 
-    if (!file) {
-      return;
-    }
+    if (!file) return;
 
     if (file.type === 'image/png' || file.type === 'image/jpeg') {
       const img = new Image();
@@ -41,13 +39,16 @@ const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
           const reader = new FileReader();
 
           reader.onload = (e: ProgressEvent<FileReader>) => {
-            if (e.target && e.target.result) {
-              setImageData({ name: file.name, src: e.target.result as string });
-              setProfilePictureData({
+            if (!(e.target && e.target.result)) return;
+
+            setImageData({ name: file.name, id: e.target.result as string });
+            setProfileDetails((prev) => ({
+              ...prev,
+              profilePicture: {
+                id: e.target?.result as string,
                 name: file.name,
-                src: e.target.result as string,
-              });
-            }
+              },
+            }));
           };
 
           reader.readAsDataURL(file);
@@ -82,7 +83,7 @@ const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
   return (
     <StyledImageUploadWrapper>
       <StyledImageUpload onClick={triggerFileUpload}>
-        {!imageData?.src ? (
+        {!imageData?.id ? (
           <StyledPreImageUploadWrapper>
             <img src={uploadImageIcon} alt='Upload Image Icon' />
             <p>+ Upload Image</p>
@@ -91,7 +92,7 @@ const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
           <>
             <StyledUploadedImage>
               <img
-                src={imageData.src}
+                src={imageData.id}
                 className='uploaded-image'
                 alt='Profile Picture'
               />
