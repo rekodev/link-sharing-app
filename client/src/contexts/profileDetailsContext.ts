@@ -1,13 +1,13 @@
 import { createContext } from 'react';
 
-import { IProfileDetails } from '../types/profileDetails';
+import { ProfileDetails } from '../types/profileDetails';
 
-interface IProfileDetailsContext {
-  profileDetails: IProfileDetails;
-  setProfileDetails: React.Dispatch<React.SetStateAction<IProfileDetails>>;
+interface ProfileDetailsContext {
+  profileDetails: ProfileDetails;
+  setProfileDetails: React.Dispatch<React.SetStateAction<ProfileDetails>>;
 }
 
-export const ProfileDetailsContext = createContext<IProfileDetailsContext>({
+export const ProfileDetailsContext = createContext<ProfileDetailsContext>({
   profileDetails: {
     firstName: '',
     lastName: '',

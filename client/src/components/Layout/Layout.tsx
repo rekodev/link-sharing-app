@@ -6,7 +6,7 @@ import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
 import { LinkContext } from '../../contexts/linkContext';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import { UserContext } from '../../contexts/userContext';
-import { IProfileDetails } from '../../types/profileDetails';
+import { ProfileDetails } from '../../types/profileDetails';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { UserModel } from '../../types/user';
 import Footer from '../Footer';
@@ -23,7 +23,7 @@ const Layout = () => {
     updatedAt: '',
   });
   const [links, setLinks] = useState<[] | IShareableLinkValues[]>([]);
-  const [profileDetails, setProfileDetails] = useState<IProfileDetails>({
+  const [profileDetails, setProfileDetails] = useState<ProfileDetails>({
     firstName: 'Ben',
     lastName: 'Wright',
     email: 'ben@example.com',

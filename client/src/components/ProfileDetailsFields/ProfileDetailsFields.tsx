@@ -2,12 +2,12 @@ import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 
 import { StyledProfileDetailsFieldsContainer } from './style';
 import { ProfileDetailsFieldsError } from '../../types/errors';
-import { IProfileDetails } from '../../types/profileDetails';
+import { ProfileDetails } from '../../types/profileDetails';
 import Input from '../Input';
 
 type Props = {
-  newProfileDetails: IProfileDetails;
-  setNewProfileDetails: Dispatch<SetStateAction<IProfileDetails>>;
+  newProfileDetails: ProfileDetails;
+  setNewProfileDetails: Dispatch<SetStateAction<ProfileDetails>>;
   attemptedSave: boolean;
   setAttemptedSave: Dispatch<SetStateAction<boolean>>;
   error: ProfileDetailsFieldsError;
@@ -40,7 +40,7 @@ const ProfileDetailsFields = ({
     }
 
     const { name, value } = event.target;
-    setNewProfileDetails((prevData: IProfileDetails) => ({
+    setNewProfileDetails((prevData: ProfileDetails) => ({
       ...prevData,
       [name]: value.trim(),
     }));
