@@ -38,7 +38,7 @@ const useUser = () => {
 
   return useMemo(
     () => ({
-      user: data,
+      user: data as UserModel,
       isUserLoading: isLoading,
       mutateUser: mutate,
       userError: error,

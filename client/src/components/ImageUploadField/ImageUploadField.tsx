@@ -14,7 +14,11 @@ import uploadImageIcon from '../../assets/images/icon-upload-image.svg';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import Svg from '../Svg';
 
-const ImageUploadField = () => {
+type Props = {
+  onImageUpload: (image: File) => void;
+};
+
+const ImageUploadField = ({ onImageUpload }: Props) => {
   const { profileDetails, setProfileDetails } = useContext(
     ProfileDetailsContext
   );
@@ -28,7 +32,6 @@ const ImageUploadField = () => {
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
-    console.log(file);
 
     if (!file) return;
 
@@ -42,6 +45,7 @@ const ImageUploadField = () => {
           reader.onload = (e: ProgressEvent<FileReader>) => {
             if (!(e.target && e.target.result)) return;
 
+            onImageUpload(file);
             setProfileDetails((prev) => ({
               ...prev,
               profilePicture: {

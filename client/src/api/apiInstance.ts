@@ -5,6 +5,8 @@ import axios, {
   Method,
 } from 'axios';
 
+import { getAuthToken } from '../utils/authToken';
+
 class ApiInstance {
   private httpClient: AxiosInstance;
 
@@ -21,6 +23,18 @@ class ApiInstance {
       (response) => response,
       (error) => Promise.reject(error)
     );
+
+    this.httpClient.interceptors.request.use((config) => {
+      const excludes = ['/api/login', '/api/signup'];
+      if (!excludes.includes(config.url!)) {
+        const token = getAuthToken();
+        if (token) {
+          config.headers!['Authorization'] = `Bearer ${token}`;
+        }
+      }
+
+      return config;
+    });
   }
 
   async request<T = any>(
@@ -30,6 +44,10 @@ class ApiInstance {
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse> {
     try {
+      if (data instanceof FormData) {
+        config.headers = { ...config.headers, 'Content-Type': undefined };
+      }
+
       const response = await this.httpClient.request<T>({
         method,
         url,

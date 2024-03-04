@@ -32,6 +32,7 @@ const ProfileDetailsForm = () => {
   );
 
   const [newProfileDetails, setNewProfileDetails] = useState(profileDetails);
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState('');
   const [attemptedSave, setAttemptedSave] = useState(false);
@@ -52,6 +53,10 @@ const ProfileDetailsForm = () => {
     setOpen(false);
   };
 
+  const handleImageUpload = (image: File) => {
+    setProfilePicture(image);
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -63,7 +68,13 @@ const ProfileDetailsForm = () => {
     setSubmissionMessage('');
     setAttemptedSave(true);
 
-    const response = await updateProfile(user.id, firstName, lastName, email);
+    const response = await updateProfile(
+      user.id,
+      firstName,
+      lastName,
+      email,
+      profilePicture
+    );
     setIsSubmitting(false);
     setOpen(true);
     setSubmissionMessage(response.data.message);
@@ -78,6 +89,7 @@ const ProfileDetailsForm = () => {
     setProfileDetails(newProfileDetails);
 
     mutate(SWRKeys.user(user.id));
+    console.log(profilePicture);
   };
 
   useEffect(() => {
@@ -101,7 +113,7 @@ const ProfileDetailsForm = () => {
     <>
       <StyledProfileDetailsForm onSubmit={handleSubmit}>
         <StyledProfileContainer>
-          <ImageUploadField />
+          <ImageUploadField onImageUpload={handleImageUpload} />
           <ProfileDetailsFields
             attemptedSave={attemptedSave}
             setAttemptedSave={setAttemptedSave}
