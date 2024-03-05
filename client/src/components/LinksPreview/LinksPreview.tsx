@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+
 import {
   StyledLinksPreview,
   StyledLinksPreviewContainer,
@@ -8,25 +10,22 @@ import {
   StyledProfilePictureWrapper,
 } from './style';
 import phoneMockup from '../../assets/images/illustration-phone-mockup.svg';
-import { IProfileDetails } from '../../types/profileDetails';
+import { LinkContext } from '../../contexts/linkContext';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { UserModel } from '../../types/user';
 import { platforms } from '../../utils/platformList';
 import PlatformLink from '../PlatformLink';
 
 interface ILinksPreviewProps {
-  links: IShareableLinkValues[];
-  profileDetails: IProfileDetails;
-  imageData?: { src: string; name: string } | undefined;
   user: UserModel;
 }
 
-const LinksPreview = ({
-  links,
-  profileDetails,
-  imageData,
-  user,
-}: ILinksPreviewProps) => {
+const LinksPreview = ({ user }: ILinksPreviewProps) => {
+  const { links } = useContext(LinkContext);
+  const { profileDetails } = useContext(ProfileDetailsContext);
+  const { firstName, email, lastName, profilePicture } = profileDetails;
+
   if (!user) return null;
 
   return (
@@ -34,27 +33,14 @@ const LinksPreview = ({
       <StyledLinksPreviewContainer>
         <StyledPhoneImageWrapper>
           <StyledProfileDetailsWrapper>
-            <StyledProfilePictureWrapper
-              $profilePicture={
-                profileDetails.profilePicture.src || imageData?.src
-                  ? true
-                  : false
-              }
-            >
-              {imageData?.src ? (
-                <img src={imageData.src} alt='Profile Picture' />
-              ) : (
-                profileDetails.profilePicture.src && (
-                  <img
-                    src={profileDetails.profilePicture.src}
-                    alt='Profile Picture'
-                  />
-                )
+            <StyledProfilePictureWrapper $profilePicture={!!profilePicture.id}>
+              {profilePicture.id && (
+                <img src={profilePicture.id} alt='Profile Picture' />
               )}
             </StyledProfilePictureWrapper>
             <StyledProfileDetailsTextWrapper>
-              <h3>{`${user.firstName} ${user.lastName}`}</h3>
-              <p>{user.email}</p>
+              <h3>{`${firstName} ${lastName}`}</h3>
+              <p>{email}</p>
             </StyledProfileDetailsTextWrapper>
           </StyledProfileDetailsWrapper>
           <StyledPlatformWrapper>
@@ -64,9 +50,7 @@ const LinksPreview = ({
               );
 
               // Do not return more than 5 previewed links
-              if (idx > 4) {
-                return null;
-              }
+              if (idx > 4) return null;
 
               if (matchedPlatform) {
                 return (

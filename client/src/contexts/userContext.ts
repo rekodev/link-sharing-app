@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, createContext } from 'react';
+
 import { UserModel } from '../types/user';
 
 type UserContext = {

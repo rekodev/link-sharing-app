@@ -1,15 +1,17 @@
 import express from 'express';
+import cors from 'cors';
+require('dotenv').config();
+import multer from 'multer';
+import './config/cloudinary';
 import { connectToDb } from './database/db';
 import { editUserById, getUserById } from './controllers/userController';
 import { login, register } from './controllers/authController';
-import cors from 'cors';
 import { checkAuthPayload } from './middleware/payloadValidation';
 import authenticateToken from './middleware/auth';
 
-require('dotenv').config();
-
 const PORT = process.env.PORT;
 const app = express();
+const upload = multer();
 
 app.use(express.json());
 app.use(cors());
@@ -25,6 +27,11 @@ app.post('/api/login', checkAuthPayload, login);
 
 app.get('/api/user/:userId', authenticateToken, getUserById);
 
-app.put('/api/user/:userId', authenticateToken, editUserById);
+app.put(
+  '/api/user/:userId',
+  authenticateToken,
+  upload.single('image'),
+  editUserById
+);
 
 app.listen(PORT, startServer);

@@ -1,37 +1,39 @@
 import { Alert, Snackbar } from '@mui/material';
-import { useContext, useRef, useState } from 'react';
-import uploadImageIcon from '../../assets/images/icon-upload-image.svg';
-import { ProfilePictureContext } from '../../contexts/profilePictureContext';
-import Svg from '../Svg';
+import { ChangeEvent, useContext, useRef, useState } from 'react';
+
 import {
   StyledImageUpload,
   StyledImageUploadWrapper,
   StyledPreImageUploadWrapper,
   StyledUploadedImage,
+  StyledCardHeading,
+  StyledProfilePictureCard,
+  UploadedImageWrapper,
 } from './style';
+import uploadImageIcon from '../../assets/images/icon-upload-image.svg';
+import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import Svg from '../Svg';
 
-interface IImageUploadProps {
-  imageData: { src: string; name: string } | undefined;
-  setImageData: React.Dispatch<
-    React.SetStateAction<{ src: string; name: string } | undefined>
-  >;
-}
+type Props = {
+  onImageUpload: (image: File) => void;
+};
 
-const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
+const ImageUploadField = ({ onImageUpload }: Props) => {
+  const { profileDetails, setProfileDetails } = useContext(
+    ProfileDetailsContext
+  );
+  const { id: profilePictureId, name: profilePictureName } =
+    profileDetails.profilePicture;
+
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const { setProfilePictureData } = useContext(ProfilePictureContext);
-
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
-    console.log(file);
 
-    if (!file) {
-      return;
-    }
+    if (!file) return;
 
     if (file.type === 'image/png' || file.type === 'image/jpeg') {
       const img = new Image();
@@ -41,13 +43,16 @@ const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
           const reader = new FileReader();
 
           reader.onload = (e: ProgressEvent<FileReader>) => {
-            if (e.target && e.target.result) {
-              setImageData({ name: file.name, src: e.target.result as string });
-              setProfilePictureData({
+            if (!(e.target && e.target.result)) return;
+
+            onImageUpload(file);
+            setProfileDetails((prev) => ({
+              ...prev,
+              profilePicture: {
+                id: e.target?.result as string,
                 name: file.name,
-                src: e.target.result as string,
-              });
-            }
+              },
+            }));
           };
 
           reader.readAsDataURL(file);
@@ -70,19 +75,17 @@ const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
   };
 
   const triggerFileUpload = () => {
-    if (inputRef.current) {
-      inputRef.current.click();
-    }
+    if (!inputRef.current) return;
+
+    inputRef.current.click();
   };
 
-  const handleClose = () => {
-    setError(false);
-  };
+  const handleClose = () => setError(false);
 
-  return (
+  const renderImageUploadField = () => (
     <StyledImageUploadWrapper>
       <StyledImageUpload onClick={triggerFileUpload}>
-        {!imageData?.src ? (
+        {!profilePictureId ? (
           <StyledPreImageUploadWrapper>
             <img src={uploadImageIcon} alt='Upload Image Icon' />
             <p>+ Upload Image</p>
@@ -91,7 +94,7 @@ const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
           <>
             <StyledUploadedImage>
               <img
-                src={imageData.src}
+                src={profilePictureId}
                 className='uploaded-image'
                 alt='Profile Picture'
               />
@@ -117,9 +120,23 @@ const ImageUpload = ({ imageData, setImageData }: IImageUploadProps) => {
           </Snackbar>
         )}
       </StyledImageUpload>
-      <p>{imageData?.name}</p>
+      <p>{profilePictureName}</p>
     </StyledImageUploadWrapper>
+  );
+
+  return (
+    <>
+      <h2>Profile Details</h2>
+      <p>Add your details to create a personal touch to your profile.</p>
+      <StyledProfilePictureCard>
+        <StyledCardHeading>Profile picture</StyledCardHeading>
+        <UploadedImageWrapper>
+          {renderImageUploadField()}
+          <p>Image must be below 1024x1024px. Use PNG or JPG format.</p>
+        </UploadedImageWrapper>
+      </StyledProfilePictureCard>
+    </>
   );
 };
 
-export default ImageUpload;
+export default ImageUploadField;

@@ -3,17 +3,18 @@ import { CircularProgress } from '@mui/material';
 import { StyledButton } from './style';
 import Svg from '../Svg';
 
-interface IButtonProps {
+type Props = {
   imgSrc?: string;
   text: string;
   variant?: 'outlined' | 'contained' | 'text';
   hideOnMobile?: boolean;
   hideOnTablet?: boolean;
-  onClick?: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onClick?: (arg?: any) => void | Promise<void>;
   active?: boolean;
   type?: 'button' | 'submit' | 'reset' | undefined;
   isLoading?: boolean;
-}
+};
 
 const Button = ({
   imgSrc,
@@ -25,7 +26,7 @@ const Button = ({
   active,
   type,
   isLoading,
-}: IButtonProps) => {
+}: Props) => {
   return (
     <StyledButton
       $hideOnMobile={hideOnMobile}

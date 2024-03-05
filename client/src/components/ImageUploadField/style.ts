@@ -1,18 +1,59 @@
 import styled from 'styled-components';
-import { themeColors } from '../../styles/Theme';
+
 import { Breakpoints } from '../../styles/Breakpoints';
+import { themeColors } from '../../styles/Theme';
+
+export const StyledProfilePictureCard = styled.div`
+  background-color: ${themeColors.lightGray};
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+`;
+
+export const StyledCardHeading = styled.h4`
+  font-weight: 400;
+  font-size: 16px;
+  color: ${themeColors.darkGray};
+  margin: 0;
+  margin-bottom: 0.5rem;
+`;
+
+export const UploadedImageWrapper = styled.div`
+  > p {
+    color: ${themeColors.darkGray};
+    margin: 0;
+    line-height: 150%;
+    font-size: 12px;
+  }
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 360px;
+  }
+`;
 
 export const StyledImageUploadWrapper = styled.div`
   margin: 1rem 0 1.5rem 0;
 
   > p {
     color: ${themeColors.darkGray};
-    margin: 0;
-    line-height: 150%;
+    margin-top: 2px;
+    line-height: 125%;
     font-size: 12px;
     max-width: 200px;
-    white-space: normal;
+    white-space: nowrap;
     overflow-wrap: break-word;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {

@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { themeColors } from '../../styles/Theme';
-import { Breakpoints } from '../../styles/Breakpoints';
 
-export const StyledProfile = styled.section`
+import { Breakpoints } from '../../styles/Breakpoints';
+import { themeColors } from '../../styles/Theme';
+
+export const StyledProfile = styled.form`
   margin: 1rem;
   background-color: ${themeColors.white};
   border-radius: 0.75rem;
