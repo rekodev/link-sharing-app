@@ -4,8 +4,9 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CircularProgress, Snackbar } from '@mui/material';
+import { HttpStatusCode } from 'axios';
 import isUrl from 'is-url';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -13,6 +14,7 @@ import {
   StyledHomeContainer,
   StyledSaveButtonWrapper,
 } from './style';
+import { updateLinks } from '../../api';
 import Button from '../../components/Button';
 import LinksPreview from '../../components/LinksPreview';
 import SortableLink from '../../components/SortableLink';
@@ -21,13 +23,16 @@ import StartCard from '../../components/StartCard/StartCard';
 import { LinkContext } from '../../contexts/linkContext';
 import useDragHandlers from '../../hooks/useDragHandlers';
 import useUser from '../../hooks/useUser';
+import useUserLinks from '../../hooks/useUserLinks';
 import { StyledAlert } from '../../styles/UtilityStyles';
+import { UserLink } from '../../types/link';
 import { SnackbarType } from '../../types/profileDetails';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { platforms } from '../../utils/platformList';
 
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
+  const { links: userLinks, isLinksLoading: userLinksLoading } = useUserLinks();
   const [newLinks, setNewLinks] = useState<IShareableLinkValues[]>(links);
   const [open, setOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
@@ -48,6 +53,40 @@ const Home = () => {
         isBeingDragged: false,
       },
     ]);
+  };
+
+  useEffect(() => {
+    if (!userLinks) return;
+
+    const sortableLinks: Array<IShareableLinkValues> = userLinks.map(
+      (link) => ({
+        id: link.id.toString(),
+        platform: link.platform,
+        link: link.linkUrl,
+        attemptedSave: false,
+        errors: { platform: false, link: false, unique: false },
+        isBeingDragged: false,
+      })
+    );
+
+    setNewLinks(sortableLinks);
+  }, [userLinks]);
+
+  const handleSubmit = async () => {
+    if (!user.id) return;
+
+    const linksToBeSubmitted: Array<UserLink> = newLinks.map((link) => ({
+      platform: link.platform,
+      linkUrl: link.link,
+    }));
+
+    const result = await updateLinks(user.id, linksToBeSubmitted);
+
+    if (result.status !== HttpStatusCode.Ok) {
+      setSnackbarType('error');
+    }
+
+    setSnackbarType('success');
   };
 
   const handleSave = () => {
@@ -107,30 +146,34 @@ const Home = () => {
     setOpen(false);
   };
 
-  const renderLinks = () => (
-    <StyledSortableLinkWrapper>
-      <DndContext
-        collisionDetection={closestCenter}
-        onDragStart={onDragStart}
-        onDragEnd={onDragEnd}
-      >
-        <SortableContext
-          items={newLinks}
-          strategy={verticalListSortingStrategy}
+  const renderLinks = () => {
+    if (!userLinks) return;
+
+    return (
+      <StyledSortableLinkWrapper>
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
         >
-          {newLinks.map((link, index) => (
-            <SortableLink
-              key={link.id}
-              link={link}
-              index={index}
-              setNewLinks={setNewLinks}
-              isBeingDragged={link.isBeingDragged}
-            />
-          ))}
-        </SortableContext>
-      </DndContext>
-    </StyledSortableLinkWrapper>
-  );
+          <SortableContext
+            items={newLinks}
+            strategy={verticalListSortingStrategy}
+          >
+            {newLinks.map((link, index) => (
+              <SortableLink
+                key={link.id}
+                link={link}
+                index={index}
+                setNewLinks={setNewLinks}
+                isBeingDragged={link.isBeingDragged}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
+      </StyledSortableLinkWrapper>
+    );
+  };
 
   const renderSnackbar = () => (
     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
@@ -148,7 +191,7 @@ const Home = () => {
     </Snackbar>
   );
 
-  if (isUserLoading || !user)
+  if (isUserLoading || userLinksLoading || !userLinks)
     return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
 
   return (
@@ -166,10 +209,10 @@ const Home = () => {
             variant='outlined'
             onClick={handleAddNewLink}
           />
-          {newLinks.length === 0 ? <StartCard /> : renderLinks()}
+          {userLinks.length === 0 ? <StartCard /> : renderLinks()}
         </StyledHomeContainer>
         <StyledSaveButtonWrapper>
-          <Button variant='contained' text='Save' onClick={handleSave} />
+          <Button variant='contained' text='Save' onClick={handleSubmit} />
         </StyledSaveButtonWrapper>
 
         {renderSnackbar()}

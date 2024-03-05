@@ -20,4 +20,5 @@ export default fetcher;
 
 export const SWRKeys = {
   user: (userId: number) => `/api/user/${userId}`,
+  userLinks: (userId: number) => `api/links/${userId}`,
 };

@@ -37,3 +37,21 @@ export type UserProfileInfo = {
   email: string;
   profilePictureUrl: string;
 };
+
+export type LinkDto = {
+  id: number;
+  user_id: number;
+  platform: string;
+  link_url: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type LinkModel = {
+  id: number;
+  userId: number;
+  platform: string;
+  linkUrl: string;
+  createdAt: string;
+  updatedAt: string;
+};

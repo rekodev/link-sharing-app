@@ -6,8 +6,12 @@ import './config/cloudinary';
 import { connectToDb } from './database/db';
 import { editUserById, getUserById } from './controllers/userController';
 import { login, register } from './controllers/authController';
-import { checkAuthPayload } from './middleware/payloadValidation';
+import {
+  checkAuthPayload,
+  checkLinkPayload,
+} from './middleware/payloadValidation';
 import authenticateToken from './middleware/auth';
+import { editUserLinks, getUserLinks } from './controllers/linkController';
 
 const PORT = process.env.PORT;
 const app = express();
@@ -24,6 +28,10 @@ const startServer = () => {
 app.post('/api/register', register);
 
 app.post('/api/login', checkAuthPayload, login);
+
+app.post('/api/links/:userId', checkLinkPayload, editUserLinks);
+
+app.get('/api/links/:userId', getUserLinks);
 
 app.get('/api/user/:userId', authenticateToken, getUserById);
 

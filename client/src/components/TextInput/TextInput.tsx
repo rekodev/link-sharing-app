@@ -1,8 +1,9 @@
 import isUrl from 'is-url';
+
+import { StyledTextFieldWrapper } from './style';
 import linkIcon from '../../assets/images/icon-link.svg';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import Input from '../Input';
-import { StyledTextFieldWrapper } from './style';
 
 interface ITextInputProps {
   setNewLinks: React.Dispatch<
