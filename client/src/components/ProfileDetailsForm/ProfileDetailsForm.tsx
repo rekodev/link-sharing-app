@@ -1,12 +1,6 @@
 import { CircularProgress, Snackbar } from '@mui/material';
 import { HttpStatusCode } from 'axios';
-import {
-  FormEvent,
-  SyntheticEvent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { FormEvent, SyntheticEvent, useContext, useState } from 'react';
 import { mutate } from 'swr';
 
 import { updateProfile } from '../../api';
@@ -89,22 +83,19 @@ const ProfileDetailsForm = () => {
     setProfileDetails(newProfileDetails);
 
     mutate(SWRKeys.user(user.id));
-    console.log(profilePicture);
   };
 
-  useEffect(() => {
-    if (!user) return;
-
-    setNewProfileDetails({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      profilePicture: {
-        id: '',
-        name: '',
-      },
-    });
-  }, [user]);
+  const renderSnackbar = () => (
+    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      <StyledAlert
+        onClose={handleClose}
+        severity={snackbarType}
+        sx={{ width: '100%' }}
+      >
+        {submissionMessage}
+      </StyledAlert>
+    </Snackbar>
+  );
 
   if (isUserLoading)
     return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
@@ -134,15 +125,7 @@ const ProfileDetailsForm = () => {
         </StyledSaveButtonWrapper>
       </StyledProfileDetailsForm>
 
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <StyledAlert
-          onClose={handleClose}
-          severity={snackbarType}
-          sx={{ width: '100%' }}
-        >
-          {submissionMessage}
-        </StyledAlert>
-      </Snackbar>
+      {renderSnackbar()}
     </>
   );
 };
