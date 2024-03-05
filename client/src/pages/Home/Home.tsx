@@ -1,16 +1,8 @@
-import {
-  DndContext,
-  DragEndEvent,
-  DragStartEvent,
-  closestCenter,
-} from '@dnd-kit/core';
+import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
   SortableContext,
-  arrayMove,
-  useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { CircularProgress, Snackbar } from '@mui/material';
 import isUrl from 'is-url';
 import { useContext, useState } from 'react';
@@ -20,55 +12,19 @@ import {
   StyledHome,
   StyledHomeContainer,
   StyledSaveButtonWrapper,
-  StyledSortableLink,
-  StyledSortableLinkWrapper,
 } from './style';
 import Button from '../../components/Button';
-import LinkCard from '../../components/LinkCard';
 import LinksPreview from '../../components/LinksPreview';
+import SortableLink from '../../components/SortableLink';
+import { StyledSortableLinkWrapper } from '../../components/SortableLink/style';
 import StartCard from '../../components/StartCard/StartCard';
 import { LinkContext } from '../../contexts/linkContext';
+import useDragHandlers from '../../hooks/useDragHandlers';
 import useUser from '../../hooks/useUser';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import { SnackbarType } from '../../types/profileDetails';
 import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { platforms } from '../../utils/platformList';
-
-interface ISortableLinkProps {
-  link: IShareableLinkValues;
-  index: number;
-  setNewLinks: React.Dispatch<React.SetStateAction<IShareableLinkValues[]>>;
-  isBeingDragged: boolean | undefined;
-}
-
-const SortableLink = ({
-  link,
-  index,
-  setNewLinks,
-  isBeingDragged,
-}: ISortableLinkProps) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: link.id });
-
-  const style = { transition, transform: CSS.Transform.toString(transform) };
-
-  return (
-    <StyledSortableLink
-      $isBeingDragged={isBeingDragged}
-      ref={setNodeRef}
-      style={style}
-      className='link'
-    >
-      <LinkCard
-        index={index}
-        link={link}
-        setNewLinks={setNewLinks}
-        dragHandleProps={{ attributes, listeners }}
-        isBeingDragged={isBeingDragged}
-      />
-    </StyledSortableLink>
-  );
-};
 
 const Home = () => {
   const { links, setLinks } = useContext(LinkContext);
@@ -78,7 +34,9 @@ const Home = () => {
   const [uniqueLinks, setUniqueLinks] = useState(true);
   const { user, isUserLoading } = useUser();
 
-  const handleClick = () => {
+  const { onDragStart, onDragEnd } = useDragHandlers({ newLinks, setNewLinks });
+
+  const handleAddNewLink = () => {
     setNewLinks((prev) => [
       ...prev,
       {
@@ -138,45 +96,6 @@ const Home = () => {
     }
   };
 
-  const onDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-
-    const index = newLinks.findIndex((link) => link.id === active.id);
-
-    // setting isBeingDragged to true
-    setNewLinks((prev) =>
-      prev.map((link, idx) =>
-        idx === index ? { ...link, isBeingDragged: true } : link
-      )
-    );
-  };
-
-  const onDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    const oldIndex = newLinks.findIndex((link) => link.id === active.id);
-    const newIndex = newLinks.findIndex((link) => link.id === over?.id);
-
-    // if no switch made
-    if (active.id === over?.id) {
-      setNewLinks((prev) =>
-        prev.map((link, idx) =>
-          idx === oldIndex ? { ...link, isBeingDragged: false } : link
-        )
-      );
-
-      return;
-    }
-
-    setNewLinks((prev) => arrayMove(prev, oldIndex, newIndex));
-
-    // setting isBeingDragged to false
-    setNewLinks((prev) =>
-      prev.map((link, idx) =>
-        idx === newIndex ? { ...link, isBeingDragged: false } : link
-      )
-    );
-  };
-
   const handleClose = (
     _event?: React.SyntheticEvent | Event,
     reason?: string
@@ -187,6 +106,47 @@ const Home = () => {
 
     setOpen(false);
   };
+
+  const renderLinks = () => (
+    <StyledSortableLinkWrapper>
+      <DndContext
+        collisionDetection={closestCenter}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      >
+        <SortableContext
+          items={newLinks}
+          strategy={verticalListSortingStrategy}
+        >
+          {newLinks.map((link, index) => (
+            <SortableLink
+              key={link.id}
+              link={link}
+              index={index}
+              setNewLinks={setNewLinks}
+              isBeingDragged={link.isBeingDragged}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
+    </StyledSortableLinkWrapper>
+  );
+
+  const renderSnackbar = () => (
+    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      <StyledAlert
+        onClose={handleClose}
+        severity={snackbarType}
+        sx={{ width: '100%' }}
+      >
+        {snackbarType === 'success'
+          ? 'Saved successfully'
+          : uniqueLinks
+          ? 'Oops! Some fields need attention'
+          : 'Platforms must be unique'}
+      </StyledAlert>
+    </Snackbar>
+  );
 
   if (isUserLoading || !user)
     return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
@@ -204,48 +164,15 @@ const Home = () => {
           <Button
             text='+ Add new link'
             variant='outlined'
-            onClick={handleClick}
+            onClick={handleAddNewLink}
           />
-          {newLinks.length === 0 && <StartCard />}
-          <StyledSortableLinkWrapper>
-            <DndContext
-              collisionDetection={closestCenter}
-              onDragStart={onDragStart}
-              onDragEnd={onDragEnd}
-            >
-              <SortableContext
-                items={newLinks}
-                strategy={verticalListSortingStrategy}
-              >
-                {newLinks.map((link, index) => (
-                  <SortableLink
-                    key={link.id}
-                    link={link}
-                    index={index}
-                    setNewLinks={setNewLinks}
-                    isBeingDragged={link.isBeingDragged}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
-          </StyledSortableLinkWrapper>
+          {newLinks.length === 0 ? <StartCard /> : renderLinks()}
         </StyledHomeContainer>
         <StyledSaveButtonWrapper>
           <Button variant='contained' text='Save' onClick={handleSave} />
         </StyledSaveButtonWrapper>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <StyledAlert
-            onClose={handleClose}
-            severity={snackbarType}
-            sx={{ width: '100%' }}
-          >
-            {snackbarType === 'success'
-              ? 'Saved successfully'
-              : uniqueLinks
-              ? 'Oops! Some fields need attention'
-              : 'Platforms must be unique'}
-          </StyledAlert>
-        </Snackbar>
+
+        {renderSnackbar()}
       </StyledHome>
     </>
   );

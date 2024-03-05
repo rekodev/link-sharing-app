@@ -1,10 +1,7 @@
 import styled from 'styled-components';
-import { themeColors } from '../../styles/Theme';
-import { Breakpoints } from '../../styles/Breakpoints';
 
-interface ISortableLinkProps {
-  $isBeingDragged: boolean | undefined;
-}
+import { Breakpoints } from '../../styles/Breakpoints';
+import { themeColors } from '../../styles/Theme';
 
 export const StyledHome = styled.section`
   background-color: ${themeColors.white};
@@ -73,24 +70,5 @@ export const StyledSaveButtonWrapper = styled.div`
   }
 
   @media screen and (min-width: ${Breakpoints.TV}) {
-  }
-`;
-
-export const StyledSortableLink = styled.div<ISortableLinkProps>`
-  z-index: ${(props) => (props.$isBeingDragged ? '1' : 'initial')};
-`;
-
-export const StyledSortableLinkWrapper = styled.div`
-  margin-top: 1.5rem;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  flex: 1;
-  padding-bottom: 1.5rem;
-  overflow-y: auto;
-
-  @media screen and (min-width: ${Breakpoints.Tablet}) {
-    max-height: 485px;
   }
 `;

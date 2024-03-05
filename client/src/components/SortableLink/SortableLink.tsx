@@ -1,40 +1,41 @@
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
-import Button from '../Button';
-import SelectInput from '../SelectInput';
-import TextInput from '../TextInput';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Dispatch, SetStateAction } from 'react';
+
 import {
   StyledIconAndHeading,
   StyledLinkCard,
   StyledLinkCardTextWrapper,
+  StyledSortableLink,
 } from './style';
 import dragAndDropIcon from '../../assets/images/icon-drag-and-drop.svg';
-import DragHandle, { IDragHandleProps } from '../DragHandle/DragHandle';
+import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import Button from '../Button';
+import DragHandle from '../DragHandle';
+import SelectInput from '../SelectInput';
+import TextInput from '../TextInput';
 
-interface ILinkCardProps {
-  index: number;
+type Props = {
   link: IShareableLinkValues;
-  setNewLinks: React.Dispatch<
-    React.SetStateAction<[] | IShareableLinkValues[]>
-  >;
-  dragHandleProps: IDragHandleProps;
+  index: number;
+  setNewLinks: Dispatch<SetStateAction<Array<IShareableLinkValues>>>;
   isBeingDragged: boolean | undefined;
-}
+};
 
-const LinkCard = ({
-  index,
-  link,
-  setNewLinks,
-  dragHandleProps,
-  isBeingDragged,
-}: ILinkCardProps) => {
+const SortableLink = ({ link, index, setNewLinks, isBeingDragged }: Props) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: link.id });
+
+  const style = { transition, transform: CSS.Transform.toString(transform) };
+
   const handleRemove = () => {
     setNewLinks((prev) => prev.filter((_, idx) => idx !== index));
   };
 
-  return (
+  const renderLinkCard = () => (
     <StyledLinkCard $isBeingDragged={isBeingDragged}>
       <StyledLinkCardTextWrapper $isBeingDragged={isBeingDragged}>
-        <DragHandle {...dragHandleProps} />
+        <DragHandle attributes={attributes} listeners={listeners} />
         <StyledIconAndHeading>
           <img src={dragAndDropIcon} alt='Drag and Drop Icon' />
           <h4>Link #{index + 1}</h4>
@@ -55,6 +56,17 @@ const LinkCard = ({
       />
     </StyledLinkCard>
   );
+
+  return (
+    <StyledSortableLink
+      $isBeingDragged={isBeingDragged}
+      ref={setNodeRef}
+      style={style}
+      className='link'
+    >
+      {renderLinkCard()}
+    </StyledSortableLink>
+  );
 };
 
-export default LinkCard;
+export default SortableLink;

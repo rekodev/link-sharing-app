@@ -1,11 +1,32 @@
 import styled from 'styled-components';
+
+import { Breakpoints } from '../../styles/Breakpoints';
 import { themeColors } from '../../styles/Theme';
 
-interface IStyledLinkCardProps {
+type IsBeingDragged = {
   $isBeingDragged: boolean | undefined;
-}
+};
 
-export const StyledLinkCard = styled.div<IStyledLinkCardProps>`
+export const StyledSortableLink = styled.div<IsBeingDragged>`
+  z-index: ${(props) => (props.$isBeingDragged ? '1' : 'initial')};
+`;
+
+export const StyledSortableLinkWrapper = styled.div`
+  margin-top: 1.5rem;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+  padding-bottom: 1.5rem;
+  overflow-y: auto;
+
+  @media screen and (min-width: ${Breakpoints.Tablet}) {
+    max-height: 485px;
+  }
+`;
+
+export const StyledLinkCard = styled.div<IsBeingDragged>`
   display: flex;
   flex-direction: column;
   padding: 1.25rem;
@@ -17,7 +38,7 @@ export const StyledLinkCard = styled.div<IStyledLinkCardProps>`
   position: relative;
 `;
 
-export const StyledLinkCardTextWrapper = styled.div<IStyledLinkCardProps>`
+export const StyledLinkCardTextWrapper = styled.div<IsBeingDragged>`
   display: flex;
   align-items: center;
   justify-content: space-between;
