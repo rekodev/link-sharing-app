@@ -49,8 +49,8 @@ export const StyledPlatformWrapper = styled.div`
   padding: 0 2rem;
   bottom: 3rem;
   top: 17rem;
-  border: 1px solid red;
   height: 50%;
+  min-height: 300px;
 `;
 
 export const StyledProfileDetailsWrapper = styled.div`

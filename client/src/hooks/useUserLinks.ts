@@ -17,7 +17,7 @@ const useUserLinks = () => {
 
   return useMemo(
     () => ({
-      links: data?.links,
+      links: data?.links.sort((a, b) => a.index - b.index),
       isLinksLoading: isLoading,
       mutateLinks: mutate,
       linksError: error,

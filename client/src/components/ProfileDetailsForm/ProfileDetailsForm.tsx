@@ -54,7 +54,7 @@ const ProfileDetailsForm = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!user.id) return;
+    if (!user?.id) return;
 
     const { email, firstName, lastName } = newProfileDetails;
 

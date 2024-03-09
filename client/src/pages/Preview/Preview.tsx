@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-
 import {
   StyledPreview,
   StyledPreviewContainer,
@@ -7,14 +5,16 @@ import {
 } from './style';
 import PlatformLink from '../../components/PlatformLink';
 import PreviewCard from '../../components/PreviewCard';
-import { LinkContext } from '../../contexts/linkContext';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import useUserLinks from '../../hooks/useUserLinks';
 import { platforms } from '../../utils/platformList';
 
 const Preview = () => {
-  const { links } = useContext(LinkContext);
+  const { links: userLinks, isLinksLoading: isUserLinksLoading } =
+    useUserLinks();
 
-  const atLeastOnePlatform = links.some((link) =>
+  if (!userLinks || isUserLinksLoading) return null;
+
+  const atLeastOnePlatform = userLinks.some((link) =>
     platforms.some((platform) => platform.name === link.platform)
   );
 
@@ -24,22 +24,21 @@ const Preview = () => {
         <StyledPreviewContainer>
           <PreviewCard atLeastOnePlatform={atLeastOnePlatform} />
           <StyledPreviewLinkWrapper>
-            {links.map((link: IShareableLinkValues, idx: number) => {
+            {userLinks.map((link, idx: number) => {
               const matchedPlatform = platforms.find(
                 (platform) => platform.name === link.platform
               );
 
-              if (matchedPlatform) {
-                return (
-                  <PlatformLink
-                    key={idx}
-                    svgIcon={matchedPlatform.svgIcon}
-                    text={matchedPlatform.name}
-                    url={link.link}
-                  />
-                );
-              }
-              return null;
+              if (!matchedPlatform) return null;
+
+              return (
+                <PlatformLink
+                  key={idx}
+                  svgIcon={matchedPlatform.svgIcon}
+                  text={matchedPlatform.name}
+                  url={link.linkUrl}
+                />
+              );
             })}
           </StyledPreviewLinkWrapper>
         </StyledPreviewContainer>

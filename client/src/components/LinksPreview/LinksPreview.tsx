@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import {
   StyledLinksPreview,
   StyledLinksPreviewContainer,
@@ -21,11 +19,6 @@ const LinksPreview = () => {
   const { links, isLinksLoading } = useUserLinks();
   // const { profileDetails } = useContext(ProfileDetailsContext);
   // const { firstName, email, lastName, profilePicture } = profileDetails;
-
-  useEffect(() => {
-    console.log(links);
-    console.log(user);
-  }, [user, links]);
 
   const renderLinks = () => (
     <StyledPlatformWrapper>

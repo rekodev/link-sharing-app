@@ -6,8 +6,8 @@ import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
 import { LinkContext } from '../../contexts/linkContext';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import { UserContext } from '../../contexts/userContext';
+import { CustomizableLink } from '../../types/link';
 import { ProfileDetails } from '../../types/profileDetails';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { UserModel } from '../../types/user';
 import Footer from '../Footer';
 import Header from '../Header';
@@ -22,7 +22,7 @@ const Layout = () => {
     createdAt: '',
     updatedAt: '',
   });
-  const [links, setLinks] = useState<[] | IShareableLinkValues[]>([]);
+  const [links, setLinks] = useState<Array<CustomizableLink>>([]);
   const [profileDetails, setProfileDetails] = useState<ProfileDetails>({
     firstName: 'Ben',
     lastName: 'Wright',

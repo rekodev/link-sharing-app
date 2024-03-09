@@ -10,8 +10,6 @@ export const insertLinks = async (
   const client = await pool.connect();
 
   try {
-    await client.query('DELETE FROM links WHERE user_id = $1', [userId]);
-
     const result = await client.query(
       'INSERT INTO links (user_id, platform, link_url, index) VALUES ($1, $2, $3, $4) RETURNING id',
       [userId, platform, linkUrl, index]
@@ -20,6 +18,19 @@ export const insertLinks = async (
     return result.rows.length > 0;
   } catch (error) {
     console.error('Error creating user', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+export const deleteAllLinks = async (userId: number) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query('DELETE FROM links WHERE user_id = $1', [userId]);
+  } catch (error) {
+    console.error('Error deleting links', error);
     throw error;
   } finally {
     client.release();

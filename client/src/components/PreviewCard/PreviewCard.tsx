@@ -42,21 +42,9 @@ const PreviewCard = ({ atLeastOnePlatform }: Props) => {
     setCopiedLink(false);
   };
 
-  if (!user || isUserLoading) return null;
-
-  return (
-    <StyledPreviewCard>
-      <StyledProfilePictureWrapper>
-        {profileDetails.profilePicture.id ? (
-          <img src={id} alt='Profile Picture' />
-        ) : (
-          <StyledAvatar />
-        )}
-      </StyledProfilePictureWrapper>
-      <h3>{`${user.firstName} ${user.lastName}`}</h3>
-      <p>{user.email}</p>
-
-      {atLeastOnePlatform ? (
+  const renderSnackbar = () => {
+    if (atLeastOnePlatform)
+      return (
         <Snackbar
           open={copiedLink}
           autoHideDuration={6000}
@@ -71,21 +59,36 @@ const PreviewCard = ({ atLeastOnePlatform }: Props) => {
             The link has been copied to your clipboard!
           </StyledAlert>
         </Snackbar>
-      ) : (
-        <Snackbar
-          open={copiedLink}
-          autoHideDuration={6000}
+      );
+
+    return (
+      <Snackbar open={copiedLink} autoHideDuration={6000} onClose={handleClose}>
+        <StyledAlert
           onClose={handleClose}
+          severity='error'
+          sx={{ width: '100%' }}
         >
-          <StyledAlert
-            onClose={handleClose}
-            severity='error'
-            sx={{ width: '100%' }}
-          >
-            Add at least one platform
-          </StyledAlert>
-        </Snackbar>
-      )}
+          Add at least one platform
+        </StyledAlert>
+      </Snackbar>
+    );
+  };
+
+  if (!user || isUserLoading) return null;
+
+  return (
+    <StyledPreviewCard>
+      <StyledProfilePictureWrapper>
+        {profileDetails.profilePicture.id ? (
+          <img src={id} alt='Profile Picture' />
+        ) : (
+          <StyledAvatar />
+        )}
+      </StyledProfilePictureWrapper>
+      <h3>{`${user.firstName} ${user.lastName}`}</h3>
+      <p>{user.email}</p>
+
+      {renderSnackbar()}
     </StyledPreviewCard>
   );
 };

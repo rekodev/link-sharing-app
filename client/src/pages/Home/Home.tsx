@@ -31,7 +31,11 @@ import { SnackbarType } from '../../types/profileDetails';
 import { platforms } from '../../utils/platformList';
 
 const Home = () => {
-  const { links: userLinks, isLinksLoading: userLinksLoading } = useUserLinks();
+  const {
+    links: userLinks,
+    isLinksLoading: isUserLinksLoading,
+    mutateLinks,
+  } = useUserLinks();
   const [customizableLinks, setCustomizableLinks] = useState<
     Array<CustomizableLinkType>
   >([]);
@@ -80,10 +84,10 @@ const Home = () => {
     if (!user?.id) return;
 
     const linksToBeSubmitted: Array<UserLink> = customizableLinks.map(
-      (link) => ({
+      (link, idx) => ({
         platform: link.platform,
         linkUrl: link.linkUrl,
-        index: link.index,
+        index: idx,
       })
     );
 
@@ -94,9 +98,12 @@ const Home = () => {
 
     if (result.status !== HttpStatusCode.Ok) {
       setSnackbarType('error');
+
+      return;
     }
 
     setSnackbarType('success');
+    mutateLinks();
   };
 
   // const handleSave = () => {
@@ -158,7 +165,7 @@ const Home = () => {
   };
 
   const renderLinks = () => {
-    if (!userLinks) return;
+    if (!userLinks?.length) return <StartCard />;
 
     return (
       <StyledCustomizableLinkWrapper>
@@ -196,13 +203,13 @@ const Home = () => {
         {snackbarType === 'success'
           ? 'Saved successfully'
           : // : uniqueLinks
-            'Oops! Some fields need attention'}
+            'Error saving links. Please ensure all links are unique and have a URL present'}
         {/* // : 'Platforms must be unique'} */}
       </StyledAlert>
     </Snackbar>
   );
 
-  if (isUserLoading || userLinksLoading)
+  if (isUserLoading || isUserLinksLoading)
     return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
 
   return (
@@ -220,7 +227,7 @@ const Home = () => {
             variant='outlined'
             onClick={handleAddNewLink}
           />
-          {userLinks?.length === 0 ? <StartCard /> : renderLinks()}
+          {renderLinks()}
         </StyledHomeContainer>
         <StyledSaveButtonWrapper>
           <Button variant='contained' text='Save' onClick={handleSubmit} />

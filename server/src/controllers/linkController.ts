@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { findUserById } from '../database/user';
-import { insertLinks, getLinks } from '../database/link';
+import { insertLinks, getLinks, deleteAllLinks } from '../database/link';
 import { transformLink } from '../utils/transformers';
 
 export const getUserLinks = async (req: Request, res: Response) => {
@@ -40,6 +40,9 @@ export const editUserLinks = async (req: Request, res: Response) => {
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     const parsedUserId = parseInt(userId);
+
+    await deleteAllLinks(parsedUserId);
+
     const linkPromises = links.map((link) =>
       insertLinks(parsedUserId, link.platform, link.linkUrl, link.index)
     );

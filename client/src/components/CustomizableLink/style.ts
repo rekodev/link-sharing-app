@@ -18,8 +18,8 @@ export const StyledCustomizableLinkWrapper = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   flex: 1;
-  padding-bottom: 1.5rem;
   overflow-y: auto;
+  padding-bottom: 4rem;
 
   @media screen and (min-width: ${Breakpoints.Tablet}) {
     max-height: 485px;
