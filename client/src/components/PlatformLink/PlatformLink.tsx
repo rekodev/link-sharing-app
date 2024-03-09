@@ -1,9 +1,11 @@
-import arrowIcon from '../../assets/images/icon-arrow-right.svg';
+import { ReactNode } from 'react';
+
 import { StyledPlatformLink } from './style';
+import arrowIcon from '../../assets/images/icon-arrow-right.svg';
 
 interface IPlatformLinkProps {
   text: string;
-  svgIcon: React.ReactNode;
+  svgIcon: ReactNode;
   url: string;
 }
 

@@ -42,7 +42,7 @@ const PreviewCard = ({ atLeastOnePlatform }: Props) => {
     setCopiedLink(false);
   };
 
-  if (isUserLoading) return null;
+  if (!user || isUserLoading) return null;
 
   return (
     <StyledPreviewCard>

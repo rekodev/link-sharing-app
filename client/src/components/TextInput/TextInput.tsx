@@ -1,20 +1,19 @@
 import isUrl from 'is-url';
+import { Dispatch, SetStateAction } from 'react';
 
 import { StyledTextFieldWrapper } from './style';
 import linkIcon from '../../assets/images/icon-link.svg';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import { CustomizableLink } from '../../types/link';
 import Input from '../Input';
 
-interface ITextInputProps {
-  setNewLinks: React.Dispatch<
-    React.SetStateAction<IShareableLinkValues[] | []>
-  >;
-  link: IShareableLinkValues;
+type Props = {
+  setNewLinks: Dispatch<SetStateAction<CustomizableLink[]>>;
+  link: CustomizableLink;
   index: number;
   isError: boolean;
-}
+};
 
-const TextInput = ({ setNewLinks, link, index, isError }: ITextInputProps) => {
+const TextInput = ({ setNewLinks, link, index, isError }: Props) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputtedLink = event.target.value as string;
 
@@ -23,12 +22,12 @@ const TextInput = ({ setNewLinks, link, index, isError }: ITextInputProps) => {
 
       const linkToUpdate = { ...link };
 
-      linkToUpdate.link = inputtedLink;
+      linkToUpdate.linkUrl = inputtedLink;
 
       if (inputtedLink && isUrl(inputtedLink)) {
-        linkToUpdate.errors.link = false;
+        linkToUpdate.errors.linkUrl = false;
       } else {
-        linkToUpdate.errors.link = true;
+        linkToUpdate.errors.linkUrl = true;
       }
 
       updatedLinks[index] = linkToUpdate;
@@ -46,7 +45,7 @@ const TextInput = ({ setNewLinks, link, index, isError }: ITextInputProps) => {
         name='link'
         placeholder='e.g. https://www.github.com/johnappleseed'
         onChange={handleChange}
-        value={link.link}
+        value={link.linkUrl}
         error={isError}
         errorText='Please check the URL'
         imgSrc={linkIcon}

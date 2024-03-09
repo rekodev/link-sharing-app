@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { findUserById } from '../database/user';
 import { insertLinks, getLinks } from '../database/link';
 import { transformLink } from '../utils/transformers';
-import { LinkDto } from '../types/types';
 
 export const getUserLinks = async (req: Request, res: Response) => {
   const { userId } = req.params;
@@ -30,7 +29,10 @@ export const editUserLinks = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const {
     links,
-  }: Record<string, Array<{ platform: string; linkUrl: string }>> = req.body;
+  }: Record<
+    string,
+    Array<{ platform: string; linkUrl: string; index: number }>
+  > = req.body;
 
   try {
     const user = await findUserById(userId);
@@ -39,7 +41,7 @@ export const editUserLinks = async (req: Request, res: Response) => {
 
     const parsedUserId = parseInt(userId);
     const linkPromises = links.map((link) =>
-      insertLinks(parsedUserId, link.platform, link.linkUrl)
+      insertLinks(parsedUserId, link.platform, link.linkUrl, link.index)
     );
     const insertedLinks = await Promise.all(linkPromises);
 

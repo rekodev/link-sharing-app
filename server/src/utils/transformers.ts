@@ -1,4 +1,4 @@
-import { LinkDto, LinkModel, UserDto, UserModel } from '../types/types';
+import { LinkDto, LinkModel, UserDto, UserModel } from '../types';
 
 export const transformUser = (user: UserDto): UserModel => ({
   id: user.id,
@@ -17,4 +17,5 @@ export const transformLink = (link: LinkDto): LinkModel => ({
   updatedAt: link.updated_at,
   createdAt: link.created_at,
   platform: link.platform,
+  index: link.index,
 });

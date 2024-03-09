@@ -1,17 +1,20 @@
-import { LinkDto } from '../types/types';
+import { LinkDto } from '../types';
 import { pool } from './db';
 
 export const insertLinks = async (
   userId: number,
   platform: string,
-  linkUrl: string
+  linkUrl: string,
+  index: number
 ) => {
   const client = await pool.connect();
 
   try {
+    await client.query('DELETE FROM links WHERE user_id = $1', [userId]);
+
     const result = await client.query(
-      'INSERT INTO links (user_id, platform, link_url) VALUES ($1, $2, $3) RETURNING id',
-      [userId, platform, linkUrl]
+      'INSERT INTO links (user_id, platform, link_url, index) VALUES ($1, $2, $3, $4) RETURNING id',
+      [userId, platform, linkUrl, index]
     );
 
     return result.rows.length > 0;

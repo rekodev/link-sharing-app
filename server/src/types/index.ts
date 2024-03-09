@@ -41,6 +41,7 @@ export type UserProfileInfo = {
 export type LinkDto = {
   id: number;
   user_id: number;
+  index: number;
   platform: string;
   link_url: string;
   created_at: string;
@@ -50,6 +51,7 @@ export type LinkDto = {
 export type LinkModel = {
   id: number;
   userId: number;
+  index: number;
   platform: string;
   linkUrl: string;
   createdAt: string;

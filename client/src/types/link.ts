@@ -1,6 +1,7 @@
 export type LinkModel = {
   id: number;
   userId: number;
+  index: number;
   createdAt: string;
   updatedAt: string;
   platform: string;
@@ -10,4 +11,15 @@ export type LinkModel = {
 export type UserLink = {
   platform: string;
   linkUrl: string;
+  index: number;
+};
+
+export type CustomizableLink = UserLink & {
+  id: string;
+  attemptedSave: boolean;
+  isBeingDragged: boolean | undefined;
+  errors: {
+    platform: boolean;
+    linkUrl: boolean;
+  };
 };

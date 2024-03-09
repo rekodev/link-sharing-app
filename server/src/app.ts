@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-require('dotenv').config();
+import env from 'dotenv';
 import multer from 'multer';
 import './config/cloudinary';
 import { connectToDb } from './database/db';
@@ -12,6 +12,8 @@ import {
 } from './middleware/payloadValidation';
 import authenticateToken from './middleware/auth';
 import { editUserLinks, getUserLinks } from './controllers/linkController';
+
+env.config();
 
 const PORT = process.env.PORT;
 const app = express();

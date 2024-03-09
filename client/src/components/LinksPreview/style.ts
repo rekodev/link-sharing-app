@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { Breakpoints } from '../../styles/Breakpoints';
 import { themeColors } from '../../styles/Theme';
 
@@ -48,6 +49,8 @@ export const StyledPlatformWrapper = styled.div`
   padding: 0 2rem;
   bottom: 3rem;
   top: 17rem;
+  border: 1px solid red;
+  height: 50%;
 `;
 
 export const StyledProfileDetailsWrapper = styled.div`

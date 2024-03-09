@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { LinkModel, UserCredentials } from '../types/types';
+import { LinkModel, UserCredentials } from '../types';
 
 export const checkAuthPayload = (
   req: Request<UserCredentials>,

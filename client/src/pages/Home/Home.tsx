@@ -5,8 +5,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CircularProgress, Snackbar } from '@mui/material';
 import { HttpStatusCode } from 'axios';
-import isUrl from 'is-url';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -16,41 +15,47 @@ import {
 } from './style';
 import { updateLinks } from '../../api';
 import Button from '../../components/Button';
+import CustomizableLink from '../../components/CustomizableLink';
+import { StyledCustomizableLinkWrapper } from '../../components/CustomizableLink/style';
 import LinksPreview from '../../components/LinksPreview';
-import SortableLink from '../../components/SortableLink';
-import { StyledSortableLinkWrapper } from '../../components/SortableLink/style';
 import StartCard from '../../components/StartCard/StartCard';
-import { LinkContext } from '../../contexts/linkContext';
 import useDragHandlers from '../../hooks/useDragHandlers';
 import useUser from '../../hooks/useUser';
 import useUserLinks from '../../hooks/useUserLinks';
 import { StyledAlert } from '../../styles/UtilityStyles';
-import { UserLink } from '../../types/link';
+import {
+  CustomizableLink as CustomizableLinkType,
+  UserLink,
+} from '../../types/link';
 import { SnackbarType } from '../../types/profileDetails';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
 import { platforms } from '../../utils/platformList';
 
 const Home = () => {
-  const { links, setLinks } = useContext(LinkContext);
   const { links: userLinks, isLinksLoading: userLinksLoading } = useUserLinks();
-  const [newLinks, setNewLinks] = useState<IShareableLinkValues[]>(links);
-  const [open, setOpen] = useState(false);
+  const [customizableLinks, setCustomizableLinks] = useState<
+    Array<CustomizableLinkType>
+  >([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
-  const [uniqueLinks, setUniqueLinks] = useState(true);
+  // const [uniqueLinks, setUniqueLinks] = useState(true);
   const { user, isUserLoading } = useUser();
 
-  const { onDragStart, onDragEnd } = useDragHandlers({ newLinks, setNewLinks });
+  const { onDragStart, onDragEnd } = useDragHandlers({
+    customizableLinks,
+    setCustomizableLinks,
+  });
 
   const handleAddNewLink = () => {
-    setNewLinks((prev) => [
+    setCustomizableLinks((prev) => [
       ...prev,
       {
         id: uuidv4(),
         platform: platforms[0].name,
-        link: '',
+        linkUrl: '',
         attemptedSave: false,
-        errors: { platform: false, link: false, unique: false },
+        errors: { platform: false, linkUrl: false, unique: false },
         isBeingDragged: false,
+        index: 0,
       },
     ]);
   };
@@ -58,29 +63,34 @@ const Home = () => {
   useEffect(() => {
     if (!userLinks) return;
 
-    const sortableLinks: Array<IShareableLinkValues> = userLinks.map(
-      (link) => ({
-        id: link.id.toString(),
-        platform: link.platform,
-        link: link.linkUrl,
-        attemptedSave: false,
-        errors: { platform: false, link: false, unique: false },
-        isBeingDragged: false,
-      })
-    );
+    const latestLinks: Array<CustomizableLinkType> = userLinks.map((link) => ({
+      id: uuidv4(),
+      platform: link.platform,
+      linkUrl: link.linkUrl,
+      attemptedSave: false,
+      errors: { platform: false, linkUrl: false, unique: false },
+      isBeingDragged: false,
+      index: link.index,
+    }));
 
-    setNewLinks(sortableLinks);
+    setCustomizableLinks(latestLinks);
   }, [userLinks]);
 
   const handleSubmit = async () => {
-    if (!user.id) return;
+    if (!user?.id) return;
 
-    const linksToBeSubmitted: Array<UserLink> = newLinks.map((link) => ({
-      platform: link.platform,
-      linkUrl: link.link,
-    }));
+    const linksToBeSubmitted: Array<UserLink> = customizableLinks.map(
+      (link) => ({
+        platform: link.platform,
+        linkUrl: link.linkUrl,
+        index: link.index,
+      })
+    );
+
+    console.log(linksToBeSubmitted);
 
     const result = await updateLinks(user.id, linksToBeSubmitted);
+    setSnackbarOpen(true);
 
     if (result.status !== HttpStatusCode.Ok) {
       setSnackbarType('error');
@@ -89,51 +99,52 @@ const Home = () => {
     setSnackbarType('success');
   };
 
-  const handleSave = () => {
-    let allValid = true;
-    // localStorage.setItem('links', JSON.stringify(links));
-    // Check if platforms are unique
-    const uniquePlatforms =
-      new Set(newLinks.map((link) => link.platform)).size === newLinks.length;
+  // const handleSave = () => {
+  //   let allValid = true;
+  //   // localStorage.setItem('links', JSON.stringify(links));
+  //   // Check if platforms are unique
+  //   const uniquePlatforms =
+  //     new Set(customizableLinks.map((link) => link.platform)).size ===
+  //     customizableLinks.length;
 
-    const updatedLinks = newLinks.map((link) => {
-      const isLinkValid = isUrl(link.link);
-      const isPlatformValid = Boolean(link.platform);
+  //   const updatedLinks = customizableLinks.map((link) => {
+  //     const isLinkValid = isUrl(link.linkUrl);
+  //     const isPlatformValid = Boolean(link.platform);
 
-      if (!isLinkValid || !isPlatformValid || !uniquePlatforms) {
-        allValid = false;
+  //     if (!isLinkValid || !isPlatformValid || !uniquePlatforms) {
+  //       allValid = false;
 
-        return {
-          ...link,
-          attemptedSave: true,
-          errors: {
-            platform: !isPlatformValid,
-            link: !isLinkValid,
-          },
-        };
-      }
+  //       return {
+  //         ...link,
+  //         attemptedSave: true,
+  //         errors: {
+  //           platform: !isPlatformValid,
+  //           linkUrl: !isLinkValid,
+  //         },
+  //       };
+  //     }
 
-      return {
-        ...link,
-        attemptedSave: false,
-        errors: { platform: false, link: false },
-      };
-    });
+  //     return {
+  //       ...link,
+  //       attemptedSave: false,
+  //       errors: { platform: false, linkUrl: false },
+  //     };
+  //   });
 
-    if (allValid) {
-      setLinks(updatedLinks);
-      setSnackbarType('success');
-      setOpen(true);
-      setUniqueLinks(true);
-    } else {
-      setNewLinks(updatedLinks);
-      setSnackbarType('error');
-      setOpen(true);
-      if (!uniquePlatforms) {
-        setUniqueLinks(false);
-      }
-    }
-  };
+  //   if (allValid) {
+  //     setLinks(updatedLinks);
+  //     setSnackbarType('success');
+  //     setOpen(true);
+  //     setUniqueLinks(true);
+  //   } else {
+  //     setCustomizableLinks(updatedLinks);
+  //     setSnackbarType('error');
+  //     setOpen(true);
+  //     if (!uniquePlatforms) {
+  //       setUniqueLinks(false);
+  //     }
+  //   }
+  // };
 
   const handleClose = (
     _event?: React.SyntheticEvent | Event,
@@ -143,40 +154,40 @@ const Home = () => {
       return;
     }
 
-    setOpen(false);
+    setSnackbarOpen(false);
   };
 
   const renderLinks = () => {
     if (!userLinks) return;
 
     return (
-      <StyledSortableLinkWrapper>
+      <StyledCustomizableLinkWrapper>
         <DndContext
           collisionDetection={closestCenter}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
         >
           <SortableContext
-            items={newLinks}
+            items={customizableLinks}
             strategy={verticalListSortingStrategy}
           >
-            {newLinks.map((link, index) => (
-              <SortableLink
+            {customizableLinks.map((link, index) => (
+              <CustomizableLink
                 key={link.id}
                 link={link}
                 index={index}
-                setNewLinks={setNewLinks}
+                setNewLinks={setCustomizableLinks}
                 isBeingDragged={link.isBeingDragged}
               />
             ))}
           </SortableContext>
         </DndContext>
-      </StyledSortableLinkWrapper>
+      </StyledCustomizableLinkWrapper>
     );
   };
 
   const renderSnackbar = () => (
-    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+    <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
       <StyledAlert
         onClose={handleClose}
         severity={snackbarType}
@@ -184,19 +195,19 @@ const Home = () => {
       >
         {snackbarType === 'success'
           ? 'Saved successfully'
-          : uniqueLinks
-          ? 'Oops! Some fields need attention'
-          : 'Platforms must be unique'}
+          : // : uniqueLinks
+            'Oops! Some fields need attention'}
+        {/* // : 'Platforms must be unique'} */}
       </StyledAlert>
     </Snackbar>
   );
 
-  if (isUserLoading || userLinksLoading || !userLinks)
+  if (isUserLoading || userLinksLoading)
     return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
 
   return (
     <>
-      <LinksPreview user={user} />
+      <LinksPreview />
       <StyledHome>
         <StyledHomeContainer>
           <h2>Customize your links</h2>
@@ -209,7 +220,7 @@ const Home = () => {
             variant='outlined'
             onClick={handleAddNewLink}
           />
-          {userLinks.length === 0 ? <StartCard /> : renderLinks()}
+          {userLinks?.length === 0 ? <StartCard /> : renderLinks()}
         </StyledHomeContainer>
         <StyledSaveButtonWrapper>
           <Button variant='contained' text='Save' onClick={handleSubmit} />

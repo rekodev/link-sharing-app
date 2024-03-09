@@ -7,11 +7,11 @@ type IsBeingDragged = {
   $isBeingDragged: boolean | undefined;
 };
 
-export const StyledSortableLink = styled.div<IsBeingDragged>`
+export const StyledCustomizableLink = styled.div<IsBeingDragged>`
   z-index: ${(props) => (props.$isBeingDragged ? '1' : 'initial')};
 `;
 
-export const StyledSortableLinkWrapper = styled.div`
+export const StyledCustomizableLinkWrapper = styled.div`
   margin-top: 1.5rem;
   overflow-x: hidden;
   display: flex;

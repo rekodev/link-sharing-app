@@ -2,49 +2,60 @@ import { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { Dispatch, SetStateAction } from 'react';
 
-import { IShareableLinkValues } from '../types/shareableLinkValues';
+import { CustomizableLink } from '../types/link';
 
 type Props = {
-  newLinks: Array<IShareableLinkValues>;
-  setNewLinks: Dispatch<SetStateAction<Array<IShareableLinkValues>>>;
+  customizableLinks: Array<CustomizableLink>;
+  setCustomizableLinks: Dispatch<SetStateAction<Array<CustomizableLink>>>;
 };
 
-const useDragHandlers = ({ newLinks, setNewLinks }: Props) => {
+const useDragHandlers = ({
+  customizableLinks,
+  setCustomizableLinks,
+}: Props) => {
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event;
 
-    const index = newLinks.findIndex((link) => link.id === active.id);
+    const index = customizableLinks.findIndex((link) => link.id === active.id);
+
+    console.log(index);
 
     // setting isBeingDragged to true
-    setNewLinks((prev) =>
+    setCustomizableLinks((prev) =>
       prev.map((link, idx) =>
-        idx === index ? { ...link, isBeingDragged: true } : link
+        idx === index ? { ...link, isBeingDragged: true, index: idx } : link
       )
     );
   };
 
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    const oldIndex = newLinks.findIndex((link) => link.id === active.id);
-    const newIndex = newLinks.findIndex((link) => link.id === over?.id);
+    const oldIndex = customizableLinks.findIndex(
+      (link) => link.id === active.id
+    );
+    const newIndex = customizableLinks.findIndex(
+      (link) => link.id === over?.id
+    );
 
     // if no switch made
     if (active.id === over?.id) {
-      setNewLinks((prev) =>
+      setCustomizableLinks((prev) =>
         prev.map((link, idx) =>
-          idx === oldIndex ? { ...link, isBeingDragged: false } : link
+          idx === oldIndex
+            ? { ...link, isBeingDragged: false, index: idx }
+            : link
         )
       );
 
       return;
     }
 
-    setNewLinks((prev) => arrayMove(prev, oldIndex, newIndex));
+    setCustomizableLinks((prev) => arrayMove(prev, oldIndex, newIndex));
 
     // setting isBeingDragged to false
-    setNewLinks((prev) =>
+    setCustomizableLinks((prev) =>
       prev.map((link, idx) =>
-        idx === newIndex ? { ...link, isBeingDragged: false } : link
+        idx === newIndex ? { ...link, isBeingDragged: false, index: idx } : link
       )
     );
   };

@@ -6,23 +6,28 @@ import {
   StyledIconAndHeading,
   StyledLinkCard,
   StyledLinkCardTextWrapper,
-  StyledSortableLink,
+  StyledCustomizableLink,
 } from './style';
 import dragAndDropIcon from '../../assets/images/icon-drag-and-drop.svg';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
+import { CustomizableLink as CustomizableLinkType } from '../../types/link';
 import Button from '../Button';
 import DragHandle from '../DragHandle';
 import SelectInput from '../SelectInput';
 import TextInput from '../TextInput';
 
 type Props = {
-  link: IShareableLinkValues;
+  link: CustomizableLinkType;
   index: number;
-  setNewLinks: Dispatch<SetStateAction<Array<IShareableLinkValues>>>;
+  setNewLinks: Dispatch<SetStateAction<Array<CustomizableLinkType>>>;
   isBeingDragged: boolean | undefined;
 };
 
-const SortableLink = ({ link, index, setNewLinks, isBeingDragged }: Props) => {
+const CustomizableLink = ({
+  link,
+  index,
+  setNewLinks,
+  isBeingDragged,
+}: Props) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: link.id });
 
@@ -52,21 +57,21 @@ const SortableLink = ({ link, index, setNewLinks, isBeingDragged }: Props) => {
         link={link}
         index={index}
         setNewLinks={setNewLinks}
-        isError={link.errors.link && link.attemptedSave}
+        isError={link.errors.linkUrl && link.attemptedSave}
       />
     </StyledLinkCard>
   );
 
   return (
-    <StyledSortableLink
+    <StyledCustomizableLink
       $isBeingDragged={isBeingDragged}
       ref={setNodeRef}
       style={style}
       className='link'
     >
       {renderLinkCard()}
-    </StyledSortableLink>
+    </StyledCustomizableLink>
   );
 };
 
-export default SortableLink;
+export default CustomizableLink;

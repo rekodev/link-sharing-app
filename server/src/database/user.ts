@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 
 import { pool } from '../database/db';
-import { UserCredentials, UserDto, UserProfileInfo } from '../types/types';
+import { UserCredentials, UserDto, UserProfileInfo } from '../types';
 
 export const doesUserExist = async (email: string) => {
   const client = await pool.connect();
