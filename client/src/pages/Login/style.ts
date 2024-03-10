@@ -1,7 +1,8 @@
 import styled from 'styled-components';
-import { themeColors } from '../../styles/Theme';
+
 import Input from '../../components/Input';
 import { Breakpoints } from '../../styles/Breakpoints';
+import { themeColors } from '../../styles/Theme';
 
 export const StyledLoginWrapper = styled.main`
   @media screen and (min-width: ${Breakpoints.Tablet}) {

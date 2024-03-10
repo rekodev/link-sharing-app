@@ -1,9 +1,9 @@
 export type LinkModel = {
-  id: number;
+  id?: number;
   userId: number;
   index: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   platform: string;
   linkUrl: string;
 };

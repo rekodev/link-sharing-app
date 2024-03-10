@@ -18,14 +18,14 @@ import TextInput from '../TextInput';
 type Props = {
   link: CustomizableLinkType;
   index: number;
-  setNewLinks: Dispatch<SetStateAction<Array<CustomizableLinkType>>>;
+  setCustomizableLinks: Dispatch<SetStateAction<Array<CustomizableLinkType>>>;
   isBeingDragged: boolean | undefined;
 };
 
 const CustomizableLink = ({
   link,
   index,
-  setNewLinks,
+  setCustomizableLinks,
   isBeingDragged,
 }: Props) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -34,7 +34,7 @@ const CustomizableLink = ({
   const style = { transition, transform: CSS.Transform.toString(transform) };
 
   const handleRemove = () => {
-    setNewLinks((prev) => prev.filter((_, idx) => idx !== index));
+    setCustomizableLinks((prev) => prev.filter((_, idx) => idx !== index));
   };
 
   const renderLinkCard = () => (
@@ -50,13 +50,13 @@ const CustomizableLink = ({
       <SelectInput
         link={link}
         index={index}
-        setNewLinks={setNewLinks}
+        setCustomizableLinks={setCustomizableLinks}
         isError={link.errors.platform && link.attemptedSave}
       />
       <TextInput
         link={link}
         index={index}
-        setNewLinks={setNewLinks}
+        setCustomizableLinks={setCustomizableLinks}
         isError={link.errors.linkUrl && link.attemptedSave}
       />
     </StyledLinkCard>

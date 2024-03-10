@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Breakpoints } from '../../styles/Breakpoints';
 import { themeColors } from '../../styles/Theme';
 
-export const StyledHome = styled.section`
+export const StyledLinks = styled.section`
   background-color: ${themeColors.white};
   border-radius: 0.75rem;
   margin: 1rem;
@@ -17,7 +17,7 @@ export const StyledHome = styled.section`
   }
 `;
 
-export const StyledHomeContainer = styled.div`
+export const StyledLinksContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;

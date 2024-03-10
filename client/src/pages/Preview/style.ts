@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { themeColors } from '../../styles/Theme';
+
 import { Breakpoints } from '../../styles/Breakpoints';
+import { themeColors } from '../../styles/Theme';
 
 export const StyledPreview = styled.section`
   padding: 3.75rem;

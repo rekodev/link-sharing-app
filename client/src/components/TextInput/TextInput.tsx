@@ -7,17 +7,17 @@ import { CustomizableLink } from '../../types/link';
 import Input from '../Input';
 
 type Props = {
-  setNewLinks: Dispatch<SetStateAction<CustomizableLink[]>>;
+  setCustomizableLinks: Dispatch<SetStateAction<CustomizableLink[]>>;
   link: CustomizableLink;
   index: number;
   isError: boolean;
 };
 
-const TextInput = ({ setNewLinks, link, index, isError }: Props) => {
+const TextInput = ({ setCustomizableLinks, link, index, isError }: Props) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputtedLink = event.target.value as string;
 
-    setNewLinks((prev) => {
+    setCustomizableLinks((prev) => {
       const updatedLinks = Array.from(prev);
 
       const linkToUpdate = { ...link };

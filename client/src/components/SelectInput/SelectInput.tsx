@@ -1,6 +1,6 @@
 import { SelectChangeEvent } from '@mui/material';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
-import { platforms } from '../../utils/platformList';
+import { Dispatch, SetStateAction } from 'react';
+
 import {
   StyledFormControl,
   StyledFormHelperText,
@@ -8,24 +8,29 @@ import {
   StyledMenuItem,
   StyledSelect,
 } from './style';
+import useUser from '../../hooks/useUser';
+import useUserLinks from '../../hooks/useUserLinks';
+import { CustomizableLink } from '../../types/link';
+import { platforms } from '../../utils/platformList';
+import { transformCustomizableLink } from '../../utils/transformers';
 
-interface ISelectInputProps {
-  setNewLinks: React.Dispatch<React.SetStateAction<IShareableLinkValues[]>>;
-  link: IShareableLinkValues;
+type Props = {
+  setCustomizableLinks: Dispatch<SetStateAction<Array<CustomizableLink>>>;
+  link: CustomizableLink;
   index: number;
   isError: boolean;
-}
+};
 
-const SelectInput = ({
-  setNewLinks,
-  link,
-  index,
-  isError,
-}: ISelectInputProps) => {
+const SelectInput = ({ setCustomizableLinks, link, index, isError }: Props) => {
+  const { user } = useUser();
+  const { mutateLinks } = useUserLinks();
+
   const handleChange = (event: SelectChangeEvent<unknown>) => {
+    if (!user?.id) return;
+
     const selectedPlatform = event.target.value as string;
 
-    setNewLinks((prev): IShareableLinkValues[] => {
+    setCustomizableLinks((prev): Array<CustomizableLink> => {
       const updatedLinks = Array.from(prev);
 
       const linkToUpdate = { ...link };
@@ -39,6 +44,12 @@ const SelectInput = ({
       }
 
       updatedLinks[index] = linkToUpdate;
+
+      const transformedUpdatedLinks = updatedLinks.map((link) =>
+        transformCustomizableLink(user.id!, link)
+      );
+
+      mutateLinks({ links: transformedUpdatedLinks }, false);
 
       return updatedLinks;
     });
