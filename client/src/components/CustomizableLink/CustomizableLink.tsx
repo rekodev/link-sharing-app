@@ -10,10 +10,10 @@ import {
 } from './style';
 import dragAndDropIcon from '../../assets/images/icon-drag-and-drop.svg';
 import { CustomizableLink as CustomizableLinkType } from '../../types/link';
-import Button from '../Button';
+import CustomizableLinkSelect from '../CustomizableLinkSelect';
+import CustomizableLinkText from '../CustomizableLinkText';
 import DragHandle from '../DragHandle';
-import SelectInput from '../SelectInput';
-import TextInput from '../TextInput';
+import Button from '../shared/Button';
 
 type Props = {
   link: CustomizableLinkType;
@@ -47,13 +47,13 @@ const CustomizableLink = ({
         </StyledIconAndHeading>
         <Button text='Remove' variant='text' onClick={handleRemove} />
       </StyledLinkCardTextWrapper>
-      <SelectInput
+      <CustomizableLinkSelect
         link={link}
         index={index}
         setCustomizableLinks={setCustomizableLinks}
         isError={link.errors.platform && link.attemptedSave}
       />
-      <TextInput
+      <CustomizableLinkText
         link={link}
         index={index}
         setCustomizableLinks={setCustomizableLinks}

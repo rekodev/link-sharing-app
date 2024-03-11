@@ -12,7 +12,7 @@ import {
 } from './style';
 import uploadImageIcon from '../../assets/images/icon-upload-image.svg';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
-import Svg from '../Svg';
+import Svg from '../shared/Svg';
 
 type Props = {
   onImageUpload: (image: File) => void;

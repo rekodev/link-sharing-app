@@ -14,7 +14,6 @@ import {
   StyledSaveButtonWrapper,
 } from './style';
 import { updateLinks } from '../../api';
-import Button from '../../components/Button';
 import CustomizableLink from '../../components/CustomizableLink';
 import { StyledCustomizableLinkWrapper } from '../../components/CustomizableLink/style';
 import StartCard from '../../components/StartCard/StartCard';
@@ -29,6 +28,7 @@ import {
 import { SnackbarType } from '../../types/profileDetails';
 import { platforms } from '../../utils/platformList';
 import { transformCustomizableLink } from '../../utils/transformers';
+import Button from '../shared/Button';
 
 const Links = () => {
   const { user, isUserLoading } = useUser();
@@ -59,7 +59,7 @@ const Links = () => {
       attemptedSave: false,
       errors: { platform: false, linkUrl: false, unique: false },
       isBeingDragged: false,
-      index: 0,
+      index: customizableLinks.length,
     };
 
     setCustomizableLinks((prev) => [...prev, newLink]);
@@ -79,7 +79,7 @@ const Links = () => {
   };
 
   useEffect(() => {
-    if (!userLinks || customizableLinks.length) return;
+    if (!userLinks) return;
 
     const latestLinks: Array<CustomizableLinkType> = userLinks.map((link) => ({
       id: uuidv4(),
@@ -92,7 +92,7 @@ const Links = () => {
     }));
 
     setCustomizableLinks(latestLinks);
-  }, [userLinks, customizableLinks]);
+  }, [userLinks]);
 
   const handleSubmit = async () => {
     if (!user?.id) return;

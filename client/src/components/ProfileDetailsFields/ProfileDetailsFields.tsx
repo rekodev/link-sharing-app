@@ -3,7 +3,7 @@ import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { StyledProfileDetailsFieldsContainer } from './style';
 import { ProfileDetailsFieldsError } from '../../types/errors';
 import { ProfileDetails } from '../../types/profileDetails';
-import Input from '../Input';
+import Input from '../shared/Input';
 
 type Props = {
   newProfileDetails: ProfileDetails;

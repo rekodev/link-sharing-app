@@ -12,7 +12,7 @@ import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
 import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import useUser from '../../hooks/useUser';
 import { StyledAlert } from '../../styles/UtilityStyles';
-import Svg from '../Svg';
+import Svg from '../shared/Svg';
 
 type Props = {
   atLeastOnePlatform: boolean;

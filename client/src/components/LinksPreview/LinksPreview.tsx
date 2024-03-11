@@ -14,9 +14,11 @@ import { UserLink } from '../../types/link';
 import { platforms } from '../../utils/platformList';
 import PlatformLink from '../PlatformLink';
 
+const revalidateOnMount = true;
+
 const LinksPreview = () => {
   const { user, isUserLoading } = useUser();
-  const { links, isLinksLoading } = useUserLinks();
+  const { links, isLinksLoading } = useUserLinks(revalidateOnMount);
   // const { profileDetails } = useContext(ProfileDetailsContext);
   // const { firstName, email, lastName, profilePicture } = profileDetails;
 

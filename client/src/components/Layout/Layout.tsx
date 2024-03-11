@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import Footer from './Footer';
+import Header from './Header';
 import { StyledLayout } from './style';
 import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
 import { LinkContext } from '../../contexts/linkContext';
@@ -9,8 +11,6 @@ import { UserContext } from '../../contexts/userContext';
 import { CustomizableLink } from '../../types/link';
 import { ProfileDetails } from '../../types/profileDetails';
 import { UserModel } from '../../types/user';
-import Footer from '../Footer';
-import Header from '../Header';
 
 const Layout = () => {
   const [user, setUser] = useState<UserModel>({

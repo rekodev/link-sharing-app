@@ -11,11 +11,11 @@ import {
   StyledProfileContainer,
   StyledProfile as StyledProfileDetailsForm,
   StyledSaveButtonWrapper,
-} from '../../pages/Profile/style';
+} from '../../pages/ProfileDetailsPage/style';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import { ProfileDetailsFieldsError } from '../../types/errors';
 import { SnackbarType } from '../../types/profileDetails';
-import Button from '../Button';
+import Button from '../shared/Button';
 import ImageUploadField from '../ImageUploadField';
 import ProfileDetailsFields from '../ProfileDetailsFields';
 
