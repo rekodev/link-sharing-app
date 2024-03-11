@@ -2,7 +2,10 @@ import { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { Dispatch, SetStateAction } from 'react';
 
+import useUser from './useUser';
+import useUserLinks from './useUserLinks';
 import { CustomizableLink } from '../types/link';
+import { transformCustomizableLink } from '../utils/transformers';
 
 type Props = {
   customizableLinks: Array<CustomizableLink>;
@@ -13,12 +16,12 @@ const useDragHandlers = ({
   customizableLinks,
   setCustomizableLinks,
 }: Props) => {
+  const { mutateLinks } = useUserLinks();
+  const { user } = useUser();
+
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event;
-
     const index = customizableLinks.findIndex((link) => link.id === active.id);
-
-    console.log(index);
 
     // setting isBeingDragged to true
     setCustomizableLinks((prev) =>
@@ -29,6 +32,8 @@ const useDragHandlers = ({
   };
 
   const onDragEnd = (event: DragEndEvent) => {
+    if (!user?.id) return;
+
     const { active, over } = event;
     const oldIndex = customizableLinks.findIndex(
       (link) => link.id === active.id
@@ -50,7 +55,19 @@ const useDragHandlers = ({
       return;
     }
 
-    setCustomizableLinks((prev) => arrayMove(prev, oldIndex, newIndex));
+    setCustomizableLinks((prev) => {
+      // arrayMove rearranges the links, but it doesn't change their index value inside the object
+      const newCustomizableLinks = arrayMove(prev, oldIndex, newIndex).map(
+        (link, index) => ({ ...link, index })
+      );
+      const newLinks = newCustomizableLinks.map((link) =>
+        transformCustomizableLink(user.id!, link)
+      );
+
+      mutateLinks({ links: newLinks }, false);
+
+      return newCustomizableLinks;
+    });
 
     // setting isBeingDragged to false
     setCustomizableLinks((prev) =>

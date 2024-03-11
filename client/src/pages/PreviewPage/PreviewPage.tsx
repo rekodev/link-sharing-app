@@ -8,9 +8,11 @@ import PreviewCard from '../../components/PreviewCard';
 import useUserLinks from '../../hooks/useUserLinks';
 import { platforms } from '../../utils/platformList';
 
+const revalidateOnMount = true;
+
 const PreviewPage = () => {
   const { links: userLinks, isLinksLoading: isUserLinksLoading } =
-    useUserLinks();
+    useUserLinks(revalidateOnMount);
 
   if (!userLinks || isUserLinksLoading) return null;
 

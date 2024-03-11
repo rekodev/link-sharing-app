@@ -1,11 +1,10 @@
 import { CircularProgress, Snackbar } from '@mui/material';
 import { HttpStatusCode } from 'axios';
-import { FormEvent, SyntheticEvent, useContext, useState } from 'react';
+import { FormEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { mutate } from 'swr';
 
 import { updateProfile } from '../../api';
 import { SWRKeys } from '../../api/swr';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import useUser from '../../hooks/useUser';
 import {
   StyledProfileContainer,
@@ -14,18 +13,20 @@ import {
 } from '../../pages/ProfileDetailsPage/style';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import { ProfileDetailsFieldsError } from '../../types/errors';
-import { SnackbarType } from '../../types/profileDetails';
-import Button from '../shared/Button';
+import { ProfileDetails, SnackbarType } from '../../types/profileDetails';
 import ImageUploadField from '../ImageUploadField';
 import ProfileDetailsFields from '../ProfileDetailsFields';
+import Button from '../shared/Button';
 
 const ProfileDetailsForm = () => {
   const { user, isUserLoading } = useUser();
-  const { profileDetails, setProfileDetails } = useContext(
-    ProfileDetailsContext
-  );
 
-  const [newProfileDetails, setNewProfileDetails] = useState(profileDetails);
+  const [profileDetails, setProfileDetails] = useState<ProfileDetails>({
+    email: '',
+    firstName: '',
+    lastName: '',
+    profilePictureUrl: '',
+  });
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState('');
@@ -38,6 +39,17 @@ const ProfileDetailsForm = () => {
       lastName: false,
       email: false,
     });
+
+  useEffect(() => {
+    if (!user) return;
+
+    setProfileDetails({
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePictureUrl: user.profilePictureUrl,
+    });
+  }, [user]);
 
   const handleClose = (_event?: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -56,7 +68,7 @@ const ProfileDetailsForm = () => {
 
     if (!user?.id) return;
 
-    const { email, firstName, lastName } = newProfileDetails;
+    const { email, firstName, lastName } = profileDetails;
 
     setIsSubmitting(true);
     setSubmissionMessage('');
@@ -80,7 +92,7 @@ const ProfileDetailsForm = () => {
     }
 
     setSnackbarType('success');
-    setProfileDetails(newProfileDetails);
+    // setProfileDetails(newProfileDetails);
 
     mutate(SWRKeys.user(user.id));
   };
@@ -108,8 +120,8 @@ const ProfileDetailsForm = () => {
           <ProfileDetailsFields
             attemptedSave={attemptedSave}
             setAttemptedSave={setAttemptedSave}
-            newProfileDetails={newProfileDetails}
-            setNewProfileDetails={setNewProfileDetails}
+            profileDetails={profileDetails}
+            setProfileDetails={setProfileDetails}
             error={profileDetailsFieldsError}
             setError={setProfileDetailsFieldsError}
           />

@@ -1,5 +1,5 @@
 export type LinkModel = {
-  id?: number;
+  id?: number | string;
   userId: number;
   index: number;
   createdAt?: string;

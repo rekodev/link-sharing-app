@@ -6,8 +6,8 @@ import { ProfileDetails } from '../../types/profileDetails';
 import Input from '../shared/Input';
 
 type Props = {
-  newProfileDetails: ProfileDetails;
-  setNewProfileDetails: Dispatch<SetStateAction<ProfileDetails>>;
+  profileDetails: ProfileDetails;
+  setProfileDetails: Dispatch<SetStateAction<ProfileDetails>>;
   attemptedSave: boolean;
   setAttemptedSave: Dispatch<SetStateAction<boolean>>;
   error: ProfileDetailsFieldsError;
@@ -21,8 +21,8 @@ interface IProfileFormErrors {
 }
 
 const ProfileDetailsFields = ({
-  newProfileDetails,
-  setNewProfileDetails,
+  profileDetails,
+  setProfileDetails,
   attemptedSave,
   setAttemptedSave,
   error,
@@ -40,7 +40,7 @@ const ProfileDetailsFields = ({
     }
 
     const { name, value } = event.target;
-    setNewProfileDetails((prevData: ProfileDetails) => ({
+    setProfileDetails((prevData: ProfileDetails) => ({
       ...prevData,
       [name]: value.trim(),
     }));
@@ -76,7 +76,7 @@ const ProfileDetailsFields = ({
         placeholder='First name'
         name='firstName'
         onChange={handleChange}
-        value={newProfileDetails.firstName}
+        value={profileDetails.firstName}
         error={error.firstName && attemptedSave}
       />
       <Input
@@ -87,7 +87,7 @@ const ProfileDetailsFields = ({
         placeholder='Last name'
         name='lastName'
         onChange={handleChange}
-        value={newProfileDetails.lastName}
+        value={profileDetails.lastName}
         error={error.lastName && attemptedSave}
       />
       <Input
@@ -97,7 +97,7 @@ const ProfileDetailsFields = ({
         placeholder='Email'
         name='email'
         onChange={handleChange}
-        value={newProfileDetails.email}
+        value={profileDetails.email}
         error={error.email && attemptedSave}
         errorText='Incorrect email format'
       />

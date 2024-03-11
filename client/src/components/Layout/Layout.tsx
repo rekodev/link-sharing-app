@@ -5,34 +5,8 @@ import Footer from './Footer';
 import Header from './Header';
 import { StyledLayout } from './style';
 import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
-import { LinkContext } from '../../contexts/linkContext';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
-import { UserContext } from '../../contexts/userContext';
-import { CustomizableLink } from '../../types/link';
-import { ProfileDetails } from '../../types/profileDetails';
-import { UserModel } from '../../types/user';
 
 const Layout = () => {
-  const [user, setUser] = useState<UserModel>({
-    id: null,
-    email: '',
-    firstName: '',
-    lastName: '',
-    profilePictureUrl: '',
-    createdAt: '',
-    updatedAt: '',
-  });
-  const [links, setLinks] = useState<Array<CustomizableLink>>([]);
-  const [profileDetails, setProfileDetails] = useState<ProfileDetails>({
-    firstName: 'Ben',
-    lastName: 'Wright',
-    email: 'ben@example.com',
-    profilePicture: {
-      id: '',
-      name: '',
-    },
-  });
-
   const [copiedLink, setCopiedLink] = useState(false);
 
   return (
@@ -40,15 +14,7 @@ const Layout = () => {
       <CopiedLinkContext.Provider value={{ copiedLink, setCopiedLink }}>
         <Header />
         <main>
-          <UserContext.Provider value={{ user, setUser }}>
-            <ProfileDetailsContext.Provider
-              value={{ profileDetails, setProfileDetails }}
-            >
-              <LinkContext.Provider value={{ links, setLinks }}>
-                <Outlet />
-              </LinkContext.Provider>
-            </ProfileDetailsContext.Provider>
-          </UserContext.Provider>
+          <Outlet />
         </main>
         <Footer />
       </CopiedLinkContext.Provider>

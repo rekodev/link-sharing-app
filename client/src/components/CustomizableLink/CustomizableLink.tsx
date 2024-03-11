@@ -3,13 +3,16 @@ import { CSS } from '@dnd-kit/utilities';
 import { Dispatch, SetStateAction } from 'react';
 
 import {
+  StyledCustomizableLink,
   StyledIconAndHeading,
   StyledLinkCard,
   StyledLinkCardTextWrapper,
-  StyledCustomizableLink,
 } from './style';
 import dragAndDropIcon from '../../assets/images/icon-drag-and-drop.svg';
+import useUser from '../../hooks/useUser';
+import useUserLinks from '../../hooks/useUserLinks';
 import { CustomizableLink as CustomizableLinkType } from '../../types/link';
+import { transformCustomizableLink } from '../../utils/transformers';
 import CustomizableLinkSelect from '../CustomizableLinkSelect';
 import CustomizableLinkText from '../CustomizableLinkText';
 import DragHandle from '../DragHandle';
@@ -28,13 +31,29 @@ const CustomizableLink = ({
   setCustomizableLinks,
   isBeingDragged,
 }: Props) => {
+  const { user } = useUser();
+  const { mutateLinks } = useUserLinks();
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: link.id });
 
   const style = { transition, transform: CSS.Transform.toString(transform) };
 
   const handleRemove = () => {
-    setCustomizableLinks((prev) => prev.filter((_, idx) => idx !== index));
+    if (!user?.id) return;
+
+    setCustomizableLinks((prev) => {
+      const newCustomizableLinks = prev
+        .filter((_, idx) => idx !== index)
+        .map((link, idx) => ({ ...link, index: idx }));
+
+      const newLinks = newCustomizableLinks.map((link) =>
+        transformCustomizableLink(user.id!, link)
+      );
+
+      mutateLinks({ links: newLinks }, false);
+
+      return newCustomizableLinks;
+    });
   };
 
   const renderLinkCard = () => (

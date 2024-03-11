@@ -52,8 +52,10 @@ const Links = () => {
   const handleAddNewLink = () => {
     if (!user?.id) return;
 
+    const temporaryUuid = uuidv4();
+
     const newLink = {
-      id: uuidv4(),
+      id: temporaryUuid,
       platform: platforms[0].name,
       linkUrl: '',
       attemptedSave: false,
@@ -69,6 +71,7 @@ const Links = () => {
     );
 
     newLinks.push({
+      id: temporaryUuid,
       platform: newLink.platform,
       linkUrl: newLink.linkUrl,
       index: customizableLinks.length,
@@ -104,8 +107,6 @@ const Links = () => {
         index: idx,
       })
     );
-
-    console.log(linksToBeSubmitted);
 
     const result = await updateLinks(user.id, linksToBeSubmitted);
     setSnackbarOpen(true);

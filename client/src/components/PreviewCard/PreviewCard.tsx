@@ -9,7 +9,6 @@ import {
 } from './style';
 import linkIcon from '../../assets/images/icon-link-copied-to-clipboard.svg';
 import { CopiedLinkContext } from '../../contexts/copiedLinkContext';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import useUser from '../../hooks/useUser';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import Svg from '../shared/Svg';
@@ -20,8 +19,6 @@ type Props = {
 
 const PreviewCard = ({ atLeastOnePlatform }: Props) => {
   const { copiedLink, setCopiedLink } = useContext(CopiedLinkContext);
-  const { profileDetails } = useContext(ProfileDetailsContext);
-  const { id } = profileDetails.profilePicture;
 
   const { user, isUserLoading } = useUser();
   const location = useLocation();
@@ -79,8 +76,8 @@ const PreviewCard = ({ atLeastOnePlatform }: Props) => {
   return (
     <StyledPreviewCard>
       <StyledProfilePictureWrapper>
-        {profileDetails.profilePicture.id ? (
-          <img src={id} alt='Profile Picture' />
+        {user.profilePictureUrl ? (
+          <img src={user.profilePictureUrl} alt='Profile Picture' />
         ) : (
           <StyledAvatar />
         )}

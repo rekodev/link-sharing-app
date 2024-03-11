@@ -1,5 +1,5 @@
 import { Alert, Snackbar } from '@mui/material';
-import { ChangeEvent, useContext, useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 
 import {
   StyledImageUpload,
@@ -11,7 +11,7 @@ import {
   UploadedImageWrapper,
 } from './style';
 import uploadImageIcon from '../../assets/images/icon-upload-image.svg';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
+import useUser from '../../hooks/useUser';
 import Svg from '../shared/Svg';
 
 type Props = {
@@ -19,11 +19,7 @@ type Props = {
 };
 
 const ImageUploadField = ({ onImageUpload }: Props) => {
-  const { profileDetails, setProfileDetails } = useContext(
-    ProfileDetailsContext
-  );
-  const { id: profilePictureId, name: profilePictureName } =
-    profileDetails.profilePicture;
+  const { user } = useUser();
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -46,13 +42,6 @@ const ImageUploadField = ({ onImageUpload }: Props) => {
             if (!(e.target && e.target.result)) return;
 
             onImageUpload(file);
-            setProfileDetails((prev) => ({
-              ...prev,
-              profilePicture: {
-                id: e.target?.result as string,
-                name: file.name,
-              },
-            }));
           };
 
           reader.readAsDataURL(file);
@@ -82,10 +71,12 @@ const ImageUploadField = ({ onImageUpload }: Props) => {
 
   const handleClose = () => setError(false);
 
+  if (!user) return;
+
   const renderImageUploadField = () => (
     <StyledImageUploadWrapper>
       <StyledImageUpload onClick={triggerFileUpload}>
-        {!profilePictureId ? (
+        {!user.profilePictureUrl ? (
           <StyledPreImageUploadWrapper>
             <img src={uploadImageIcon} alt='Upload Image Icon' />
             <p>+ Upload Image</p>
@@ -94,7 +85,7 @@ const ImageUploadField = ({ onImageUpload }: Props) => {
           <>
             <StyledUploadedImage>
               <img
-                src={profilePictureId}
+                src={user.profilePictureUrl}
                 className='uploaded-image'
                 alt='Profile Picture'
               />
@@ -120,7 +111,7 @@ const ImageUploadField = ({ onImageUpload }: Props) => {
           </Snackbar>
         )}
       </StyledImageUpload>
-      <p>{profilePictureName}</p>
+      {/* <p>{profilePictureName}</p> */}
     </StyledImageUploadWrapper>
   );
 
