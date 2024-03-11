@@ -16,8 +16,8 @@ const useDragHandlers = ({
   customizableLinks,
   setCustomizableLinks,
 }: Props) => {
-  const { mutateLinks } = useUserLinks();
   const { user } = useUser();
+  const { mutateLinks } = useUserLinks();
 
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -45,10 +45,8 @@ const useDragHandlers = ({
     // if no switch made
     if (active.id === over?.id) {
       setCustomizableLinks((prev) =>
-        prev.map((link, idx) =>
-          idx === oldIndex
-            ? { ...link, isBeingDragged: false, index: idx }
-            : link
+        prev.map((link, index) =>
+          index === oldIndex ? { ...link, isBeingDragged: false, index } : link
         )
       );
 

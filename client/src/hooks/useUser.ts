@@ -12,7 +12,11 @@ const useUser = () => {
 
   const { data, isLoading, mutate, error, isValidating } = useSWR<UserModel>(
     SWRKeys.user(userId),
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
   );
 
   return useMemo(

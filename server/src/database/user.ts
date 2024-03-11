@@ -111,10 +111,20 @@ export const editUserInformation = async (
   const client = await pool.connect();
 
   try {
-    const result = await client.query(
-      'UPDATE users SET first_name = $1, last_name = $2, email = $3, profile_picture_url = $4 WHERE id = $5',
-      [firstName, lastName, email, profilePictureUrl, id]
-    );
+    let query: string;
+    let params = [];
+
+    if (!profilePictureUrl) {
+      (query =
+        'UPDATE users SET first_name = $1, last_name = $2, email = $3 WHERE id = $4'),
+        (params = [firstName, lastName, email, id]);
+    } else {
+      query =
+        'UPDATE users SET first_name = $1, last_name = $2, email = $3, profile_picture_url = $4 WHERE id = $5';
+      params = [firstName, lastName, email, profilePictureUrl, id];
+    }
+
+    const result = await client.query(query, params);
 
     if (result.rowCount > 0) {
       return true;

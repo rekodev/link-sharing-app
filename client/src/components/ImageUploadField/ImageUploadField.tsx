@@ -15,7 +15,7 @@ import useUser from '../../hooks/useUser';
 import Svg from '../shared/Svg';
 
 type Props = {
-  onImageUpload: (image: File) => void;
+  onImageUpload: (image: File, imageSrc: string) => void;
 };
 
 const ImageUploadField = ({ onImageUpload }: Props) => {
@@ -41,7 +41,7 @@ const ImageUploadField = ({ onImageUpload }: Props) => {
           reader.onload = (e: ProgressEvent<FileReader>) => {
             if (!(e.target && e.target.result)) return;
 
-            onImageUpload(file);
+            onImageUpload(file, e.target.result as string);
           };
 
           reader.readAsDataURL(file);

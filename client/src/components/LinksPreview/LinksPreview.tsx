@@ -17,44 +17,44 @@ import PlatformLink from '../PlatformLink';
 const revalidateOnMount = true;
 
 const LinksPreview = () => {
-  const { user, isUserLoading } = useUser();
-  const { links, isLinksLoading } = useUserLinks(revalidateOnMount);
-  // const { profileDetails } = useContext(ProfileDetailsContext);
-  // const { firstName, email, lastName, profilePicture } = profileDetails;
+  const { user } = useUser();
+  const { links } = useUserLinks(revalidateOnMount);
 
-  const renderLinks = () => (
-    <StyledPlatformWrapper>
-      {links?.map((link: UserLink, idx: number) => {
-        const matchedPlatform = platforms.find(
-          (platform) => platform.name === link.platform
-        );
+  const renderLinks = () => {
+    if (!links) return null;
 
-        // Do not return more than 5 previewed links
-        if (idx > 4 || !matchedPlatform) return null;
+    return (
+      <StyledPlatformWrapper>
+        {links.map((link: UserLink, index: number) => {
+          const matchedPlatform = platforms.find(
+            (platform) => platform.name === link.platform
+          );
 
-        return (
-          <PlatformLink
-            key={link.index}
-            svgIcon={matchedPlatform.svgIcon}
-            text={matchedPlatform.name}
-            url={link.linkUrl}
-          />
-        );
-      })}
-    </StyledPlatformWrapper>
-  );
+          // Do not return more than 5 previewed links
+          if (index > 4 || !matchedPlatform) return null;
 
-  if (isUserLoading || isLinksLoading) return null;
+          return (
+            <PlatformLink
+              key={link.index}
+              svgIcon={matchedPlatform.svgIcon}
+              text={matchedPlatform.name}
+              url={link.linkUrl}
+            />
+          );
+        })}
+      </StyledPlatformWrapper>
+    );
+  };
+
+  if (!user) return null;
 
   return (
     <StyledLinksPreview>
       <StyledLinksPreviewContainer>
         <StyledPhoneImageWrapper>
           <StyledProfileDetailsWrapper>
-            <StyledProfilePictureWrapper $profilePicture={!!user?.id}>
-              {user?.id && (
-                <img src={user.profilePictureUrl} alt='Profile Picture' />
-              )}
+            <StyledProfilePictureWrapper $profilePicture={!!user}>
+              <img src={user.profilePictureUrl} alt='Profile Picture' />
             </StyledProfilePictureWrapper>
             <StyledProfileDetailsTextWrapper>
               <h3>{`${user?.firstName} ${user?.lastName}`}</h3>

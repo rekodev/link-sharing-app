@@ -1,6 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 
 import { StyledProfileDetailsFieldsContainer } from './style';
+import useUser from '../../hooks/useUser';
 import { ProfileDetailsFieldsError } from '../../types/errors';
 import { ProfileDetails } from '../../types/profileDetails';
 import Input from '../shared/Input';
@@ -28,22 +29,30 @@ const ProfileDetailsFields = ({
   error,
   setError,
 }: Props) => {
+  const { user, mutateUser } = useUser();
+
   const noErrors = Object.values(error).every((value) => value === false);
 
   const emailValidation =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$/;
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!user?.id) return;
     // After attempting a save, we want to reset the attemptedSave, but only after all of the highlighted errors have been fixed
     if (noErrors) {
       setAttemptedSave(false);
     }
 
     const { name, value } = event.target;
-    setProfileDetails((prevData: ProfileDetails) => ({
-      ...prevData,
-      [name]: value.trim(),
-    }));
+    setProfileDetails((prev) => ({ ...prev, [name]: value.trim() }));
+    mutateUser(
+      {
+        ...profileDetails,
+        id: user.id,
+        [name]: value.trim(),
+      },
+      false
+    );
 
     if (!value) {
       setError((prevData: IProfileFormErrors) => ({

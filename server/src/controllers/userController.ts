@@ -23,7 +23,6 @@ export const editUserById = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const { firstName, lastName, email } = req.body;
   const image = req.file;
-  console.log(image.path);
 
   try {
     const user = await findUserById(userId);
@@ -39,8 +38,6 @@ export const editUserById = async (req: Request, res: Response) => {
           public_id: uuidv4(),
         }
       );
-
-      console.log(uploadedImage);
 
       if (!uploadedImage)
         return res.status(400).json({ message: 'Unable to upload image' });

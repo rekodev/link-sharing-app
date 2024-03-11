@@ -40,7 +40,7 @@ const Links = () => {
   const [customizableLinks, setCustomizableLinks] = useState<
     Array<CustomizableLinkType>
   >([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
   // const [uniqueLinks, setUniqueLinks] = useState(true);
 
@@ -108,8 +108,9 @@ const Links = () => {
       })
     );
 
+    setIsSnackbarOpen(false);
     const result = await updateLinks(user.id, linksToBeSubmitted);
-    setSnackbarOpen(true);
+    setIsSnackbarOpen(true);
 
     if (result.status !== HttpStatusCode.Ok) {
       setSnackbarType('error');
@@ -176,7 +177,7 @@ const Links = () => {
       return;
     }
 
-    setSnackbarOpen(false);
+    setIsSnackbarOpen(false);
   };
 
   const renderLinks = () => {
@@ -209,7 +210,11 @@ const Links = () => {
   };
 
   const renderSnackbar = () => (
-    <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
+    <Snackbar
+      open={isSnackbarOpen}
+      autoHideDuration={6000}
+      onClose={handleClose}
+    >
       <StyledAlert
         onClose={handleClose}
         severity={snackbarType}
