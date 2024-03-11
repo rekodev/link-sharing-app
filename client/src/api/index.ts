@@ -1,7 +1,12 @@
 import { AxiosResponse } from 'axios';
 
 import api from './apiInstance';
-import { LoginResp, UpdateProfileResp } from '../types/response';
+import { UserLink } from '../types/link';
+import {
+  LoginResp,
+  UpdateLinksResp,
+  UpdateProfileResp,
+} from '../types/response';
 
 export const createUser = async (email: string, password: string) =>
   await api.post('/api/register', {
@@ -35,3 +40,9 @@ export const updateProfile = async (
 
   return await api.put(`/api/user/${id}`, formData);
 };
+
+export const updateLinks = async (
+  userId: number,
+  links: Array<UserLink>
+): Promise<AxiosResponse<UpdateLinksResp>> =>
+  await api.post(`/api/links/${userId}`, { links });

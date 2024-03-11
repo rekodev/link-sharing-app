@@ -1,37 +1,36 @@
 import { CircularProgress, Snackbar } from '@mui/material';
 import { HttpStatusCode } from 'axios';
-import { FormEvent, SyntheticEvent, useContext, useState } from 'react';
-import { mutate } from 'swr';
+import { FormEvent, SyntheticEvent, useEffect, useState } from 'react';
 
 import { updateProfile } from '../../api';
-import { SWRKeys } from '../../api/swr';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
 import useUser from '../../hooks/useUser';
 import {
   StyledProfileContainer,
   StyledProfile as StyledProfileDetailsForm,
   StyledSaveButtonWrapper,
-} from '../../pages/Profile/style';
+} from '../../pages/ProfileDetailsPage/style';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import { ProfileDetailsFieldsError } from '../../types/errors';
-import { SnackbarType } from '../../types/profileDetails';
-import Button from '../Button';
+import { ProfileDetails, SnackbarType } from '../../types/profileDetails';
 import ImageUploadField from '../ImageUploadField';
 import ProfileDetailsFields from '../ProfileDetailsFields';
+import Button from '../shared/Button';
 
 const ProfileDetailsForm = () => {
-  const { user, isUserLoading } = useUser();
-  const { profileDetails, setProfileDetails } = useContext(
-    ProfileDetailsContext
-  );
+  const { user, isUserLoading, mutateUser } = useUser();
 
-  const [newProfileDetails, setNewProfileDetails] = useState(profileDetails);
+  const [profileDetails, setProfileDetails] = useState<ProfileDetails>({
+    email: '',
+    firstName: '',
+    lastName: '',
+    profilePictureUrl: '',
+  });
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState('');
   const [attemptedSave, setAttemptedSave] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
-  const [open, setOpen] = useState(false);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [profileDetailsFieldsError, setProfileDetailsFieldsError] =
     useState<ProfileDetailsFieldsError>({
       firstName: false,
@@ -39,28 +38,46 @@ const ProfileDetailsForm = () => {
       email: false,
     });
 
+  useEffect(() => {
+    if (!user) return;
+
+    setProfileDetails({
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePictureUrl: user.profilePictureUrl,
+    });
+  }, [user]);
+
   const handleClose = (_event?: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
 
-    setOpen(false);
+    setIsSnackbarOpen(false);
   };
 
-  const handleImageUpload = (image: File) => {
+  const handleImageUpload = (image: File, imageSrc: string) => {
+    if (!user) return;
+
     setProfilePicture(image);
+    mutateUser(
+      { ...profileDetails, id: user.id, profilePictureUrl: imageSrc },
+      false
+    );
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!user.id) return;
+    if (!user?.id) return;
 
-    const { email, firstName, lastName } = newProfileDetails;
+    const { email, firstName, lastName } = profileDetails;
 
     setIsSubmitting(true);
     setSubmissionMessage('');
     setAttemptedSave(true);
+    setIsSnackbarOpen(false);
 
     const response = await updateProfile(
       user.id,
@@ -70,7 +87,7 @@ const ProfileDetailsForm = () => {
       profilePicture
     );
     setIsSubmitting(false);
-    setOpen(true);
+    setIsSnackbarOpen(true);
     setSubmissionMessage(response.data.message);
 
     if (response.status !== HttpStatusCode.Ok) {
@@ -80,13 +97,15 @@ const ProfileDetailsForm = () => {
     }
 
     setSnackbarType('success');
-    setProfileDetails(newProfileDetails);
-
-    mutate(SWRKeys.user(user.id));
+    mutateUser();
   };
 
   const renderSnackbar = () => (
-    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+    <Snackbar
+      open={isSnackbarOpen}
+      autoHideDuration={6000}
+      onClose={handleClose}
+    >
       <StyledAlert
         onClose={handleClose}
         severity={snackbarType}
@@ -108,8 +127,8 @@ const ProfileDetailsForm = () => {
           <ProfileDetailsFields
             attemptedSave={attemptedSave}
             setAttemptedSave={setAttemptedSave}
-            newProfileDetails={newProfileDetails}
-            setNewProfileDetails={setNewProfileDetails}
+            profileDetails={profileDetails}
+            setProfileDetails={setProfileDetails}
             error={profileDetailsFieldsError}
             setError={setProfileDetailsFieldsError}
           />

@@ -7,7 +7,7 @@ import {
   findUserByEmail,
   isPasswordCorrect,
 } from '../database/user';
-import { UserCredentials } from '../types/types';
+import { UserCredentials } from '../types';
 
 const generateAccessToken = (userId: number) => {
   return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {

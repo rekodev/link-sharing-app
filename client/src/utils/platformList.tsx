@@ -1,18 +1,18 @@
-import iconGitHub from '../assets/images/icon-github.svg';
-import iconFrontendMentor from '../assets/images/icon-frontend-mentor.svg';
-import iconTwitter from '../assets/images/icon-twitter.svg';
-import iconLinkedIn from '../assets/images/icon-linkedin.svg';
-import iconYouTube from '../assets/images/icon-youtube.svg';
-import iconFacebook from '../assets/images/icon-facebook.svg';
-import iconTwitch from '../assets/images/icon-twitch.svg';
-import iconDevTo from '../assets/images/icon-devto.svg';
-import iconCodewars from '../assets/images/icon-codewars.svg';
 import iconCodepen from '../assets/images/icon-codepen.svg';
+import iconCodewars from '../assets/images/icon-codewars.svg';
+import iconDevTo from '../assets/images/icon-devto.svg';
+import iconFacebook from '../assets/images/icon-facebook.svg';
 import iconFreeCodeCamp from '../assets/images/icon-freecodecamp.svg';
+import iconFrontendMentor from '../assets/images/icon-frontend-mentor.svg';
+import iconGitHub from '../assets/images/icon-github.svg';
 import iconGitLab from '../assets/images/icon-gitlab.svg';
 import iconHashnode from '../assets/images/icon-hashnode.svg';
+import iconLinkedIn from '../assets/images/icon-linkedin.svg';
 import iconStackOverflow from '../assets/images/icon-stack-overflow.svg';
-import Svg from '../components/Svg';
+import iconTwitch from '../assets/images/icon-twitch.svg';
+import iconTwitter from '../assets/images/icon-twitter.svg';
+import iconYouTube from '../assets/images/icon-youtube.svg';
+import Svg from '../components/shared/Svg';
 
 export const platforms = [
   {

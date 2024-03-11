@@ -1,5 +1,5 @@
 import { CardMedia } from '@mui/material';
-import illustrationEmpty from '../../assets/images/illustration-empty.svg';
+
 import {
   StyledCard,
   StyledCardActionArea,
@@ -7,6 +7,7 @@ import {
   StyledHeadingTypography,
   StyledTypography,
 } from './style';
+import illustrationEmpty from '../../assets/images/illustration-empty.svg';
 
 const StartCard = () => {
   return (

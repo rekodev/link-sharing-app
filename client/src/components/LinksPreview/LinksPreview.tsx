@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-
 import {
   StyledLinksPreview,
   StyledLinksPreviewContainer,
@@ -10,21 +8,43 @@ import {
   StyledProfilePictureWrapper,
 } from './style';
 import phoneMockup from '../../assets/images/illustration-phone-mockup.svg';
-import { LinkContext } from '../../contexts/linkContext';
-import { ProfileDetailsContext } from '../../contexts/profileDetailsContext';
-import { IShareableLinkValues } from '../../types/shareableLinkValues';
-import { UserModel } from '../../types/user';
+import useUser from '../../hooks/useUser';
+import useUserLinks from '../../hooks/useUserLinks';
+import { UserLink } from '../../types/link';
 import { platforms } from '../../utils/platformList';
 import PlatformLink from '../PlatformLink';
 
-interface ILinksPreviewProps {
-  user: UserModel;
-}
+const revalidateOnMount = true;
 
-const LinksPreview = ({ user }: ILinksPreviewProps) => {
-  const { links } = useContext(LinkContext);
-  const { profileDetails } = useContext(ProfileDetailsContext);
-  const { firstName, email, lastName, profilePicture } = profileDetails;
+const LinksPreview = () => {
+  const { user } = useUser();
+  const { links } = useUserLinks(revalidateOnMount);
+
+  const renderLinks = () => {
+    if (!links) return null;
+
+    return (
+      <StyledPlatformWrapper>
+        {links.map((link: UserLink, index: number) => {
+          const matchedPlatform = platforms.find(
+            (platform) => platform.name === link.platform
+          );
+
+          // Do not return more than 5 previewed links
+          if (index > 4 || !matchedPlatform) return null;
+
+          return (
+            <PlatformLink
+              key={link.index}
+              svgIcon={matchedPlatform.svgIcon}
+              text={matchedPlatform.name}
+              url={link.linkUrl}
+            />
+          );
+        })}
+      </StyledPlatformWrapper>
+    );
+  };
 
   if (!user) return null;
 
@@ -33,38 +53,15 @@ const LinksPreview = ({ user }: ILinksPreviewProps) => {
       <StyledLinksPreviewContainer>
         <StyledPhoneImageWrapper>
           <StyledProfileDetailsWrapper>
-            <StyledProfilePictureWrapper $profilePicture={!!profilePicture.id}>
-              {profilePicture.id && (
-                <img src={profilePicture.id} alt='Profile Picture' />
-              )}
+            <StyledProfilePictureWrapper $profilePicture={!!user}>
+              <img src={user.profilePictureUrl} alt='Profile Picture' />
             </StyledProfilePictureWrapper>
             <StyledProfileDetailsTextWrapper>
-              <h3>{`${firstName} ${lastName}`}</h3>
-              <p>{email}</p>
+              <h3>{`${user?.firstName} ${user?.lastName}`}</h3>
+              <p>{user?.email}</p>
             </StyledProfileDetailsTextWrapper>
           </StyledProfileDetailsWrapper>
-          <StyledPlatformWrapper>
-            {links.map((link: IShareableLinkValues, idx: number) => {
-              const matchedPlatform = platforms.find(
-                (platform) => platform.name === link.platform
-              );
-
-              // Do not return more than 5 previewed links
-              if (idx > 4) return null;
-
-              if (matchedPlatform) {
-                return (
-                  <PlatformLink
-                    key={idx}
-                    svgIcon={matchedPlatform.svgIcon}
-                    text={matchedPlatform.name}
-                    url={link.link}
-                  />
-                );
-              }
-              return null;
-            })}
-          </StyledPlatformWrapper>
+          {renderLinks()}
           <img src={phoneMockup} alt='' />
         </StyledPhoneImageWrapper>
       </StyledLinksPreviewContainer>
