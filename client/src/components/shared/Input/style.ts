@@ -3,18 +3,16 @@ import styled from 'styled-components';
 import { Breakpoints } from '../../../styles/Breakpoints';
 import { themeColors } from '../../../styles/Theme';
 
-interface IStyledInputProps {
+type Props = {
+  $initialStyle: boolean;
+  $hasValue?: boolean;
+};
+
+export const StyledInput = styled.input<{
   $hasValue: boolean;
   $hasError: boolean;
   $hasImage: boolean;
-}
-
-interface IStyledInputWrapperProps {
-  $initialStyle: boolean;
-  $hasValue?: boolean;
-}
-
-export const StyledInput = styled.input<IStyledInputProps>`
+}>`
   box-sizing: border-box;
   height: 100%;
   width: 100%;
@@ -59,7 +57,7 @@ export const StyledInput = styled.input<IStyledInputProps>`
   }
 `;
 
-export const StyledLabel = styled.label<IStyledInputWrapperProps>`
+export const StyledLabel = styled.label<Props>`
   font-size: 0.75rem;
   color: ${themeColors.nearBlack};
   margin: 0;
@@ -69,7 +67,7 @@ export const StyledLabel = styled.label<IStyledInputWrapperProps>`
   }
 `;
 
-export const StyledInputWrapper = styled.div<IStyledInputWrapperProps>`
+export const StyledInputWrapper = styled.div<Props>`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -90,7 +88,7 @@ export const StyledImage = styled.img`
   z-index: 6;
 `;
 
-export const StyledErrorText = styled.p<IStyledInputWrapperProps>`
+export const StyledErrorText = styled.p<Props>`
   position: absolute;
   right: 0.75rem;
   font-size: 0.75rem;
@@ -107,7 +105,7 @@ export const StyledErrorText = styled.p<IStyledInputWrapperProps>`
   }
 `;
 
-export const StyledInputFieldWrapper = styled.div<IStyledInputWrapperProps>`
+export const StyledInputFieldWrapper = styled.div<Props>`
   position: relative;
   width: 100%;
   height: 48px;

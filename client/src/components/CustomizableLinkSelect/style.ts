@@ -9,9 +9,9 @@ import styled from 'styled-components';
 
 import { themeColors } from '../../styles/Theme';
 
-interface IStyledSelectProps {
+type Props = {
   $hasInput: boolean;
-}
+};
 
 export const StyledFormControl = styled(FormControl)`
   && {
@@ -42,7 +42,7 @@ export const StyledInputLabel = styled(InputLabel)`
   }
 `;
 
-export const StyledSelect = styled(Select)<IStyledSelectProps>`
+export const StyledSelect = styled(Select)<Props>`
   && {
     font-family: 'InstrumentSans';
     font-size: 1rem;

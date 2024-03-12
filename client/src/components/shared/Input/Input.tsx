@@ -1,3 +1,5 @@
+import { ChangeEvent } from 'react';
+
 import {
   StyledErrorText,
   StyledImage,
@@ -7,21 +9,21 @@ import {
   StyledLabel,
 } from './style';
 
-interface IInputProps {
+type Props = {
   placeholder?: string;
   id: string;
   label?: string;
   name: string;
   type: 'text' | 'email' | 'number' | 'password';
   required?: boolean;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   value?: string;
   error?: boolean;
   errorText?: string;
   imgSrc?: string;
   imgName?: string;
   initialStyle?: boolean;
-}
+};
 
 const Input = ({
   placeholder,
@@ -37,7 +39,7 @@ const Input = ({
   imgSrc,
   imgName,
   initialStyle,
-}: IInputProps) => {
+}: Props) => {
   return (
     <StyledInputWrapper $initialStyle={initialStyle ? true : false}>
       {label && (

@@ -44,7 +44,7 @@ export const getLinks = async (
 
   try {
     const result = await client.query(
-      'SELECT * FROM links WHERE user_id = $1',
+      'SELECT * FROM links WHERE user_id = $1 ORDER BY index ASC',
       [userId]
     );
 

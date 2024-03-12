@@ -21,12 +21,14 @@ const useDragHandlers = ({
 
   const onDragStart = (event: DragStartEvent) => {
     const { active } = event;
-    const index = customizableLinks.findIndex((link) => link.id === active.id);
+    const linkIndex = customizableLinks.findIndex(
+      (link) => link.id === active.id
+    );
 
     // setting isBeingDragged to true
     setCustomizableLinks((prev) =>
-      prev.map((link, idx) =>
-        idx === index ? { ...link, isBeingDragged: true, index: idx } : link
+      prev.map((link, index) =>
+        index === linkIndex ? { ...link, isBeingDragged: true } : link
       )
     );
   };
@@ -46,33 +48,29 @@ const useDragHandlers = ({
     if (active.id === over?.id) {
       setCustomizableLinks((prev) =>
         prev.map((link, index) =>
-          index === oldIndex ? { ...link, isBeingDragged: false, index } : link
+          index === oldIndex ? { ...link, isBeingDragged: false } : link
         )
       );
 
       return;
     }
 
-    setCustomizableLinks((prev) => {
-      // arrayMove rearranges the links, but it doesn't change their index value inside the object
-      const newCustomizableLinks = arrayMove(prev, oldIndex, newIndex).map(
-        (link, index) => ({ ...link, index })
-      );
-      const newLinks = newCustomizableLinks.map((link) =>
-        transformCustomizableLink(user.id!, link)
-      );
-
-      mutateLinks({ links: newLinks }, false);
-
-      return newCustomizableLinks;
-    });
-
-    // setting isBeingDragged to false
-    setCustomizableLinks((prev) =>
-      prev.map((link, idx) =>
-        idx === newIndex ? { ...link, isBeingDragged: false, index: idx } : link
-      )
+    const newCustomizableLinks = arrayMove(
+      customizableLinks,
+      oldIndex,
+      newIndex
     );
+    const newLinks = newCustomizableLinks.map((link) =>
+      transformCustomizableLink(user.id!, link)
+    );
+
+    newCustomizableLinks[newIndex] = {
+      ...newCustomizableLinks[newIndex],
+      isBeingDragged: false,
+    };
+
+    setCustomizableLinks(newCustomizableLinks);
+    mutateLinks({ links: newLinks }, false);
   };
 
   return { onDragStart, onDragEnd };

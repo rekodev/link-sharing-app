@@ -1,5 +1,5 @@
 import { Snackbar } from '@mui/material';
-import { useContext, useEffect } from 'react';
+import { SyntheticEvent, useContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import {
@@ -13,6 +13,8 @@ import useUser from '../../hooks/useUser';
 import { StyledAlert } from '../../styles/UtilityStyles';
 import Svg from '../shared/Svg';
 
+const REVALIDATE_ON_MOUNT = true;
+
 type Props = {
   atLeastOnePlatform: boolean;
 };
@@ -20,17 +22,14 @@ type Props = {
 const PreviewCard = ({ atLeastOnePlatform }: Props) => {
   const { copiedLink, setCopiedLink } = useContext(CopiedLinkContext);
 
-  const { user, isUserLoading } = useUser();
+  const { user, isUserLoading } = useUser(REVALIDATE_ON_MOUNT);
   const location = useLocation();
 
   useEffect(() => {
     setCopiedLink(false);
   }, [location, setCopiedLink]);
 
-  const handleClose = (
-    _event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleClose = (_event?: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       setCopiedLink(false);
       return;

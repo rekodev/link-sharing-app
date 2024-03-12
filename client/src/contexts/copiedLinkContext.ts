@@ -1,11 +1,11 @@
-import { createContext } from 'react';
+import { Dispatch, SetStateAction, createContext } from 'react';
 
-interface ICopiedLinkContext {
+type CopiedLinkContextType = {
   copiedLink: boolean;
-  setCopiedLink: React.Dispatch<React.SetStateAction<boolean>>;
-}
+  setCopiedLink: Dispatch<SetStateAction<boolean>>;
+};
 
-export const CopiedLinkContext = createContext<ICopiedLinkContext>({
+export const CopiedLinkContext = createContext<CopiedLinkContextType>({
   copiedLink: false,
   setCopiedLink: () => {},
 });

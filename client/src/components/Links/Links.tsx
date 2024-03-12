@@ -5,7 +5,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CircularProgress, Snackbar } from '@mui/material';
 import { HttpStatusCode } from 'axios';
-import { useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -52,33 +52,22 @@ const Links = () => {
   const handleAddNewLink = () => {
     if (!user?.id) return;
 
-    const temporaryUuid = uuidv4();
-
     const newLink = {
-      id: temporaryUuid,
+      id: uuidv4(),
       platform: platforms[0].name,
       linkUrl: '',
       attemptedSave: false,
       errors: { platform: false, linkUrl: false, unique: false },
       isBeingDragged: false,
-      index: customizableLinks.length,
     };
 
-    setCustomizableLinks((prev) => [...prev, newLink]);
-
-    const newLinks = customizableLinks.map((link) =>
+    const newCustomizableLinks = [...customizableLinks, newLink];
+    const transformedLinks = newCustomizableLinks.map((link) =>
       transformCustomizableLink(user.id!, link)
     );
 
-    newLinks.push({
-      id: temporaryUuid,
-      platform: newLink.platform,
-      linkUrl: newLink.linkUrl,
-      index: customizableLinks.length,
-      userId: user.id,
-    });
-
-    mutateLinks({ links: newLinks }, false);
+    setCustomizableLinks(newCustomizableLinks);
+    mutateLinks({ links: transformedLinks }, false);
   };
 
   useEffect(() => {
@@ -91,7 +80,6 @@ const Links = () => {
       attemptedSave: false,
       errors: { platform: false, linkUrl: false, unique: false },
       isBeingDragged: false,
-      index: link.index,
     }));
 
     setCustomizableLinks(latestLinks);
@@ -101,10 +89,10 @@ const Links = () => {
     if (!user?.id) return;
 
     const linksToBeSubmitted: Array<UserLink> = customizableLinks.map(
-      (link, idx) => ({
+      (link, index) => ({
         platform: link.platform,
         linkUrl: link.linkUrl,
-        index: idx,
+        index,
       })
     );
 
@@ -169,10 +157,7 @@ const Links = () => {
   //   }
   // };
 
-  const handleClose = (
-    _event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleClose = (_event?: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -199,6 +184,7 @@ const Links = () => {
                 key={link.id}
                 link={link}
                 index={index}
+                customizableLinks={customizableLinks}
                 setCustomizableLinks={setCustomizableLinks}
                 isBeingDragged={link.isBeingDragged}
               />

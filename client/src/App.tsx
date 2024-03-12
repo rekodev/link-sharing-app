@@ -1,20 +1,16 @@
-import { SWRConfig } from 'swr';
-
-import fetcher from './api/swr';
-import AuthProvider from './components/AuthProvider';
-import useAuth from './hooks/useAuth';
-import RoutesComponent from './Routes';
-import GlobalStyles from './styles/GlobalStyles';
+import AuthProvider from "./components/providers/AuthProvider";
+import SWRConfigProvider from "./components/providers/SWRConfigProvider/";
+import RoutesComponent from "./Routes";
+import GlobalStyles from "./styles/GlobalStyles";
 
 function App() {
-  const { handleAuthError } = useAuth();
-
   return (
     <AuthProvider>
       <GlobalStyles />
-      <SWRConfig value={{ fetcher, onError: handleAuthError }}>
+
+      <SWRConfigProvider>
         <RoutesComponent />
-      </SWRConfig>
+      </SWRConfigProvider>
     </AuthProvider>
   );
 }

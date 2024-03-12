@@ -1,11 +1,12 @@
 import styled from 'styled-components';
+
 import { themeColors } from '../../../styles/Theme';
 
-interface IStyledSvgProps {
+type Props = {
   $noHeight?: boolean;
-}
+};
 
-export const StyledSvgWrapper = styled.div<IStyledSvgProps>`
+export const StyledSvgWrapper = styled.div<Props>`
   height: ${(props) => props.$noHeight && '0'};
 `;
 

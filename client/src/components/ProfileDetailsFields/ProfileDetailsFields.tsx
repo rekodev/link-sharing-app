@@ -2,9 +2,14 @@ import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 
 import { StyledProfileDetailsFieldsContainer } from './style';
 import useUser from '../../hooks/useUser';
-import { ProfileDetailsFieldsError } from '../../types/errors';
 import { ProfileDetails } from '../../types/profileDetails';
 import Input from '../shared/Input';
+
+type ProfileDetailsFieldsError = {
+  firstName: boolean;
+  lastName: boolean;
+  email: boolean;
+};
 
 type Props = {
   profileDetails: ProfileDetails;
@@ -14,12 +19,6 @@ type Props = {
   error: ProfileDetailsFieldsError;
   setError: Dispatch<SetStateAction<ProfileDetailsFieldsError>>;
 };
-
-interface IProfileFormErrors {
-  firstName: boolean;
-  lastName: boolean;
-  email: boolean;
-}
 
 const ProfileDetailsFields = ({
   profileDetails,
@@ -55,19 +54,19 @@ const ProfileDetailsFields = ({
     );
 
     if (!value) {
-      setError((prevData: IProfileFormErrors) => ({
+      setError((prevData: ProfileDetailsFieldsError) => ({
         ...prevData,
         [name]: true,
       }));
     } else {
       // Additional validation for email field
       if (name === 'email' && !emailValidation.test(value)) {
-        setError((prevData: IProfileFormErrors) => ({
+        setError((prevData: ProfileDetailsFieldsError) => ({
           ...prevData,
           email: true,
         }));
       } else {
-        setError((prevData: IProfileFormErrors) => ({
+        setError((prevData: ProfileDetailsFieldsError) => ({
           ...prevData,
           [name]: false,
         }));

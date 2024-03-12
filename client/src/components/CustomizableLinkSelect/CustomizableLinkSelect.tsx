@@ -15,6 +15,7 @@ import { platforms } from '../../utils/platformList';
 import { transformCustomizableLink } from '../../utils/transformers';
 
 type Props = {
+  customizableLinks: Array<CustomizableLink>;
   setCustomizableLinks: Dispatch<SetStateAction<Array<CustomizableLink>>>;
   link: CustomizableLink;
   index: number;
@@ -22,9 +23,10 @@ type Props = {
 };
 
 const CustomizableLinkSelect = ({
+  customizableLinks,
   setCustomizableLinks,
   link,
-  index,
+  index: linkIndex,
   isError,
 }: Props) => {
   const { user } = useUser();
@@ -34,30 +36,21 @@ const CustomizableLinkSelect = ({
     if (!user?.id) return;
 
     const selectedPlatform = event.target.value as string;
+    const updatedLink: CustomizableLink = {
+      ...link,
+      platform: selectedPlatform,
+      errors: { ...link.errors, platform: !selectedPlatform },
+    };
 
-    setCustomizableLinks((prev): Array<CustomizableLink> => {
-      const updatedLinks = Array.from(prev);
+    const newCustomizableLinks = customizableLinks.map((link, index) =>
+      index === linkIndex ? updatedLink : link
+    );
+    const transformedLinks = newCustomizableLinks.map((link) =>
+      transformCustomizableLink(user.id!, link)
+    );
 
-      const linkToUpdate = { ...link };
-
-      linkToUpdate.platform = selectedPlatform;
-
-      if (selectedPlatform) {
-        linkToUpdate.errors.platform = false;
-      } else {
-        linkToUpdate.errors.platform = true;
-      }
-
-      updatedLinks[index] = linkToUpdate;
-
-      const transformedUpdatedLinks = updatedLinks.map((link) =>
-        transformCustomizableLink(user.id!, link)
-      );
-
-      mutateLinks({ links: transformedUpdatedLinks }, false);
-
-      return updatedLinks;
-    });
+    setCustomizableLinks(newCustomizableLinks);
+    mutateLinks({ links: transformedLinks }, false);
   };
 
   return (

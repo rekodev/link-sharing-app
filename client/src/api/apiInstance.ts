@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
   Method,
-} from 'axios';
+} from "axios";
 
-import { getAuthToken } from '../utils/authToken';
+import { getAuthToken } from "../utils/authToken";
 
 class ApiInstance {
   private httpClient: AxiosInstance;
@@ -25,11 +26,11 @@ class ApiInstance {
     );
 
     this.httpClient.interceptors.request.use((config) => {
-      const excludes = ['/api/login', '/api/signup'];
+      const excludes = ["/api/login", "/api/signup"];
       if (!excludes.includes(config.url!)) {
         const token = getAuthToken();
         if (token) {
-          config.headers!['Authorization'] = `Bearer ${token}`;
+          config.headers!["Authorization"] = `Bearer ${token}`;
         }
       }
 
@@ -45,15 +46,15 @@ class ApiInstance {
   ): Promise<AxiosResponse> {
     try {
       if (data instanceof FormData) {
-        config.headers = { ...config.headers, 'Content-Type': undefined };
+        config.headers = { ...config.headers, "Content-Type": undefined };
       }
 
       const response = await this.httpClient.request<T>({
         method,
         url,
-        data: method === 'get' ? undefined : data,
+        data: method === "get" ? undefined : data,
         ...config,
-        params: method === 'get' ? data : config.params,
+        params: method === "get" ? data : config.params,
       });
 
       return response;
@@ -65,7 +66,7 @@ class ApiInstance {
       return {
         ...error,
         data: {
-          message: 'Unable to access the network',
+          message: "Unable to access the network",
         },
       };
     }
@@ -75,7 +76,7 @@ class ApiInstance {
     url: string,
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse> {
-    return this.request('get', url, {}, config);
+    return this.request("get", url, {}, config);
   }
 
   async post(
@@ -83,7 +84,7 @@ class ApiInstance {
     data = {},
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse> {
-    return this.request('post', url, data, config);
+    return this.request("post", url, data, config);
   }
 
   async put(
@@ -91,7 +92,7 @@ class ApiInstance {
     data = {},
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse> {
-    return this.request('put', url, data, config);
+    return this.request("put", url, data, config);
   }
 
   async delete(
@@ -99,7 +100,7 @@ class ApiInstance {
     data = {},
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse> {
-    return this.request('delete', url, data, config);
+    return this.request("delete", url, data, config);
   }
 }
 

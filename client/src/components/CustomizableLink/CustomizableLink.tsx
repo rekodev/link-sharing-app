@@ -21,13 +21,15 @@ import Button from '../shared/Button';
 type Props = {
   link: CustomizableLinkType;
   index: number;
+  customizableLinks: Array<CustomizableLinkType>;
   setCustomizableLinks: Dispatch<SetStateAction<Array<CustomizableLinkType>>>;
   isBeingDragged: boolean | undefined;
 };
 
 const CustomizableLink = ({
   link,
-  index,
+  index: linkIndex,
+  customizableLinks,
   setCustomizableLinks,
   isBeingDragged,
 }: Props) => {
@@ -41,19 +43,15 @@ const CustomizableLink = ({
   const handleRemove = () => {
     if (!user?.id) return;
 
-    setCustomizableLinks((prev) => {
-      const newCustomizableLinks = prev
-        .filter((_, idx) => idx !== index)
-        .map((link, idx) => ({ ...link, index: idx }));
+    const newCustomizableLinks = customizableLinks.filter(
+      (_, index) => index !== linkIndex
+    );
+    const newLinks = newCustomizableLinks.map((link) =>
+      transformCustomizableLink(user.id!, link)
+    );
 
-      const newLinks = newCustomizableLinks.map((link) =>
-        transformCustomizableLink(user.id!, link)
-      );
-
-      mutateLinks({ links: newLinks }, false);
-
-      return newCustomizableLinks;
-    });
+    setCustomizableLinks(newCustomizableLinks);
+    mutateLinks({ links: newLinks }, false);
   };
 
   const renderLinkCard = () => (
@@ -62,19 +60,21 @@ const CustomizableLink = ({
         <DragHandle attributes={attributes} listeners={listeners} />
         <StyledIconAndHeading>
           <img src={dragAndDropIcon} alt='Drag and Drop Icon' />
-          <h4>Link #{index + 1}</h4>
+          <h4>Link #{linkIndex + 1}</h4>
         </StyledIconAndHeading>
         <Button text='Remove' variant='text' onClick={handleRemove} />
       </StyledLinkCardTextWrapper>
       <CustomizableLinkSelect
         link={link}
-        index={index}
+        index={linkIndex}
+        customizableLinks={customizableLinks}
         setCustomizableLinks={setCustomizableLinks}
         isError={link.errors.platform && link.attemptedSave}
       />
       <CustomizableLinkText
         link={link}
-        index={index}
+        index={linkIndex}
+        customizableLinks={customizableLinks}
         setCustomizableLinks={setCustomizableLinks}
         isError={link.errors.linkUrl && link.attemptedSave}
       />

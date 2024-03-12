@@ -2,17 +2,17 @@ import {
   StyledPreview,
   StyledPreviewContainer,
   StyledPreviewLinkWrapper,
-} from './style';
-import PlatformLink from '../../components/PlatformLink';
-import PreviewCard from '../../components/PreviewCard';
-import useUserLinks from '../../hooks/useUserLinks';
-import { platforms } from '../../utils/platformList';
+} from "./style";
+import PlatformLink from "../../components/PlatformLink";
+import PreviewCard from "../../components/PreviewCard";
+import useUserLinks from "../../hooks/useUserLinks";
+import { platforms } from "../../utils/platformList";
 
-const revalidateOnMount = true;
+const REVALIDATE_ON_MOUNT = true;
 
 const PreviewPage = () => {
   const { links: userLinks, isLinksLoading: isUserLinksLoading } =
-    useUserLinks(revalidateOnMount);
+    useUserLinks(REVALIDATE_ON_MOUNT);
 
   if (!userLinks || isUserLinksLoading) return null;
 
