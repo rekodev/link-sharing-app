@@ -1,23 +1,19 @@
-import { useContext, useMemo } from 'react';
-import useSWR from 'swr';
+import { useContext, useMemo } from "react";
+import useSWRImmutable from "swr/immutable";
 
-import fetcher, { SWRKeys } from '../api/swr';
-import { AuthContext } from '../contexts/authContext';
-import { UserModel } from '../types/user';
-import { decodeAuthToken } from '../utils/authToken';
+import fetcher, { SWRKeys } from "../api/swr";
+import { AuthContext } from "../contexts/authContext";
+import { UserModel } from "../types/user";
+import { decodeAuthToken } from "../utils/authToken";
 
-const useUser = () => {
+const useUser = (revalidateOnMount: boolean = false) => {
   const { authToken } = useContext(AuthContext);
   const userId = decodeAuthToken(authToken)?.userId;
 
-  const { data, isLoading, mutate, error, isValidating } = useSWR<UserModel>(
-    SWRKeys.user(userId),
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  );
+  const { data, isLoading, mutate, error, isValidating } =
+    useSWRImmutable<UserModel>(SWRKeys.user(userId), fetcher, {
+      revalidateOnMount,
+    });
 
   return useMemo(
     () => ({
