@@ -1,22 +1,22 @@
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Dispatch, SetStateAction } from 'react';
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Dispatch, SetStateAction } from "react";
 
 import {
   StyledCustomizableLink,
   StyledIconAndHeading,
   StyledLinkCard,
   StyledLinkCardTextWrapper,
-} from './style';
-import dragAndDropIcon from '../../assets/images/icon-drag-and-drop.svg';
-import useUser from '../../hooks/useUser';
-import useUserLinks from '../../hooks/useUserLinks';
-import { CustomizableLink as CustomizableLinkType } from '../../types/link';
-import { transformCustomizableLink } from '../../utils/transformers';
-import CustomizableLinkSelect from '../CustomizableLinkSelect';
-import CustomizableLinkText from '../CustomizableLinkText';
-import DragHandle from '../DragHandle';
-import Button from '../shared/Button';
+} from "./style";
+import dragAndDropIcon from "../../assets/images/icon-drag-and-drop.svg";
+import useUser from "../../hooks/useUser";
+import useUserLinks from "../../hooks/useUserLinks";
+import { CustomizableLink as CustomizableLinkType } from "../../types/link";
+import { transformCustomizableLink } from "../../utils/transformers";
+import CustomizableLinkSelect from "../CustomizableLinkSelect";
+import CustomizableLinkText from "../CustomizableLinkText";
+import DragHandle from "../DragHandle";
+import Button from "../shared/Button";
 
 type Props = {
   link: CustomizableLinkType;
@@ -38,22 +38,30 @@ const CustomizableLink = ({
 
   const style = { transition, transform: CSS.Transform.toString(transform) };
 
+  const removeAndUpdateLinks = (
+    links: Array<CustomizableLinkType>,
+    indexToRemove: number,
+    userId: number
+  ) => {
+    const newCustomizableLinks = links.filter(
+      (_, index) => index !== indexToRemove
+    );
+
+    const newLinks = newCustomizableLinks.map((link) =>
+      transformCustomizableLink(userId, link)
+    );
+
+    mutateLinks({ links: newLinks }, false);
+
+    return newCustomizableLinks;
+  };
+
   const handleRemove = () => {
     if (!user?.id) return;
 
-    setCustomizableLinks((prev) => {
-      const newCustomizableLinks = prev.filter(
-        (_, index) => index !== linkIndex
-      );
-
-      const newLinks = newCustomizableLinks.map((link) =>
-        transformCustomizableLink(user.id!, link)
-      );
-
-      mutateLinks({ links: newLinks }, false);
-
-      return newCustomizableLinks;
-    });
+    setCustomizableLinks((prev) =>
+      removeAndUpdateLinks(prev, linkIndex, user.id!)
+    );
   };
 
   const renderLinkCard = () => (
@@ -61,10 +69,10 @@ const CustomizableLink = ({
       <StyledLinkCardTextWrapper $isBeingDragged={isBeingDragged}>
         <DragHandle attributes={attributes} listeners={listeners} />
         <StyledIconAndHeading>
-          <img src={dragAndDropIcon} alt='Drag and Drop Icon' />
+          <img src={dragAndDropIcon} alt="Drag and Drop Icon" />
           <h4>Link #{linkIndex + 1}</h4>
         </StyledIconAndHeading>
-        <Button text='Remove' variant='text' onClick={handleRemove} />
+        <Button text="Remove" variant="text" onClick={handleRemove} />
       </StyledLinkCardTextWrapper>
       <CustomizableLinkSelect
         link={link}
@@ -86,7 +94,7 @@ const CustomizableLink = ({
       $isBeingDragged={isBeingDragged}
       ref={setNodeRef}
       style={style}
-      className='link'
+      className="link"
     >
       {renderLinkCard()}
     </StyledCustomizableLink>

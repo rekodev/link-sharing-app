@@ -10,14 +10,13 @@ type Props = {
 };
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
-const authToken = getAuthToken();
 
 const fetcher = async (url: string) => {
   const response = await axios.get(url, {
     baseURL,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${authToken}`,
+      Authorization: `Bearer ${getAuthToken()}`,
     },
   });
 
