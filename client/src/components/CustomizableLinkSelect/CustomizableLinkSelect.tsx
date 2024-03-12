@@ -35,28 +35,33 @@ const CustomizableLinkSelect = ({
 
     const selectedPlatform = event.target.value as string;
 
-    setCustomizableLinks((prev): Array<CustomizableLink> => {
-      const updatedLinks = Array.from(prev);
-
-      const linkToUpdate = { ...link };
+    const updateLinks = (
+      links: Array<CustomizableLink>,
+      index: number,
+      selectedPlatform: string
+    ) => {
+      const updatedLinks = Array.from(links);
+      const linkToUpdate = { ...updatedLinks[index] };
 
       linkToUpdate.platform = selectedPlatform;
-
-      if (selectedPlatform) {
-        linkToUpdate.errors.platform = false;
-      } else {
-        linkToUpdate.errors.platform = true;
-      }
+      linkToUpdate.errors.platform = !selectedPlatform;
 
       updatedLinks[index] = linkToUpdate;
 
-      const transformedUpdatedLinks = updatedLinks.map((link) =>
-        transformCustomizableLink(user.id!, link)
+      return updatedLinks;
+    };
+
+    setCustomizableLinks((prev) => {
+      mutateLinks(
+        {
+          links: updateLinks(prev, index, selectedPlatform).map((link) =>
+            transformCustomizableLink(user.id!, link)
+          ),
+        },
+        false
       );
 
-      mutateLinks({ links: transformedUpdatedLinks }, false);
-
-      return updatedLinks;
+      return updateLinks(prev, index, selectedPlatform);
     });
   };
 

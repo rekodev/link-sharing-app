@@ -1,7 +1,7 @@
 export type LinkModel = {
   id?: number | string;
   userId: number;
-  index: number;
+  index?: number;
   createdAt?: string;
   updatedAt?: string;
   platform: string;
@@ -11,7 +11,7 @@ export type LinkModel = {
 export type UserLink = {
   platform: string;
   linkUrl: string;
-  index: number;
+  index?: number;
 };
 
 export type CustomizableLink = UserLink & {

@@ -61,7 +61,6 @@ const Links = () => {
       attemptedSave: false,
       errors: { platform: false, linkUrl: false, unique: false },
       isBeingDragged: false,
-      index: customizableLinks.length,
     };
 
     setCustomizableLinks((prev) => [...prev, newLink]);
@@ -74,7 +73,6 @@ const Links = () => {
       id: temporaryUuid,
       platform: newLink.platform,
       linkUrl: newLink.linkUrl,
-      index: customizableLinks.length,
       userId: user.id,
     });
 
@@ -91,7 +89,6 @@ const Links = () => {
       attemptedSave: false,
       errors: { platform: false, linkUrl: false, unique: false },
       isBeingDragged: false,
-      index: link.index,
     }));
 
     setCustomizableLinks(latestLinks);
@@ -101,10 +98,10 @@ const Links = () => {
     if (!user?.id) return;
 
     const linksToBeSubmitted: Array<UserLink> = customizableLinks.map(
-      (link, idx) => ({
+      (link, index) => ({
         platform: link.platform,
         linkUrl: link.linkUrl,
-        index: idx,
+        index,
       })
     );
 

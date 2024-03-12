@@ -27,7 +27,7 @@ type Props = {
 
 const CustomizableLink = ({
   link,
-  index,
+  index: linkIndex,
   setCustomizableLinks,
   isBeingDragged,
 }: Props) => {
@@ -42,9 +42,9 @@ const CustomizableLink = ({
     if (!user?.id) return;
 
     setCustomizableLinks((prev) => {
-      const newCustomizableLinks = prev
-        .filter((_, idx) => idx !== index)
-        .map((link, idx) => ({ ...link, index: idx }));
+      const newCustomizableLinks = prev.filter(
+        (_, index) => index !== linkIndex
+      );
 
       const newLinks = newCustomizableLinks.map((link) =>
         transformCustomizableLink(user.id!, link)
@@ -62,19 +62,19 @@ const CustomizableLink = ({
         <DragHandle attributes={attributes} listeners={listeners} />
         <StyledIconAndHeading>
           <img src={dragAndDropIcon} alt='Drag and Drop Icon' />
-          <h4>Link #{index + 1}</h4>
+          <h4>Link #{linkIndex + 1}</h4>
         </StyledIconAndHeading>
         <Button text='Remove' variant='text' onClick={handleRemove} />
       </StyledLinkCardTextWrapper>
       <CustomizableLinkSelect
         link={link}
-        index={index}
+        index={linkIndex}
         setCustomizableLinks={setCustomizableLinks}
         isError={link.errors.platform && link.attemptedSave}
       />
       <CustomizableLinkText
         link={link}
-        index={index}
+        index={linkIndex}
         setCustomizableLinks={setCustomizableLinks}
         isError={link.errors.linkUrl && link.attemptedSave}
       />

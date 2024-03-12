@@ -35,7 +35,7 @@ const LinksPreview = () => {
 
           return (
             <PlatformLink
-              key={link.index}
+              key={index}
               svgIcon={matchedPlatform.svgIcon}
               text={matchedPlatform.name}
               url={link.linkUrl}

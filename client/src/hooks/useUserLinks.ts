@@ -22,7 +22,7 @@ const useUserLinks = (revalidateOnMount: boolean = false) => {
 
   return useMemo(
     () => ({
-      links: data?.links.sort((a, b) => a.index - b.index) || [],
+      links: data?.links,
       isLinksLoading: isLoading,
       mutateLinks: mutate,
       linksError: error,
