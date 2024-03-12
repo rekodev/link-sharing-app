@@ -1,11 +1,12 @@
 import styled from 'styled-components';
+
 import { platformColors, themeColors } from '../../styles/Theme';
 
-interface IStyledPlatformLinkProps {
+type Props = {
   $platform: string;
-}
+};
 
-export const StyledPlatformLink = styled.a<IStyledPlatformLinkProps>`
+export const StyledPlatformLink = styled.a<Props>`
   position: relative;
   width: 100%;
   display: flex;

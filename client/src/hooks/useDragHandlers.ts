@@ -55,26 +55,22 @@ const useDragHandlers = ({
       return;
     }
 
-    setCustomizableLinks((prev) => {
-      // arrayMove rearranges the links, but it doesn't change their index value inside the object
-      const newCustomizableLinks = arrayMove(prev, oldIndex, newIndex).map(
-        (link) => ({ ...link })
-      );
-      const newLinks = newCustomizableLinks.map((link) =>
-        transformCustomizableLink(user.id!, link)
-      );
-
-      mutateLinks({ links: newLinks }, false);
-
-      return newCustomizableLinks;
-    });
-
-    // setting isBeingDragged to false
-    setCustomizableLinks((prev) =>
-      prev.map((link, idx) =>
-        idx === newIndex ? { ...link, isBeingDragged: false } : link
-      )
+    const newCustomizableLinks = arrayMove(
+      customizableLinks,
+      oldIndex,
+      newIndex
     );
+    const newLinks = newCustomizableLinks.map((link) =>
+      transformCustomizableLink(user.id!, link)
+    );
+
+    newCustomizableLinks[newIndex] = {
+      ...newCustomizableLinks[newIndex],
+      isBeingDragged: false,
+    };
+
+    setCustomizableLinks(newCustomizableLinks);
+    mutateLinks({ links: newLinks }, false);
   };
 
   return { onDragStart, onDragEnd };

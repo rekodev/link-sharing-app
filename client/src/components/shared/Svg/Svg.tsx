@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 
 import { StyledSvgWrapper } from './style';
 
-interface ISvgProps {
+type Props = {
   url: string;
   noHeight?: boolean;
-}
+};
 
-const Svg = ({ url, noHeight }: ISvgProps) => {
-  const [svgContent, setSvgContent] = useState<string | undefined>();
+const Svg = ({ url, noHeight }: Props) => {
+  const [svgContent, setSvgContent] = useState<string>('');
 
   useEffect(() => {
     const getSvgContent = async () => {

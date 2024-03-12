@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { Breakpoints } from '../../styles/Breakpoints';
 import { themeColors } from '../../styles/Theme';
 
-interface IStyledProfilePictureWrapper {
+type Props = {
   $profilePicture: boolean;
-}
+};
 
 export const StyledLinksPreview = styled.aside`
   display: none;
@@ -65,7 +65,7 @@ export const StyledProfileDetailsWrapper = styled.div`
   overflow: hidden;
 `;
 
-export const StyledProfilePictureWrapper = styled.div<IStyledProfilePictureWrapper>`
+export const StyledProfilePictureWrapper = styled.div<Props>`
   width: 96px;
   height: 96px;
   margin: 0 auto;

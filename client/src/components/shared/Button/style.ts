@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import { Breakpoints } from '../../../styles/Breakpoints';
 import { themeColors } from '../../../styles/Theme';
 
-interface IStyledButtonProps {
+type Props = {
   $hideOnMobile: boolean | undefined;
   $active?: boolean;
   $hideOnTablet?: boolean;
-}
+};
 
-export const StyledButton = styled(Button)<IStyledButtonProps>`
+export const StyledButton = styled(Button)<Props>`
   && {
     font-size: 1rem;
     display: flex;

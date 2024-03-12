@@ -1,5 +1,5 @@
 import isUrl from 'is-url';
-import { Dispatch, SetStateAction } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 
 import { StyledTextFieldWrapper } from './style';
 import linkIcon from '../../assets/images/icon-link.svg';
@@ -7,6 +7,7 @@ import { CustomizableLink } from '../../types/link';
 import Input from '../shared/Input';
 
 type Props = {
+  customizableLinks: Array<CustomizableLink>;
   setCustomizableLinks: Dispatch<SetStateAction<Array<CustomizableLink>>>;
   link: CustomizableLink;
   index: number;
@@ -14,31 +15,26 @@ type Props = {
 };
 
 const CustomizableLinkText = ({
+  customizableLinks,
   setCustomizableLinks,
   link,
-  index,
+  index: linkIndex,
   isError,
 }: Props) => {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const inputtedLink = event.target.value as string;
+    const linkError = !(inputtedLink && isUrl(inputtedLink));
 
-    setCustomizableLinks((prev) => {
-      const updatedLinks = Array.from(prev);
+    const newLink: CustomizableLink = {
+      ...link,
+      linkUrl: inputtedLink,
+      errors: { ...link.errors, linkUrl: linkError },
+    };
+    const newCustomizableLinks = customizableLinks.map((link, index) =>
+      index === linkIndex ? newLink : link
+    );
 
-      const linkToUpdate = { ...link };
-
-      linkToUpdate.linkUrl = inputtedLink;
-
-      if (inputtedLink && isUrl(inputtedLink)) {
-        linkToUpdate.errors.linkUrl = false;
-      } else {
-        linkToUpdate.errors.linkUrl = true;
-      }
-
-      updatedLinks[index] = linkToUpdate;
-
-      return updatedLinks;
-    });
+    setCustomizableLinks(newCustomizableLinks);
   };
 
   return (

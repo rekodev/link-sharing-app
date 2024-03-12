@@ -1,34 +1,34 @@
-import { DndContext, closestCenter } from "@dnd-kit/core";
+import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CircularProgress, Snackbar } from "@mui/material";
-import { HttpStatusCode } from "axios";
-import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+} from '@dnd-kit/sortable';
+import { CircularProgress, Snackbar } from '@mui/material';
+import { HttpStatusCode } from 'axios';
+import { SyntheticEvent, useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   StyledLinks,
   StyledLinksContainer,
   StyledSaveButtonWrapper,
-} from "./style";
-import { updateLinks } from "../../api";
-import CustomizableLink from "../../components/CustomizableLink";
-import { StyledCustomizableLinkWrapper } from "../../components/CustomizableLink/style";
-import StartCard from "../../components/StartCard/StartCard";
-import useDragHandlers from "../../hooks/useDragHandlers";
-import useUser from "../../hooks/useUser";
-import useUserLinks from "../../hooks/useUserLinks";
-import { StyledAlert } from "../../styles/UtilityStyles";
+} from './style';
+import { updateLinks } from '../../api';
+import CustomizableLink from '../../components/CustomizableLink';
+import { StyledCustomizableLinkWrapper } from '../../components/CustomizableLink/style';
+import StartCard from '../../components/StartCard/StartCard';
+import useDragHandlers from '../../hooks/useDragHandlers';
+import useUser from '../../hooks/useUser';
+import useUserLinks from '../../hooks/useUserLinks';
+import { StyledAlert } from '../../styles/UtilityStyles';
 import {
   CustomizableLink as CustomizableLinkType,
   UserLink,
-} from "../../types/link";
-import { SnackbarType } from "../../types/profileDetails";
-import { platforms } from "../../utils/platformList";
-import { transformCustomizableLink } from "../../utils/transformers";
-import Button from "../shared/Button";
+} from '../../types/link';
+import { SnackbarType } from '../../types/profileDetails';
+import { platforms } from '../../utils/platformList';
+import { transformCustomizableLink } from '../../utils/transformers';
+import Button from '../shared/Button';
 
 const Links = () => {
   const { user, isUserLoading } = useUser();
@@ -41,7 +41,7 @@ const Links = () => {
     Array<CustomizableLinkType>
   >([]);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const [snackbarType, setSnackbarType] = useState<SnackbarType>("success");
+  const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
   // const [uniqueLinks, setUniqueLinks] = useState(true);
 
   const { onDragStart, onDragEnd } = useDragHandlers({
@@ -52,31 +52,22 @@ const Links = () => {
   const handleAddNewLink = () => {
     if (!user?.id) return;
 
-    const temporaryUuid = uuidv4();
-
     const newLink = {
-      id: temporaryUuid,
+      id: uuidv4(),
       platform: platforms[0].name,
-      linkUrl: "",
+      linkUrl: '',
       attemptedSave: false,
       errors: { platform: false, linkUrl: false, unique: false },
       isBeingDragged: false,
     };
 
-    setCustomizableLinks((prev) => [...prev, newLink]);
-
-    const newLinks = customizableLinks.map((link) =>
+    const newCustomizableLinks = [...customizableLinks, newLink];
+    const transformedLinks = newCustomizableLinks.map((link) =>
       transformCustomizableLink(user.id!, link)
     );
 
-    newLinks.push({
-      id: temporaryUuid,
-      platform: newLink.platform,
-      linkUrl: newLink.linkUrl,
-      userId: user.id,
-    });
-
-    mutateLinks({ links: newLinks }, false);
+    setCustomizableLinks(newCustomizableLinks);
+    mutateLinks({ links: transformedLinks }, false);
   };
 
   useEffect(() => {
@@ -110,12 +101,12 @@ const Links = () => {
     setIsSnackbarOpen(true);
 
     if (result.status !== HttpStatusCode.Ok) {
-      setSnackbarType("error");
+      setSnackbarType('error');
 
       return;
     }
 
-    setSnackbarType("success");
+    setSnackbarType('success');
     mutateLinks();
   };
 
@@ -166,11 +157,8 @@ const Links = () => {
   //   }
   // };
 
-  const handleClose = (
-    _event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
+  const handleClose = (_event?: SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
       return;
     }
 
@@ -196,6 +184,7 @@ const Links = () => {
                 key={link.id}
                 link={link}
                 index={index}
+                customizableLinks={customizableLinks}
                 setCustomizableLinks={setCustomizableLinks}
                 isBeingDragged={link.isBeingDragged}
               />
@@ -215,19 +204,19 @@ const Links = () => {
       <StyledAlert
         onClose={handleClose}
         severity={snackbarType}
-        sx={{ width: "100%" }}
+        sx={{ width: '100%' }}
       >
-        {snackbarType === "success"
-          ? "Saved successfully"
+        {snackbarType === 'success'
+          ? 'Saved successfully'
           : // : uniqueLinks
-            "Error saving links. Please ensure all links are unique and have a URL present"}
+            'Error saving links. Please ensure all links are unique and have a URL present'}
         {/* // : 'Platforms must be unique'} */}
       </StyledAlert>
     </Snackbar>
   );
 
   if (isUserLoading || isUserLinksLoading)
-    return <CircularProgress color="primary" sx={{ margin: "auto" }} />;
+    return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
 
   return (
     <>
@@ -239,14 +228,14 @@ const Links = () => {
             the world!
           </p>
           <Button
-            text="+ Add new link"
-            variant="outlined"
+            text='+ Add new link'
+            variant='outlined'
             onClick={handleAddNewLink}
           />
           {renderLinks()}
         </StyledLinksContainer>
         <StyledSaveButtonWrapper>
-          <Button variant="contained" text="Save" onClick={handleSubmit} />
+          <Button variant='contained' text='Save' onClick={handleSubmit} />
         </StyledSaveButtonWrapper>
       </StyledLinks>
 
