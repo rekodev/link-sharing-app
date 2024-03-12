@@ -1,9 +1,9 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from "react";
 
-import { AUTH_FAILURE } from '../../constants/auth';
-import { AuthContext } from '../../contexts/authContext';
-import { getAuthToken } from '../../utils/authToken';
-import AuthFailureModal from '../AuthFailureModal';
+import { AUTH_FAILURE } from "../../../constants/auth";
+import { AuthContext } from "../../../contexts/authContext";
+import { getAuthToken } from "../../../utils/authToken";
+import AuthFailureModal from "../../AuthFailureModal";
 
 type Props = {
   children: ReactNode;
