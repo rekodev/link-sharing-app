@@ -17,6 +17,7 @@ export type UserLink = {
 export type CustomizableLink = UserLink & {
   id: string;
   isBeingDragged: boolean | undefined;
+  attemptedSave: boolean;
   errors: {
     platform: boolean;
     linkUrl: boolean;

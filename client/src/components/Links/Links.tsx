@@ -57,6 +57,7 @@ const Links = () => {
       id: uuidv4(),
       platform: platforms[0].name,
       linkUrl: '',
+      attemptedSave: false,
       errors: { platform: false, linkUrl: false },
       isBeingDragged: false,
     };
@@ -73,25 +74,28 @@ const Links = () => {
   useEffect(() => {
     if (!userLinks) return;
 
-    const latestLinks: Array<CustomizableLinkType> = userLinks.map((link) => ({
-      id: uuidv4(),
-      platform: link.platform,
-      linkUrl: link.linkUrl,
-      attemptedSave: false,
-      errors: { platform: false, linkUrl: false },
-      isBeingDragged: false,
-    }));
+    const latestLinks = userLinks.map(
+      (link): CustomizableLinkType => ({
+        id: uuidv4(),
+        platform: link.platform,
+        linkUrl: link.linkUrl,
+        attemptedSave: false,
+        errors: { platform: false, linkUrl: false },
+        isBeingDragged: false,
+      })
+    );
 
     setCustomizableLinks(latestLinks);
   }, [userLinks]);
 
-  const validateLink = (link: CustomizableLinkType) => {
+  const validateLink = (link: CustomizableLinkType): CustomizableLinkType => {
     const isLinkUrlValid = isUrl(link.linkUrl);
     const isLinkPlatformValid = !!link.platform;
 
     return {
       ...link,
       errors: { platform: !isLinkPlatformValid, linkUrl: !isLinkUrlValid },
+      attemptedSave: true,
     };
   };
 
@@ -108,9 +112,9 @@ const Links = () => {
       (link) => link.errors.linkUrl || link.errors.platform
     );
 
-    if (!allLinksValid) setCustomizableLinks(validatedLinks);
-
-    console.log(validatedLinks);
+    if (!allLinksValid) {
+      setCustomizableLinks(validatedLinks);
+    }
 
     return allLinksValid;
   };

@@ -24,11 +24,13 @@ const CustomizableLinkText = ({
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const inputtedLink = event.target.value as string;
     const linkError = !(inputtedLink && isUrl(inputtedLink));
+    const attemptedSave = link.attemptedSave && linkError;
 
     const newLink: CustomizableLink = {
       ...link,
       linkUrl: inputtedLink,
       errors: { ...link.errors, linkUrl: linkError },
+      attemptedSave,
     };
     const newCustomizableLinks = customizableLinks.map((link, index) =>
       index === linkIndex ? newLink : link
