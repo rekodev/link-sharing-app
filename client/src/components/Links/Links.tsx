@@ -5,7 +5,6 @@ import {
 } from '@dnd-kit/sortable';
 import { CircularProgress, Snackbar } from '@mui/material';
 import { HttpStatusCode } from 'axios';
-import isUrl from 'is-url';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -19,6 +18,7 @@ import CustomizableLink from '../../components/CustomizableLink';
 import { StyledCustomizableLinkWrapper } from '../../components/CustomizableLink/style';
 import StartCard from '../../components/StartCard/StartCard';
 import useDragHandlers from '../../hooks/useDragHandlers';
+import useLinkValidation from '../../hooks/useLinkValidation';
 import useUser from '../../hooks/useUser';
 import useUserLinks from '../../hooks/useUserLinks';
 import { StyledAlert } from '../../styles/UtilityStyles';
@@ -38,6 +38,7 @@ const Links = () => {
     isLinksLoading: isUserLinksLoading,
     mutateLinks,
   } = useUserLinks();
+
   const [customizableLinks, setCustomizableLinks] = useState<
     Array<CustomizableLinkType>
   >([]);
@@ -45,6 +46,10 @@ const Links = () => {
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
   // const [uniqueLinks, setUniqueLinks] = useState(true);
 
+  const { validateLinks } = useLinkValidation({
+    customizableLinks,
+    setCustomizableLinks,
+  });
   const { onDragStart, onDragEnd } = useDragHandlers({
     customizableLinks,
     setCustomizableLinks,
@@ -88,37 +93,6 @@ const Links = () => {
     setCustomizableLinks(latestLinks);
   }, [userLinks]);
 
-  const validateLink = (link: CustomizableLinkType): CustomizableLinkType => {
-    const isLinkUrlValid = isUrl(link.linkUrl);
-    const isLinkPlatformValid = !!link.platform;
-
-    return {
-      ...link,
-      errors: { platform: !isLinkPlatformValid, linkUrl: !isLinkUrlValid },
-      attemptedSave: true,
-    };
-  };
-
-  const validateLinks = () => {
-    const uniquePlatforms =
-      new Set(customizableLinks.map((link) => link.platform)).size ===
-      customizableLinks.length;
-
-    if (!uniquePlatforms) return false;
-
-    const validatedLinks = customizableLinks.map((link) => validateLink(link));
-
-    const allLinksValid = !validatedLinks.find(
-      (link) => link.errors.linkUrl || link.errors.platform
-    );
-
-    if (!allLinksValid) {
-      setCustomizableLinks(validatedLinks);
-    }
-
-    return allLinksValid;
-  };
-
   const handleSubmit = async () => {
     if (!user?.id) return;
 
@@ -147,53 +121,6 @@ const Links = () => {
     setSnackbarType('success');
     mutateLinks();
   };
-
-  // const handleSave = () => {
-  //   let allValid = true;
-  //   // localStorage.setItem('links', JSON.stringify(links));
-  //   // Check if platforms are unique
-  //   const uniquePlatforms =
-  //     new Set(customizableLinks.map((link) => link.platform)).size ===
-  //     customizableLinks.length;
-
-  //   const updatedLinks = customizableLinks.map((link) => {
-  //     const isLinkValid = isUrl(link.linkUrl);
-  //     const isPlatformValid = Boolean(link.platform);
-
-  //     if (!isLinkValid || !isPlatformValid || !uniquePlatforms) {
-  //       allValid = false;
-
-  //       return {
-  //         ...link,
-  //         attemptedSave: true,
-  //         errors: {
-  //           platform: !isPlatformValid,
-  //           linkUrl: !isLinkValid,
-  //         },
-  //       };
-  //     }
-
-  //     return {
-  //       ...link,
-  //       attemptedSave: false,
-  //       errors: { platform: false, linkUrl: false },
-  //     };
-  //   });
-
-  //   if (allValid) {
-  //     setLinks(updatedLinks);
-  //     setSnackbarType('success');
-  //     setOpen(true);
-  //     setUniqueLinks(true);
-  //   } else {
-  //     setCustomizableLinks(updatedLinks);
-  //     setSnackbarType('error');
-  //     setOpen(true);
-  //     if (!uniquePlatforms) {
-  //       setUniqueLinks(false);
-  //     }
-  //   }
-  // };
 
   const handleClose = (_event?: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
