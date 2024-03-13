@@ -5,6 +5,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CircularProgress, Snackbar } from '@mui/material';
 import { HttpStatusCode } from 'axios';
+import isUrl from 'is-url';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -56,8 +57,7 @@ const Links = () => {
       id: uuidv4(),
       platform: platforms[0].name,
       linkUrl: '',
-      attemptedSave: false,
-      errors: { platform: false, linkUrl: false, unique: false },
+      errors: { platform: false, linkUrl: false },
       isBeingDragged: false,
     };
 
@@ -78,12 +78,42 @@ const Links = () => {
       platform: link.platform,
       linkUrl: link.linkUrl,
       attemptedSave: false,
-      errors: { platform: false, linkUrl: false, unique: false },
+      errors: { platform: false, linkUrl: false },
       isBeingDragged: false,
     }));
 
     setCustomizableLinks(latestLinks);
   }, [userLinks]);
+
+  const validateLink = (link: CustomizableLinkType) => {
+    const isLinkUrlValid = isUrl(link.linkUrl);
+    const isLinkPlatformValid = !!link.platform;
+
+    return {
+      ...link,
+      errors: { platform: !isLinkPlatformValid, linkUrl: !isLinkUrlValid },
+    };
+  };
+
+  const validateLinks = () => {
+    const uniquePlatforms =
+      new Set(customizableLinks.map((link) => link.platform)).size ===
+      customizableLinks.length;
+
+    if (!uniquePlatforms) return false;
+
+    const validatedLinks = customizableLinks.map((link) => validateLink(link));
+
+    const allLinksValid = !validatedLinks.find(
+      (link) => link.errors.linkUrl || link.errors.platform
+    );
+
+    if (!allLinksValid) setCustomizableLinks(validatedLinks);
+
+    console.log(validatedLinks);
+
+    return allLinksValid;
+  };
 
   const handleSubmit = async () => {
     if (!user?.id) return;
@@ -95,6 +125,10 @@ const Links = () => {
         index,
       })
     );
+
+    const linksValid = validateLinks();
+
+    if (!linksValid) return;
 
     setIsSnackbarOpen(false);
     const result = await updateLinks(user.id, linksToBeSubmitted);
