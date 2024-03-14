@@ -8,10 +8,10 @@ import {
   StyledMenuItem,
   StyledSelect,
 } from './style';
+import { platforms } from '../../constants/platformList';
 import useUser from '../../hooks/useUser';
 import useUserLinks from '../../hooks/useUserLinks';
 import { CustomizableLink } from '../../types/link';
-import { platforms } from '../../utils/platformList';
 import { transformCustomizableLink } from '../../utils/transformers';
 
 type Props = {
@@ -36,15 +36,39 @@ const CustomizableLinkSelect = ({
     if (!user?.id) return;
 
     const selectedPlatform = event.target.value as string;
+    // const previousPlatform = link.platform;
+    const previousError = link.errors.platform;
+    const platformError = previousError && link.platform === selectedPlatform;
+
+    console.log(platformError);
+
     const updatedLink: CustomizableLink = {
       ...link,
       platform: selectedPlatform,
-      errors: { ...link.errors, platform: !selectedPlatform },
+      errors: { ...link.errors, platform: platformError },
     };
+    // if I select a link that has prevError and platformError is false then I want to map newCustomizableLinks to return
+    // an updatedLink with platform error false as long as the platform === selectedPlatform
 
-    const newCustomizableLinks = customizableLinks.map((link, index) =>
-      index === linkIndex ? updatedLink : link
+    const newCustomizableLinks = customizableLinks.map(
+      (link: CustomizableLink, index) => {
+        // TODO: Implement proper validation logic
+        return index === linkIndex ? updatedLink : link;
+
+        // return index === linkIndex
+        //   ? updatedLink
+        //   : !updatedLink.errors.platform
+        //   ? {
+        //       ...link,
+        //       errors: {
+        //         ...link.errors,
+        //         platform: link.platform === selectedPlatform ? false : true,
+        //       },
+        //     }
+        //   : link;
+      }
     );
+
     const transformedLinks = newCustomizableLinks.map((link) =>
       transformCustomizableLink(user.id!, link)
     );
@@ -54,7 +78,7 @@ const CustomizableLinkSelect = ({
   };
 
   return (
-    <StyledFormControl fullWidth>
+    <StyledFormControl $hasError={isError} fullWidth>
       <StyledInputLabel id='brand-select-label'>Platform</StyledInputLabel>
       <StyledSelect
         error={isError}
@@ -63,7 +87,7 @@ const CustomizableLinkSelect = ({
         value={link.platform}
         label='Platform'
         onChange={handleChange}
-        $hasInput={link.platform ? true : false}
+        $hasInput={!!link.platform}
       >
         {platforms.map((platform, idx) => (
           <StyledMenuItem key={idx} value={platform.name}>
@@ -73,7 +97,7 @@ const CustomizableLinkSelect = ({
         ))}
       </StyledSelect>
       {isError && (
-        <StyledFormHelperText>You must select a platform</StyledFormHelperText>
+        <StyledFormHelperText>Platforms must be unique</StyledFormHelperText>
       )}
     </StyledFormControl>
   );

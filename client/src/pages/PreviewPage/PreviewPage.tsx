@@ -2,11 +2,11 @@ import {
   StyledPreview,
   StyledPreviewContainer,
   StyledPreviewLinkWrapper,
-} from "./style";
-import PlatformLink from "../../components/PlatformLink";
-import PreviewCard from "../../components/PreviewCard";
-import useUserLinks from "../../hooks/useUserLinks";
-import { platforms } from "../../utils/platformList";
+} from './style';
+import PlatformLink from '../../components/PlatformLink';
+import PreviewCard from '../../components/PreviewCard';
+import useUserLinks from '../../hooks/useUserLinks';
+import { platforms } from '../../constants/platformList';
 
 const REVALIDATE_ON_MOUNT = true;
 

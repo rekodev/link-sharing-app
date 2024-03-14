@@ -10,6 +10,7 @@ export const themeColors = {
   red: '#FF3939',
   darkRed: '#d32f2f',
   success: '#4CAF50',
+  error: '#d32f2f',
 };
 
 export const platformColors = {

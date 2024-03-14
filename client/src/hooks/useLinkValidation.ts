@@ -2,6 +2,7 @@ import isUrl from 'is-url';
 import { Dispatch, SetStateAction } from 'react';
 
 import { CustomizableLink } from '../types/link';
+import mapPlatformUniqueness from '../utils/mapPlatformUniqueness';
 
 type Props = {
   customizableLinks: Array<CustomizableLink>;
@@ -12,25 +13,18 @@ const useLinkValidation = ({
   customizableLinks,
   setCustomizableLinks,
 }: Props) => {
-  const validateLink = (link: CustomizableLink): CustomizableLink => {
-    const isLinkUrlValid = isUrl(link.linkUrl);
-    const isLinkPlatformValid = !!link.platform;
-
-    return {
-      ...link,
-      errors: { platform: !isLinkPlatformValid, linkUrl: !isLinkUrlValid },
-      attemptedSave: true,
-    };
-  };
-
   const validateLinks = () => {
-    const uniquePlatforms =
-      new Set(customizableLinks.map((link) => link.platform)).size ===
-      customizableLinks.length;
+    const validatedLinks = customizableLinks.map((link) => {
+      const isLinkUrlValid = isUrl(link.linkUrl);
+      const isLinkPlatformValid =
+        mapPlatformUniqueness(customizableLinks)[link.platform];
 
-    if (!uniquePlatforms) return false;
-
-    const validatedLinks = customizableLinks.map((link) => validateLink(link));
+      return {
+        ...link,
+        errors: { platform: !isLinkPlatformValid, linkUrl: !isLinkUrlValid },
+        attemptedSave: true,
+      };
+    });
 
     const allLinksValid = !validatedLinks.find(
       (link) => link.errors.linkUrl || link.errors.platform

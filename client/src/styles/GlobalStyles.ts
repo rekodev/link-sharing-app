@@ -1,7 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
-import InstrumentSans from '../assets/fonts/InstrumentSans-VariableFont_wdth,wght.ttf';
-import InstrumentSansItalic from '../assets/fonts/InstrumentSans-Italic-VariableFont_wdth,wght.ttf';
+
 import { themeColors } from './Theme';
+import InstrumentSansItalic from '../assets/fonts/InstrumentSans-Italic-VariableFont_wdth,wght.ttf';
+import InstrumentSans from '../assets/fonts/InstrumentSans-VariableFont_wdth,wght.ttf';
 
 const GlobalStyles = createGlobalStyle`
     @font-face {

@@ -17,6 +17,7 @@ import { updateLinks } from '../../api';
 import CustomizableLink from '../../components/CustomizableLink';
 import { StyledCustomizableLinkWrapper } from '../../components/CustomizableLink/style';
 import StartCard from '../../components/StartCard/StartCard';
+import { platforms } from '../../constants/platformList';
 import useDragHandlers from '../../hooks/useDragHandlers';
 import useLinkValidation from '../../hooks/useLinkValidation';
 import useUser from '../../hooks/useUser';
@@ -27,7 +28,6 @@ import {
   UserLink,
 } from '../../types/link';
 import { SnackbarType } from '../../types/profileDetails';
-import { platforms } from '../../utils/platformList';
 import { transformCustomizableLink } from '../../utils/transformers';
 import Button from '../shared/Button';
 
@@ -77,7 +77,7 @@ const Links = () => {
   };
 
   useEffect(() => {
-    if (!userLinks) return;
+    if (!userLinks || customizableLinks.length) return;
 
     const latestLinks = userLinks.map(
       (link): CustomizableLinkType => ({
@@ -91,7 +91,7 @@ const Links = () => {
     );
 
     setCustomizableLinks(latestLinks);
-  }, [userLinks]);
+  }, [userLinks, customizableLinks]);
 
   const handleSubmit = async () => {
     if (!user?.id) return;

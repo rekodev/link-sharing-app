@@ -6,13 +6,13 @@ import {
   StyledProfileDetailsTextWrapper,
   StyledProfileDetailsWrapper,
   StyledProfilePictureWrapper,
-} from "./style";
-import phoneMockup from "../../assets/images/illustration-phone-mockup.svg";
-import useUser from "../../hooks/useUser";
-import useUserLinks from "../../hooks/useUserLinks";
-import { UserLink } from "../../types/link";
-import { platforms } from "../../utils/platformList";
-import PlatformLink from "../PlatformLink";
+} from './style';
+import phoneMockup from '../../assets/images/illustration-phone-mockup.svg';
+import useUser from '../../hooks/useUser';
+import useUserLinks from '../../hooks/useUserLinks';
+import { UserLink } from '../../types/link';
+import { platforms } from '../../constants/platformList';
+import PlatformLink from '../PlatformLink';
 
 const REVALIDATE_ON_MOUNT = true;
 
@@ -54,7 +54,7 @@ const LinksPreview = () => {
         <StyledPhoneImageWrapper>
           <StyledProfileDetailsWrapper>
             <StyledProfilePictureWrapper $profilePicture={!!user}>
-              <img src={user.profilePictureUrl} alt="Profile Picture" />
+              <img src={user.profilePictureUrl} alt='Profile Picture' />
             </StyledProfilePictureWrapper>
             <StyledProfileDetailsTextWrapper>
               <h3>{`${user?.firstName} ${user?.lastName}`}</h3>
@@ -62,7 +62,7 @@ const LinksPreview = () => {
             </StyledProfileDetailsTextWrapper>
           </StyledProfileDetailsWrapper>
           {renderLinks()}
-          <img src={phoneMockup} alt="" />
+          <img src={phoneMockup} alt='' />
         </StyledPhoneImageWrapper>
       </StyledLinksPreviewContainer>
     </StyledLinksPreview>

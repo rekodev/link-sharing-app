@@ -22,15 +22,21 @@ const CustomizableLinkText = ({
   isError,
 }: Props) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const inputtedLink = event.target.value as string;
-    const linkError = !(inputtedLink && isUrl(inputtedLink));
-    const attemptedSave = link.attemptedSave && linkError;
+    const { attemptedSave, errors, linkUrl } = link;
+
+    const inputtedLink = event.target.value;
+
+    const previousError = !linkUrl || !isUrl(linkUrl);
+    const linkError = previousError
+      ? !inputtedLink || !isUrl(inputtedLink)
+      : false;
+    const errorVisible = attemptedSave && linkError;
 
     const newLink: CustomizableLink = {
       ...link,
       linkUrl: inputtedLink,
-      errors: { ...link.errors, linkUrl: linkError },
-      attemptedSave,
+      errors: { ...errors, linkUrl: linkError },
+      attemptedSave: errorVisible,
     };
     const newCustomizableLinks = customizableLinks.map((link, index) =>
       index === linkIndex ? newLink : link
