@@ -12,6 +12,7 @@ import { platforms } from '../../constants/platformList';
 import useUser from '../../hooks/useUser';
 import useUserLinks from '../../hooks/useUserLinks';
 import { CustomizableLink } from '../../types/link';
+import mapPlatformUniqueness from '../../utils/mapPlatformUniqueness';
 import { transformCustomizableLink } from '../../utils/transformers';
 
 type Props = {
@@ -33,47 +34,33 @@ const CustomizableLinkSelect = ({
   const { mutateLinks } = useUserLinks();
 
   const handleChange = (event: SelectChangeEvent<unknown>) => {
-    if (!user?.id) return;
+    if (!user?.id || !event.target.value) return;
 
     const selectedPlatform = event.target.value as string;
-    // const previousPlatform = link.platform;
     const previousError = link.errors.platform;
     const platformError = previousError && link.platform === selectedPlatform;
-
-    console.log(platformError);
 
     const updatedLink: CustomizableLink = {
       ...link,
       platform: selectedPlatform,
       errors: { ...link.errors, platform: platformError },
     };
-    // if I select a link that has prevError and platformError is false then I want to map newCustomizableLinks to return
-    // an updatedLink with platform error false as long as the platform === selectedPlatform
 
-    const newCustomizableLinks = customizableLinks.map(
-      (link: CustomizableLink, index) => {
-        // TODO: Implement proper validation logic
-        return index === linkIndex ? updatedLink : link;
+    const newCustomizableLinks: Array<CustomizableLink> =
+      customizableLinks.toSpliced(linkIndex, 1, updatedLink);
 
-        // return index === linkIndex
-        //   ? updatedLink
-        //   : !updatedLink.errors.platform
-        //   ? {
-        //       ...link,
-        //       errors: {
-        //         ...link.errors,
-        //         platform: link.platform === selectedPlatform ? false : true,
-        //       },
-        //     }
-        //   : link;
-      }
+    const platformUniquenessMap = mapPlatformUniqueness(newCustomizableLinks);
+    const validatedNewCustomizableLinks = newCustomizableLinks.map((link) =>
+      platformUniquenessMap[link.platform]
+        ? { ...link, errors: { ...link.errors, platform: false } }
+        : { ...link, errors: { ...link.errors, platform: true } }
     );
 
-    const transformedLinks = newCustomizableLinks.map((link) =>
+    const transformedLinks = validatedNewCustomizableLinks.map((link) =>
       transformCustomizableLink(user.id!, link)
     );
 
-    setCustomizableLinks(newCustomizableLinks);
+    setCustomizableLinks(validatedNewCustomizableLinks);
     mutateLinks({ links: transformedLinks }, false);
   };
 
