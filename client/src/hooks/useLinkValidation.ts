@@ -18,11 +18,12 @@ const useLinkValidation = ({
       const isLinkUrlValid = isUrl(link.linkUrl);
       const isLinkPlatformValid =
         mapPlatformUniqueness(customizableLinks)[link.platform];
+      const hasErrors = !isLinkUrlValid || !isLinkPlatformValid;
 
       return {
         ...link,
         errors: { platform: !isLinkPlatformValid, linkUrl: !isLinkUrlValid },
-        attemptedSave: true,
+        hasErrors,
       };
     });
 

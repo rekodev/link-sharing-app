@@ -15,6 +15,26 @@ import { CustomizableLink } from '../../types/link';
 import mapPlatformUniqueness from '../../utils/mapPlatformUniqueness';
 import { transformCustomizableLink } from '../../utils/transformers';
 
+const validatePlatformUniqueness = (
+  newCustomizableLinks: Array<CustomizableLink>,
+  prevLink: CustomizableLink
+) => {
+  const platformUniquenessMap = mapPlatformUniqueness(newCustomizableLinks);
+
+  const validatedNewCustomizableLinks = newCustomizableLinks.map((link) => {
+    const { platform: prevError } = prevLink.errors;
+
+    const hasErrors = link.errors.linkUrl || link.errors.platform;
+    const isPlatformUnique = platformUniquenessMap[link.platform];
+
+    return isPlatformUnique
+      ? { ...link, hasErrors, errors: { ...link.errors, platform: false } }
+      : { ...link, hasErrors, errors: { ...link.errors, platform: prevError } };
+  });
+
+  return validatedNewCustomizableLinks;
+};
+
 type Props = {
   customizableLinks: Array<CustomizableLink>;
   setCustomizableLinks: Dispatch<SetStateAction<Array<CustomizableLink>>>;
@@ -45,17 +65,13 @@ const CustomizableLinkSelect = ({
       platform: selectedPlatform,
       errors: { ...link.errors, platform: platformError },
     };
-
     const newCustomizableLinks: Array<CustomizableLink> =
       customizableLinks.toSpliced(linkIndex, 1, updatedLink);
 
-    const platformUniquenessMap = mapPlatformUniqueness(newCustomizableLinks);
-    const validatedNewCustomizableLinks = newCustomizableLinks.map((link) =>
-      platformUniquenessMap[link.platform]
-        ? { ...link, errors: { ...link.errors, platform: false } }
-        : { ...link, errors: { ...link.errors, platform: true } }
+    const validatedNewCustomizableLinks = validatePlatformUniqueness(
+      newCustomizableLinks,
+      link
     );
-
     const transformedLinks = validatedNewCustomizableLinks.map((link) =>
       transformCustomizableLink(user.id!, link)
     );

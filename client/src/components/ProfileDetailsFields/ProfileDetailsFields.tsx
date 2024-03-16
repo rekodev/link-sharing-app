@@ -14,8 +14,8 @@ type ProfileDetailsFieldsError = {
 type Props = {
   profileDetails: ProfileDetails;
   setProfileDetails: Dispatch<SetStateAction<ProfileDetails>>;
-  attemptedSave: boolean;
-  setAttemptedSave: Dispatch<SetStateAction<boolean>>;
+  hasErrors: boolean;
+  setHasErrors: Dispatch<SetStateAction<boolean>>;
   error: ProfileDetailsFieldsError;
   setError: Dispatch<SetStateAction<ProfileDetailsFieldsError>>;
 };
@@ -23,8 +23,8 @@ type Props = {
 const ProfileDetailsFields = ({
   profileDetails,
   setProfileDetails,
-  attemptedSave,
-  setAttemptedSave,
+  hasErrors,
+  setHasErrors,
   error,
   setError,
 }: Props) => {
@@ -37,9 +37,9 @@ const ProfileDetailsFields = ({
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!user?.id) return;
-    // After attempting a save, we want to reset the attemptedSave, but only after all of the highlighted errors have been fixed
+    // After attempting a save, we want to reset the hasErrors, but only after all of the highlighted errors have been fixed
     if (noErrors) {
-      setAttemptedSave(false);
+      setHasErrors(false);
     }
 
     const { name, value } = event.target;
@@ -85,7 +85,7 @@ const ProfileDetailsFields = ({
         name='firstName'
         onChange={handleChange}
         value={profileDetails.firstName}
-        error={error.firstName && attemptedSave}
+        error={error.firstName && hasErrors}
       />
       <Input
         id='lastName'
@@ -96,7 +96,7 @@ const ProfileDetailsFields = ({
         name='lastName'
         onChange={handleChange}
         value={profileDetails.lastName}
-        error={error.lastName && attemptedSave}
+        error={error.lastName && hasErrors}
       />
       <Input
         id='email'
@@ -106,7 +106,7 @@ const ProfileDetailsFields = ({
         name='email'
         onChange={handleChange}
         value={profileDetails.email}
-        error={error.email && attemptedSave}
+        error={error.email && hasErrors}
         errorText='Incorrect email format'
       />
     </StyledProfileDetailsFieldsContainer>

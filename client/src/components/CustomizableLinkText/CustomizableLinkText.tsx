@@ -6,6 +6,30 @@ import linkIcon from '../../assets/images/icon-link.svg';
 import { CustomizableLink } from '../../types/link';
 import Input from '../shared/Input';
 
+const validateLinkUrl = (
+  link: CustomizableLink,
+  inputtedLinkUrl: string,
+  prevError: boolean
+): CustomizableLink => {
+  const { errors, hasErrors: isValidationRequired } = link;
+
+  if (!isValidationRequired) return { ...link, linkUrl: inputtedLinkUrl };
+
+  const linkUrlError = prevError
+    ? !inputtedLinkUrl || !isUrl(inputtedLinkUrl)
+    : false;
+  const hasErrors = linkUrlError || link.errors.platform;
+
+  const newLink: CustomizableLink = {
+    ...link,
+    linkUrl: inputtedLinkUrl,
+    errors: { ...errors, linkUrl: linkUrlError },
+    hasErrors,
+  };
+
+  return newLink;
+};
+
 type Props = {
   customizableLinks: Array<CustomizableLink>;
   setCustomizableLinks: Dispatch<SetStateAction<Array<CustomizableLink>>>;
@@ -22,24 +46,12 @@ const CustomizableLinkText = ({
   isError,
 }: Props) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { attemptedSave, errors, linkUrl } = link;
+    const inputtedLinkUrl = event.target.value;
+    const prevError = !link.linkUrl || !isUrl(link.linkUrl);
 
-    const inputtedLink = event.target.value;
-
-    const previousError = !linkUrl || !isUrl(linkUrl);
-    const linkError = previousError
-      ? !inputtedLink || !isUrl(inputtedLink)
-      : false;
-    const errorVisible = attemptedSave && linkError;
-
-    const newLink: CustomizableLink = {
-      ...link,
-      linkUrl: inputtedLink,
-      errors: { ...errors, linkUrl: linkError },
-      attemptedSave: errorVisible,
-    };
+    const newValidatedLink = validateLinkUrl(link, inputtedLinkUrl, prevError);
     const newCustomizableLinks = customizableLinks.map((link, index) =>
-      index === linkIndex ? newLink : link
+      index === linkIndex ? newValidatedLink : link
     );
 
     setCustomizableLinks(newCustomizableLinks);

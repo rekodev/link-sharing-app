@@ -9,7 +9,7 @@ type Props = {
 
 export const StyledLinksPreview = styled.aside`
   display: none;
-  width: 560px;
+  min-width: 560px;
   margin-left: 1.5rem;
   margin-bottom: 1.5rem;
 

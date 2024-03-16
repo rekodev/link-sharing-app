@@ -8,10 +8,10 @@ import {
   StyledProfilePictureWrapper,
 } from './style';
 import phoneMockup from '../../assets/images/illustration-phone-mockup.svg';
+import { platforms } from '../../constants/platformList';
 import useUser from '../../hooks/useUser';
 import useUserLinks from '../../hooks/useUserLinks';
 import { UserLink } from '../../types/link';
-import { platforms } from '../../constants/platformList';
 import PlatformLink from '../PlatformLink';
 
 const REVALIDATE_ON_MOUNT = true;

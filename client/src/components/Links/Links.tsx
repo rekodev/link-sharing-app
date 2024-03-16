@@ -62,7 +62,7 @@ const Links = () => {
       id: uuidv4(),
       platform: platforms[0].name,
       linkUrl: '',
-      attemptedSave: false,
+      hasErrors: false,
       errors: { platform: false, linkUrl: false },
       isBeingDragged: false,
     };
@@ -84,7 +84,7 @@ const Links = () => {
         id: uuidv4(),
         platform: link.platform,
         linkUrl: link.linkUrl,
-        attemptedSave: false,
+        hasErrors: false,
         errors: { platform: false, linkUrl: false },
         isBeingDragged: false,
       })
