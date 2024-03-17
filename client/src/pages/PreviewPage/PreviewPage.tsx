@@ -1,12 +1,15 @@
+import { ReactNode } from 'react';
+
 import {
   StyledPreview,
   StyledPreviewContainer,
   StyledPreviewLinkWrapper,
 } from './style';
-import PlatformLink from '../../components/PlatformLink';
+import arrowIcon from '../../assets/images/icon-arrow-right.svg';
+import { StyledPlatformLink } from '../../components/LinksPreview/style';
 import PreviewCard from '../../components/PreviewCard';
-import useUserLinks from '../../hooks/useUserLinks';
 import { platforms } from '../../constants/platformList';
+import useUserLinks from '../../hooks/useUserLinks';
 
 const REVALIDATE_ON_MOUNT = true;
 
@@ -20,26 +23,37 @@ const PreviewPage = () => {
     platforms.some((platform) => platform.name === link.platform)
   );
 
+  const renderLink = (
+    index: number,
+    text: string,
+    svgIcon: ReactNode,
+    url: string
+  ) => (
+    <StyledPlatformLink key={index} href={url} $platform={text} target='_blank'>
+      {svgIcon}
+      {text}
+      <img src={arrowIcon} alt='Arrow Right Icon' />
+    </StyledPlatformLink>
+  );
+
   return (
     <>
       <StyledPreview>
         <StyledPreviewContainer>
           <PreviewCard atLeastOnePlatform={atLeastOnePlatform} />
           <StyledPreviewLinkWrapper>
-            {userLinks.map((link, idx: number) => {
+            {userLinks.map((link, index: number) => {
               const matchedPlatform = platforms.find(
                 (platform) => platform.name === link.platform
               );
 
               if (!matchedPlatform) return null;
 
-              return (
-                <PlatformLink
-                  key={idx}
-                  svgIcon={matchedPlatform.svgIcon}
-                  text={matchedPlatform.name}
-                  url={link.linkUrl}
-                />
+              return renderLink(
+                index,
+                matchedPlatform.name,
+                matchedPlatform.svgIcon,
+                link.linkUrl
               );
             })}
           </StyledPreviewLinkWrapper>

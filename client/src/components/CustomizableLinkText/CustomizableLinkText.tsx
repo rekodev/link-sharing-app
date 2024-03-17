@@ -4,31 +4,8 @@ import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { StyledTextFieldWrapper } from './style';
 import linkIcon from '../../assets/images/icon-link.svg';
 import { CustomizableLink } from '../../types/link';
+import { validateLinkUrl } from '../../validation/link';
 import Input from '../shared/Input';
-
-const validateLinkUrl = (
-  link: CustomizableLink,
-  inputtedLinkUrl: string,
-  prevError: boolean
-): CustomizableLink => {
-  const { errors, hasErrors: isValidationRequired } = link;
-
-  if (!isValidationRequired) return { ...link, linkUrl: inputtedLinkUrl };
-
-  const linkUrlError = prevError
-    ? !inputtedLinkUrl || !isUrl(inputtedLinkUrl)
-    : false;
-  const hasErrors = linkUrlError || link.errors.platform;
-
-  const newLink: CustomizableLink = {
-    ...link,
-    linkUrl: inputtedLinkUrl,
-    errors: { ...errors, linkUrl: linkUrlError },
-    hasErrors,
-  };
-
-  return newLink;
-};
 
 type Props = {
   customizableLinks: Array<CustomizableLink>;

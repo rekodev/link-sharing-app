@@ -5,7 +5,7 @@ export type ProfileDetails = {
   profilePictureUrl: string;
 };
 
-export type ProfileDetailsErrors = {
+export type ProfileDetailsError = {
   firstName: boolean;
   lastName: boolean;
   email: boolean;

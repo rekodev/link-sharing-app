@@ -12,28 +12,8 @@ import { platforms } from '../../constants/platformList';
 import useUser from '../../hooks/useUser';
 import useUserLinks from '../../hooks/useUserLinks';
 import { CustomizableLink } from '../../types/link';
-import mapPlatformUniqueness from '../../utils/mapPlatformUniqueness';
 import { transformCustomizableLink } from '../../utils/transformers';
-
-const validatePlatformUniqueness = (
-  newCustomizableLinks: Array<CustomizableLink>,
-  prevLink: CustomizableLink
-) => {
-  const platformUniquenessMap = mapPlatformUniqueness(newCustomizableLinks);
-
-  const validatedNewCustomizableLinks = newCustomizableLinks.map((link) => {
-    const { platform: prevError } = prevLink.errors;
-
-    const hasErrors = link.errors.linkUrl || link.errors.platform;
-    const isPlatformUnique = platformUniquenessMap[link.platform];
-
-    return isPlatformUnique
-      ? { ...link, hasErrors, errors: { ...link.errors, platform: false } }
-      : { ...link, hasErrors, errors: { ...link.errors, platform: prevError } };
-  });
-
-  return validatedNewCustomizableLinks;
-};
+import { validatePlatformUniqueness } from '../../validation/link';
 
 type Props = {
   customizableLinks: Array<CustomizableLink>;
@@ -57,13 +37,10 @@ const CustomizableLinkSelect = ({
     if (!user?.id || !event.target.value) return;
 
     const selectedPlatform = event.target.value as string;
-    const previousError = link.errors.platform;
-    const platformError = previousError && link.platform === selectedPlatform;
 
     const updatedLink: CustomizableLink = {
       ...link,
       platform: selectedPlatform,
-      errors: { ...link.errors, platform: platformError },
     };
     const newCustomizableLinks: Array<CustomizableLink> =
       customizableLinks.toSpliced(linkIndex, 1, updatedLink);

@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import multer from 'multer';
 import './config/cloudinary';
 import { connectToDb } from './database/db';
-import { editUserById, getUserById } from './controllers/userController';
+import { editUserById, getUser } from './controllers/userController';
 import { login, register } from './controllers/authController';
 import {
   checkAuthPayload,
@@ -35,7 +35,7 @@ app.post('/api/links/:userId', checkLinkPayload, editUserLinks);
 
 app.get('/api/links/:userId', getUserLinks);
 
-app.get('/api/user/:userId', authenticateToken, getUserById);
+app.get('/api/user/:userId', authenticateToken, getUser);
 
 app.put(
   '/api/user/:userId',

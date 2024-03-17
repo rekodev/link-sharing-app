@@ -24,7 +24,7 @@ export const StyledFormControl = styled(FormControl)<{ $hasError: boolean }>`
       color: ${themeColors.indigo};
     }
 
-    & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    &&&& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
       border: 1px solid
         ${(props) => (props.$hasError ? themeColors.red : themeColors.indigo)};
       box-shadow: 0 0 2rem
@@ -49,7 +49,6 @@ export const StyledSelect = styled(Select)<Props>`
     font-family: 'InstrumentSans';
     font-size: 1rem;
     height: 48px;
-    /* overflow: hidden; */
     background-color: ${(props) =>
       props.$hasInput ? themeColors.white : 'transparent'};
     border-radius: 0.75rem;

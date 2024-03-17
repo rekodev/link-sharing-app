@@ -12,9 +12,10 @@ import {
 import { StyledAlert } from '../../styles/UtilityStyles';
 import {
   ProfileDetails,
-  ProfileDetailsErrors,
+  ProfileDetailsError,
   SnackbarType,
 } from '../../types/profileDetails';
+import { validateProfileDetails } from '../../validation/profileDetails';
 import ImageUploadField from '../ImageUploadField';
 import ProfileDetailsFields from '../ProfileDetailsFields';
 import Button from '../shared/Button';
@@ -35,7 +36,7 @@ const ProfileDetailsForm = () => {
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [profileDetailsFieldsError, setProfileDetailsFieldsError] =
-    useState<ProfileDetailsErrors>({
+    useState<ProfileDetailsError>({
       firstName: false,
       lastName: false,
       email: false,
@@ -71,15 +72,22 @@ const ProfileDetailsForm = () => {
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    if (!user?.id) return;
+
     event.preventDefault();
 
-    if (!user?.id) return;
+    const isProfileDetailsValid = validateProfileDetails(profileDetails);
+
+    if (!isProfileDetailsValid) {
+      setHasErrors(true);
+
+      return;
+    }
 
     const { email, firstName, lastName } = profileDetails;
 
     setIsSubmitting(true);
     setSubmissionMessage('');
-    setHasErrors(true);
     setIsSnackbarOpen(false);
 
     const response = await updateProfile(
@@ -89,6 +97,7 @@ const ProfileDetailsForm = () => {
       email,
       profilePicture
     );
+
     setIsSubmitting(false);
     setIsSnackbarOpen(true);
     setSubmissionMessage(response.data.message);

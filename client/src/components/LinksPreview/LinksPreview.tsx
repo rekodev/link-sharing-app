@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import {
   StyledLinksPreview,
   StyledLinksPreviewContainer,
@@ -6,19 +8,33 @@ import {
   StyledProfileDetailsTextWrapper,
   StyledProfileDetailsWrapper,
   StyledProfilePictureWrapper,
+  StyledPlatformLink,
 } from './style';
+import arrowIcon from '../../assets/images/icon-arrow-right.svg';
 import phoneMockup from '../../assets/images/illustration-phone-mockup.svg';
 import { platforms } from '../../constants/platformList';
 import useUser from '../../hooks/useUser';
 import useUserLinks from '../../hooks/useUserLinks';
 import { UserLink } from '../../types/link';
-import PlatformLink from '../PlatformLink';
 
 const REVALIDATE_ON_MOUNT = true;
 
 const LinksPreview = () => {
   const { user } = useUser(REVALIDATE_ON_MOUNT);
   const { links } = useUserLinks(REVALIDATE_ON_MOUNT);
+
+  const renderLink = (
+    index: number,
+    text: string,
+    svgIcon: ReactNode,
+    url: string
+  ) => (
+    <StyledPlatformLink key={index} href={url} $platform={text} target='_blank'>
+      {svgIcon}
+      {text}
+      <img src={arrowIcon} alt='Arrow Right Icon' />
+    </StyledPlatformLink>
+  );
 
   const renderLinks = () => {
     if (!links) return null;
@@ -33,13 +49,11 @@ const LinksPreview = () => {
           // Do not return more than 5 previewed links
           if (index > 4 || !matchedPlatform) return null;
 
-          return (
-            <PlatformLink
-              key={index}
-              svgIcon={matchedPlatform.svgIcon}
-              text={matchedPlatform.name}
-              url={link.linkUrl}
-            />
+          return renderLink(
+            index,
+            matchedPlatform.name,
+            matchedPlatform.svgIcon,
+            link.linkUrl
           );
         })}
       </StyledPlatformWrapper>
