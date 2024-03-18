@@ -9,6 +9,7 @@ import { login, register } from './controllers/authController';
 import {
   checkAuthPayload,
   checkLinkPayload,
+  checkProfileDetailsPayload,
 } from './middleware/payloadValidation';
 import authenticateToken from './middleware/auth';
 import { editUserLinks, getUserLinks } from './controllers/linkController';
@@ -27,19 +28,28 @@ const startServer = () => {
   connectToDb();
 };
 
+// auth endpoints
 app.post('/api/register', register);
 
 app.post('/api/login', checkAuthPayload, login);
 
-app.post('/api/links/:userId', checkLinkPayload, editUserLinks);
+// link endpoints
+app.get('/api/links/:userId', authenticateToken, getUserLinks);
 
-app.get('/api/links/:userId', getUserLinks);
+app.post(
+  '/api/links/:userId',
+  authenticateToken,
+  checkLinkPayload,
+  editUserLinks
+);
 
+// user endpoints
 app.get('/api/user/:userId', authenticateToken, getUser);
 
 app.put(
   '/api/user/:userId',
   authenticateToken,
+  checkProfileDetailsPayload,
   upload.single('image'),
   editUserById
 );

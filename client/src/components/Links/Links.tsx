@@ -54,6 +54,14 @@ const Links = () => {
   const handleAddNewLink = () => {
     if (!user?.id) return;
 
+    if (customizableLinks.length === 5) {
+      setIsSnackbarOpen(true);
+      setSnackbarType('error');
+      setSubmissionMessage('You cannot add more than 5 links');
+
+      return;
+    }
+
     const newLink = {
       id: uuidv4(),
       platform: platforms[0].name,

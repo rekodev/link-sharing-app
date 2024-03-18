@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { LinkModel, UserCredentials } from '../types';
+import { LinkModel, UserCredentials, UserModel } from '../types';
 
 export const checkAuthPayload = (
   req: Request<UserCredentials>,
@@ -35,13 +35,29 @@ export const checkLinkPayload = (
   }
 
   const allLinksNotEmpty = links.every((link) => link.platform && link.linkUrl);
+  const allLinksUniquePlatform =
+    new Set(links.map((link) => link.platform)).size === links.length;
 
-  if (!allLinksNotEmpty)
+  if (!allLinksNotEmpty || !allLinksUniquePlatform)
+    return res.status(400).json({
+      message: 'All links must have a unique platform and a link url',
+    });
+
+  next();
+};
+
+export const checkProfileDetailsPayload = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { firstName, lastName, email }: UserModel = req.body;
+
+  if (!firstName || !lastName || !email) {
     return res
       .status(400)
-      .json({
-        message: 'All links must have a unique platform and a link url',
-      });
+      .json({ message: 'First name, last name and email are required' });
+  }
 
   next();
 };
