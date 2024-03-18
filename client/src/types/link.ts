@@ -14,12 +14,14 @@ export type UserLink = {
   index?: number;
 };
 
+export type CustomizableLinkErrors = {
+  platform: boolean;
+  linkUrl: boolean;
+};
+
 export type CustomizableLink = UserLink & {
   id: string;
-  attemptedSave: boolean;
   isBeingDragged: boolean | undefined;
-  errors: {
-    platform: boolean;
-    linkUrl: boolean;
-  };
+  hasErrors: boolean;
+  errors: CustomizableLinkErrors;
 };

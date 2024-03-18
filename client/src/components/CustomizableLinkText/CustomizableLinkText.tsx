@@ -4,6 +4,7 @@ import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { StyledTextFieldWrapper } from './style';
 import linkIcon from '../../assets/images/icon-link.svg';
 import { CustomizableLink } from '../../types/link';
+import { validateLinkUrl } from '../../validation/link';
 import Input from '../shared/Input';
 
 type Props = {
@@ -22,16 +23,12 @@ const CustomizableLinkText = ({
   isError,
 }: Props) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const inputtedLink = event.target.value as string;
-    const linkError = !(inputtedLink && isUrl(inputtedLink));
+    const inputtedLinkUrl = event.target.value;
+    const prevError = !link.linkUrl || !isUrl(link.linkUrl);
 
-    const newLink: CustomizableLink = {
-      ...link,
-      linkUrl: inputtedLink,
-      errors: { ...link.errors, linkUrl: linkError },
-    };
+    const newValidatedLink = validateLinkUrl(link, inputtedLinkUrl, prevError);
     const newCustomizableLinks = customizableLinks.map((link, index) =>
-      index === linkIndex ? newLink : link
+      index === linkIndex ? newValidatedLink : link
     );
 
     setCustomizableLinks(newCustomizableLinks);

@@ -69,14 +69,14 @@ const CustomizableLink = ({
         index={linkIndex}
         customizableLinks={customizableLinks}
         setCustomizableLinks={setCustomizableLinks}
-        isError={link.errors.platform && link.attemptedSave}
+        isError={link.errors.platform && link.hasErrors}
       />
       <CustomizableLinkText
         link={link}
         index={linkIndex}
         customizableLinks={customizableLinks}
         setCustomizableLinks={setCustomizableLinks}
-        isError={link.errors.linkUrl && link.attemptedSave}
+        isError={link.errors.linkUrl && link.hasErrors}
       />
     </StyledLinkCard>
   );

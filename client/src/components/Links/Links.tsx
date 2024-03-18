@@ -17,6 +17,7 @@ import { updateLinks } from '../../api';
 import CustomizableLink from '../../components/CustomizableLink';
 import { StyledCustomizableLinkWrapper } from '../../components/CustomizableLink/style';
 import StartCard from '../../components/StartCard/StartCard';
+import { platforms } from '../../constants/platformList';
 import useDragHandlers from '../../hooks/useDragHandlers';
 import useUser from '../../hooks/useUser';
 import useUserLinks from '../../hooks/useUserLinks';
@@ -26,8 +27,8 @@ import {
   UserLink,
 } from '../../types/link';
 import { SnackbarType } from '../../types/profileDetails';
-import { platforms } from '../../utils/platformList';
 import { transformCustomizableLink } from '../../utils/transformers';
+import { validateLinksOnSubmit } from '../../validation/link';
 import Button from '../shared/Button';
 
 const Links = () => {
@@ -37,12 +38,13 @@ const Links = () => {
     isLinksLoading: isUserLinksLoading,
     mutateLinks,
   } = useUserLinks();
+
   const [customizableLinks, setCustomizableLinks] = useState<
     Array<CustomizableLinkType>
   >([]);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
-  // const [uniqueLinks, setUniqueLinks] = useState(true);
+  const [submissionMessage, setSubmissionMessage] = useState('');
 
   const { onDragStart, onDragEnd } = useDragHandlers({
     customizableLinks,
@@ -52,12 +54,20 @@ const Links = () => {
   const handleAddNewLink = () => {
     if (!user?.id) return;
 
+    if (customizableLinks.length === 5) {
+      setIsSnackbarOpen(true);
+      setSnackbarType('error');
+      setSubmissionMessage('You cannot add more than 5 links');
+
+      return;
+    }
+
     const newLink = {
       id: uuidv4(),
       platform: platforms[0].name,
       linkUrl: '',
-      attemptedSave: false,
-      errors: { platform: false, linkUrl: false, unique: false },
+      hasErrors: false,
+      errors: { platform: false, linkUrl: false },
       isBeingDragged: false,
     };
 
@@ -71,19 +81,25 @@ const Links = () => {
   };
 
   useEffect(() => {
-    if (!userLinks) return;
+    if (!userLinks || customizableLinks.length) return;
 
-    const latestLinks: Array<CustomizableLinkType> = userLinks.map((link) => ({
-      id: uuidv4(),
-      platform: link.platform,
-      linkUrl: link.linkUrl,
-      attemptedSave: false,
-      errors: { platform: false, linkUrl: false, unique: false },
-      isBeingDragged: false,
-    }));
+    const latestLinks = userLinks.map(
+      (link): CustomizableLinkType => ({
+        id: uuidv4(),
+        platform: link.platform,
+        linkUrl: link.linkUrl,
+        hasErrors: false,
+        errors: { platform: false, linkUrl: false },
+        isBeingDragged: false,
+      })
+    );
 
     setCustomizableLinks(latestLinks);
-  }, [userLinks]);
+  }, [userLinks, customizableLinks]);
+
+  const onValidationError = (validatedLinks: Array<CustomizableLinkType>) => {
+    setCustomizableLinks(validatedLinks);
+  };
 
   const handleSubmit = async () => {
     if (!user?.id) return;
@@ -96,8 +112,17 @@ const Links = () => {
       })
     );
 
+    const linksValid = validateLinksOnSubmit(
+      customizableLinks,
+      onValidationError
+    );
+
+    if (!linksValid) return;
+
+    setSubmissionMessage('');
     setIsSnackbarOpen(false);
     const result = await updateLinks(user.id, linksToBeSubmitted);
+    setSubmissionMessage(result.data.message);
     setIsSnackbarOpen(true);
 
     if (result.status !== HttpStatusCode.Ok) {
@@ -109,53 +134,6 @@ const Links = () => {
     setSnackbarType('success');
     mutateLinks();
   };
-
-  // const handleSave = () => {
-  //   let allValid = true;
-  //   // localStorage.setItem('links', JSON.stringify(links));
-  //   // Check if platforms are unique
-  //   const uniquePlatforms =
-  //     new Set(customizableLinks.map((link) => link.platform)).size ===
-  //     customizableLinks.length;
-
-  //   const updatedLinks = customizableLinks.map((link) => {
-  //     const isLinkValid = isUrl(link.linkUrl);
-  //     const isPlatformValid = Boolean(link.platform);
-
-  //     if (!isLinkValid || !isPlatformValid || !uniquePlatforms) {
-  //       allValid = false;
-
-  //       return {
-  //         ...link,
-  //         attemptedSave: true,
-  //         errors: {
-  //           platform: !isPlatformValid,
-  //           linkUrl: !isLinkValid,
-  //         },
-  //       };
-  //     }
-
-  //     return {
-  //       ...link,
-  //       attemptedSave: false,
-  //       errors: { platform: false, linkUrl: false },
-  //     };
-  //   });
-
-  //   if (allValid) {
-  //     setLinks(updatedLinks);
-  //     setSnackbarType('success');
-  //     setOpen(true);
-  //     setUniqueLinks(true);
-  //   } else {
-  //     setCustomizableLinks(updatedLinks);
-  //     setSnackbarType('error');
-  //     setOpen(true);
-  //     if (!uniquePlatforms) {
-  //       setUniqueLinks(false);
-  //     }
-  //   }
-  // };
 
   const handleClose = (_event?: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -195,25 +173,25 @@ const Links = () => {
     );
   };
 
-  const renderSnackbar = () => (
-    <Snackbar
-      open={isSnackbarOpen}
-      autoHideDuration={6000}
-      onClose={handleClose}
-    >
-      <StyledAlert
+  const renderSnackbar = () => {
+    if (!submissionMessage) return null;
+
+    return (
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={6000}
         onClose={handleClose}
-        severity={snackbarType}
-        sx={{ width: '100%' }}
       >
-        {snackbarType === 'success'
-          ? 'Saved successfully'
-          : // : uniqueLinks
-            'Error saving links. Please ensure all links are unique and have a URL present'}
-        {/* // : 'Platforms must be unique'} */}
-      </StyledAlert>
-    </Snackbar>
-  );
+        <StyledAlert
+          onClose={handleClose}
+          severity={snackbarType}
+          sx={{ width: '100%' }}
+        >
+          {submissionMessage}
+        </StyledAlert>
+      </Snackbar>
+    );
+  };
 
   if (isUserLoading || isUserLinksLoading)
     return <CircularProgress color='primary' sx={{ margin: 'auto' }} />;
@@ -235,7 +213,12 @@ const Links = () => {
           {renderLinks()}
         </StyledLinksContainer>
         <StyledSaveButtonWrapper>
-          <Button variant='contained' text='Save' onClick={handleSubmit} />
+          <Button
+            variant='contained'
+            text='Save'
+            onClick={handleSubmit}
+            disabled={!userLinks?.length}
+          />
         </StyledSaveButtonWrapper>
       </StyledLinks>
 

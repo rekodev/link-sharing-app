@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { editUserInformation, findUserById } from '../database/user';
 import { transformUser } from '../utils/transformers';
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {

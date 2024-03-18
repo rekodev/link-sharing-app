@@ -13,7 +13,7 @@ type Props = {
   $hasInput: boolean;
 };
 
-export const StyledFormControl = styled(FormControl)`
+export const StyledFormControl = styled(FormControl)<{ $hasError: boolean }>`
   && {
     height: 70px;
     display: flex;
@@ -24,9 +24,11 @@ export const StyledFormControl = styled(FormControl)`
       color: ${themeColors.indigo};
     }
 
-    & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border: 1px solid ${themeColors.indigo};
-      box-shadow: 0 0 2rem ${themeColors.lavender};
+    &&&& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border: 1px solid
+        ${(props) => (props.$hasError ? themeColors.red : themeColors.indigo)};
+      box-shadow: 0 0 2rem
+        ${(props) => (props.$hasError ? themeColors.red : themeColors.lavender)};
     }
   }
 `;
@@ -47,7 +49,6 @@ export const StyledSelect = styled(Select)<Props>`
     font-family: 'InstrumentSans';
     font-size: 1rem;
     height: 48px;
-    /* overflow: hidden; */
     background-color: ${(props) =>
       props.$hasInput ? themeColors.white : 'transparent'};
     border-radius: 0.75rem;
@@ -131,7 +132,7 @@ export const StyledMenuItem = styled(MenuItem)`
 
 export const StyledFormHelperText = styled(FormHelperText)`
   && {
-    color: #d32f2f;
+    color: ${themeColors.red};
     position: absolute;
     right: 0;
     top: -4px;

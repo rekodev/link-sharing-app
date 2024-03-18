@@ -10,8 +10,12 @@ import {
   StyledSaveButtonWrapper,
 } from '../../pages/ProfileDetailsPage/style';
 import { StyledAlert } from '../../styles/UtilityStyles';
-import { ProfileDetailsFieldsError } from '../../types/errors';
-import { ProfileDetails, SnackbarType } from '../../types/profileDetails';
+import {
+  ProfileDetails,
+  ProfileDetailsError,
+  SnackbarType,
+} from '../../types/profileDetails';
+import { validateProfileDetails } from '../../validation/profileDetails';
 import ImageUploadField from '../ImageUploadField';
 import ProfileDetailsFields from '../ProfileDetailsFields';
 import Button from '../shared/Button';
@@ -28,11 +32,11 @@ const ProfileDetailsForm = () => {
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState('');
-  const [attemptedSave, setAttemptedSave] = useState(false);
+  const [hasErrors, setHasErrors] = useState(false);
   const [snackbarType, setSnackbarType] = useState<SnackbarType>('success');
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [profileDetailsFieldsError, setProfileDetailsFieldsError] =
-    useState<ProfileDetailsFieldsError>({
+    useState<ProfileDetailsError>({
       firstName: false,
       lastName: false,
       email: false,
@@ -68,15 +72,22 @@ const ProfileDetailsForm = () => {
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    if (!user?.id) return;
+
     event.preventDefault();
 
-    if (!user?.id) return;
+    const isProfileDetailsValid = validateProfileDetails(profileDetails);
+
+    if (!isProfileDetailsValid) {
+      setHasErrors(true);
+
+      return;
+    }
 
     const { email, firstName, lastName } = profileDetails;
 
     setIsSubmitting(true);
     setSubmissionMessage('');
-    setAttemptedSave(true);
     setIsSnackbarOpen(false);
 
     const response = await updateProfile(
@@ -86,6 +97,7 @@ const ProfileDetailsForm = () => {
       email,
       profilePicture
     );
+
     setIsSubmitting(false);
     setIsSnackbarOpen(true);
     setSubmissionMessage(response.data.message);
@@ -125,8 +137,8 @@ const ProfileDetailsForm = () => {
         <StyledProfileContainer>
           <ImageUploadField onImageUpload={handleImageUpload} />
           <ProfileDetailsFields
-            attemptedSave={attemptedSave}
-            setAttemptedSave={setAttemptedSave}
+            hasErrors={hasErrors}
+            setHasErrors={setHasErrors}
             profileDetails={profileDetails}
             setProfileDetails={setProfileDetails}
             error={profileDetailsFieldsError}

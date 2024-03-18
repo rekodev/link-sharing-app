@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { LinkModel, UserCredentials } from '../types';
+import { LinkModel, UserCredentials, UserModel } from '../types';
 
 export const checkAuthPayload = (
   req: Request<UserCredentials>,
@@ -28,12 +28,36 @@ export const checkLinkPayload = (
     return res.status(400).json({ message: 'Add at least one link' });
   }
 
-  const allLinksNotEmpty = links.every((link) => link.platform && link.linkUrl);
-
-  if (!allLinksNotEmpty)
+  if (links.length > 5) {
     return res
       .status(400)
-      .json({ message: 'All links must have a platform and a link url' });
+      .json({ message: 'You cannot add more than 5 links' });
+  }
+
+  const allLinksNotEmpty = links.every((link) => link.platform && link.linkUrl);
+  const allLinksUniquePlatform =
+    new Set(links.map((link) => link.platform)).size === links.length;
+
+  if (!allLinksNotEmpty || !allLinksUniquePlatform)
+    return res.status(400).json({
+      message: 'All links must have a unique platform and a link url',
+    });
+
+  next();
+};
+
+export const checkProfileDetailsPayload = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { firstName, lastName, email }: UserModel = req.body;
+
+  if (!firstName || !lastName || !email) {
+    return res
+      .status(400)
+      .json({ message: 'First name, last name and email are required' });
+  }
 
   next();
 };

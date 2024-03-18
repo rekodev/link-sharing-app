@@ -8,11 +8,12 @@ import {
   StyledMenuItem,
   StyledSelect,
 } from './style';
+import { platforms } from '../../constants/platformList';
 import useUser from '../../hooks/useUser';
 import useUserLinks from '../../hooks/useUserLinks';
 import { CustomizableLink } from '../../types/link';
-import { platforms } from '../../utils/platformList';
 import { transformCustomizableLink } from '../../utils/transformers';
+import { validatePlatformUniqueness } from '../../validation/link';
 
 type Props = {
   customizableLinks: Array<CustomizableLink>;
@@ -33,28 +34,31 @@ const CustomizableLinkSelect = ({
   const { mutateLinks } = useUserLinks();
 
   const handleChange = (event: SelectChangeEvent<unknown>) => {
-    if (!user?.id) return;
+    if (!user?.id || !event.target.value) return;
 
     const selectedPlatform = event.target.value as string;
+
     const updatedLink: CustomizableLink = {
       ...link,
       platform: selectedPlatform,
-      errors: { ...link.errors, platform: !selectedPlatform },
     };
+    const newCustomizableLinks: Array<CustomizableLink> =
+      customizableLinks.toSpliced(linkIndex, 1, updatedLink);
 
-    const newCustomizableLinks = customizableLinks.map((link, index) =>
-      index === linkIndex ? updatedLink : link
+    const validatedNewCustomizableLinks = validatePlatformUniqueness(
+      newCustomizableLinks,
+      link
     );
-    const transformedLinks = newCustomizableLinks.map((link) =>
+    const transformedLinks = validatedNewCustomizableLinks.map((link) =>
       transformCustomizableLink(user.id!, link)
     );
 
-    setCustomizableLinks(newCustomizableLinks);
+    setCustomizableLinks(validatedNewCustomizableLinks);
     mutateLinks({ links: transformedLinks }, false);
   };
 
   return (
-    <StyledFormControl fullWidth>
+    <StyledFormControl $hasError={isError} fullWidth>
       <StyledInputLabel id='brand-select-label'>Platform</StyledInputLabel>
       <StyledSelect
         error={isError}
@@ -63,7 +67,7 @@ const CustomizableLinkSelect = ({
         value={link.platform}
         label='Platform'
         onChange={handleChange}
-        $hasInput={link.platform ? true : false}
+        $hasInput={!!link.platform}
       >
         {platforms.map((platform, idx) => (
           <StyledMenuItem key={idx} value={platform.name}>
@@ -73,7 +77,7 @@ const CustomizableLinkSelect = ({
         ))}
       </StyledSelect>
       {isError && (
-        <StyledFormHelperText>You must select a platform</StyledFormHelperText>
+        <StyledFormHelperText>Platforms must be unique</StyledFormHelperText>
       )}
     </StyledFormControl>
   );

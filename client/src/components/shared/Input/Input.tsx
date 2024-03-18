@@ -41,16 +41,13 @@ const Input = ({
   initialStyle,
 }: Props) => {
   return (
-    <StyledInputWrapper $initialStyle={initialStyle ? true : false}>
+    <StyledInputWrapper $initialStyle={!!initialStyle}>
       {label && (
-        <StyledLabel
-          $initialStyle={initialStyle ? true : false}
-          id={`label-${id}`}
-        >
+        <StyledLabel $initialStyle={!!initialStyle} id={`label-${id}`}>
           {label}
         </StyledLabel>
       )}
-      <StyledInputFieldWrapper $initialStyle={initialStyle ? true : false}>
+      <StyledInputFieldWrapper $initialStyle={!!initialStyle}>
         {imgSrc && <StyledImage src={imgSrc} alt={imgName} />}
         <StyledInput
           aria-labelledby={`label-${id}`}
@@ -61,18 +58,18 @@ const Input = ({
           required={required}
           onChange={onChange}
           value={value}
-          $hasValue={value ? true : false}
-          $hasError={error ? true : false}
-          $hasImage={imgSrc ? true : false}
+          $hasValue={!!value}
+          $hasError={!!error}
+          $hasImage={!!imgSrc}
         />
       </StyledInputFieldWrapper>
       {error && (type === 'text' || type === 'email') && !value ? (
-        <StyledErrorText $initialStyle={initialStyle ? true : false}>
+        <StyledErrorText $initialStyle={!!initialStyle}>
           Can't be empty
         </StyledErrorText>
       ) : (
         error && (
-          <StyledErrorText $initialStyle={initialStyle ? true : false}>
+          <StyledErrorText $initialStyle={!!initialStyle}>
             {errorText}
           </StyledErrorText>
         )

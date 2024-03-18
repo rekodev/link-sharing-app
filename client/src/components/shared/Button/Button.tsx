@@ -14,6 +14,7 @@ type Props = {
   active?: boolean;
   type?: 'button' | 'submit' | 'reset' | undefined;
   isLoading?: boolean;
+  disabled?: boolean;
 };
 
 const Button = ({
@@ -26,6 +27,7 @@ const Button = ({
   active,
   type,
   isLoading,
+  disabled,
 }: Props) => {
   return (
     <StyledButton
@@ -35,7 +37,7 @@ const Button = ({
       variant={variant}
       onClick={onClick}
       type={type}
-      disabled={isLoading}
+      disabled={disabled || isLoading}
     >
       {isLoading ? (
         <CircularProgress size={24} color='inherit' />
